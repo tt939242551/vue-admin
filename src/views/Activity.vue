@@ -89,7 +89,7 @@
             <div class="modalmain">
               <div class="mtitle">{{goodsindex === goodsList.length?"新增": "修改"}}活动商品</div>
               <p><span>品 牌</span>
-                <Select  placeholder="请选择品牌" v-model="Modal[0]" style="width:250px;margin-left: 10px;">
+                <Select  @on-change="getcommodityList" placeholder="请选择品牌" v-model="Modal[0]" style="width:250px;margin-left: 10px;">
                         <Option v-for="(item,j) in generalattribute" :value="item.guid" :key="j">{{item.title}}</Option>
                 </Select>
               </p>
@@ -103,8 +103,8 @@
                         <Option v-for="(item,j) in category" :value="item.guid" :key="j">{{item.title}}</Option>
                 </Select>
               </p>
-              <p><span>宝贝标题</span>
-                <Select  placeholder="请选择宝贝标题" v-model="Modal[3]" style="width:250px;margin-left: 10px;">
+              <p><span>商品名称</span>
+                <Select  placeholder="请选择商品名称" v-model="Modal[3]" style="width:250px;margin-left: 10px;">
                         <Option v-for="(item,j) in commodity" :value="item.guid" :key="j">{{item.title}}</Option>
                 </Select>
               </p>
@@ -239,14 +239,14 @@
              <TabPane label="广告位1" icon="md-radio-button-on">
                 <img style="float: right;margin: 20px 10px 20px 0" src="../assets/imgs/a-2-s.png" alt="">
                 <div class="s3imgbox1">
-                  <div class="imgbox3">
-                    <!--  <img  :src="advertisingList1[0].picture" alt=""> -->
+                  <div class="imgbox3" v-if="advertisingList1[0]">
+                     <img style="width: 588px;height: 148px;" :src="advertisingList1[0].picture" alt=""> 
                   </div>
                   <p class="footp"><span @click="showModal3(0)" style="cursor: pointer;"><Icon class="icons" size="18" type="ios-create-outline" />编辑</span></p>
                 </div>
                 <div class="s3imgbox1">
-                  <div class="imgbox3">
-                  <!--   <img  :src="advertisingList1[1].picture" alt=""> -->
+                  <div class="imgbox3" v-if="advertisingList1[1]">
+                     <img style="width: 588px;height: 148px;" :src="advertisingList1[1].picture" alt=""> 
                   </div>
                   <p class="footp"><span @click="showModal3(1)" style="cursor: pointer;"><Icon class="icons" size="18" type="ios-create-outline" />编辑</span></p>
                 </div>
@@ -254,20 +254,32 @@
               <TabPane label="广告位2" icon="md-radio-button-on">
                 <img style="float: right;margin: 20px 10px 20px 0" src="../assets/imgs/a-3-s.png" alt="">
                 <div class="s3imgbox1 s3imgbox10">
-                  <div class="imgbox4">
-                    <!--  <img  :src="advertisingList2[0].picture" alt=""> -->
+                  <div class="imgbox4" v-if="advertisingList2[0]">
+                    <img  :src="advertisingList2[0].picture" alt=""> 
+                    <div class="hovbox">
+                        <span>{{advertisingList2[0].maintitle}}</span>
+                         <p>{{advertisingList2[0].vicetitle}}</p>
+                      </div>
                   </div>
                   <p class="footp"><span @click="showModal4(0)" style="cursor: pointer;"><Icon class="icons" size="18" type="ios-create-outline" />编辑</span></p>
                 </div>
                 <div class="s3imgbox1 s3imgbox10">
-                  <div class="imgbox4">
-                  <!--   <img  :src="advertisingList2[1].picture" alt=""> -->
+                  <div class="imgbox4" v-if="advertisingList2[1]">
+                     <img  :src="advertisingList2[1].picture" alt=""> 
+                      <div class="hovbox">
+                         <span>{{advertisingList2[1].maintitle}}</span>
+                         <p>{{advertisingList2[1].vicetitle}}</p>
+                       </div>
                   </div>
                   <p class="footp"><span @click="showModal4(1)" style="cursor: pointer;"><Icon class="icons" size="18" type="ios-create-outline" />编辑</span></p>
                 </div>
                 <div class="s3imgbox1 s3imgbox10">
-                  <div class="imgbox4">
-                  <!--   <img  :src="advertisingList2[1].picture" alt=""> -->
+                  <div class="imgbox4" v-if="advertisingList2[2]">
+                     <img  :src="advertisingList2[1].picture" alt=""> 
+                       <div class="hovbox">
+                         <span>{{advertisingList2[2].maintitle}}</span>
+                         <p>{{advertisingList2[2].vicetitle}}</p>
+                       </div>
                   </div>
                   <p class="footp"><span @click="showModal4(2)" style="cursor: pointer;"><Icon class="icons" size="18" type="ios-create-outline" />编辑</span></p>
                 </div>
@@ -715,7 +727,7 @@ export default {
     },
     getCategory(id) {
       this.Modal[2] = "";
-      this.Modal[3] = "";
+      this.getcommodityList()
        if (id) {
         this.$axios
           .post(
@@ -731,10 +743,11 @@ export default {
           })
           .catch(() => {});
       }
+
     },
     getcommodityList(){
        this.Modal[3] = "";
-       if (this.Modal[0]&&this.Modal[1]&&this.Modal[2]) {
+       if (this.Modal[0]) {
         this.$axios
           .post(
             "commodity.ashx?action=selectbyid",
@@ -748,7 +761,7 @@ export default {
             }
           })
           .catch(() => {});
-      }
+      }else{ this.$Message.warning("品牌必须选择");}
     },
    //广告位1
     showModal3(i){
@@ -797,6 +810,11 @@ export default {
        this.Modal[0] = this.advertisingList2[this.advertisingindex2].urllink
         this.Modal[1] = this.advertisingList2[this.advertisingindex2].maintitle
         this.Modal[2] = this.advertisingList2[this.advertisingindex2].vicetitle
+       }else{
+         this.Modal[0] = ""
+         this.Modal[1] = ""
+         this.Modal[2] = ""
+         this.imgmodels = ""
        }
       
       this.xModal9 = true
@@ -982,13 +1000,16 @@ export default {
 .itemnum{border-top: 1px solid #c69c6d;padding-top: 4px;margin: 10px 10px;display: inline-block;padding-right: 5px;}
 .itembox1{border:none;margin-top: 10px;margin: 0 auto;}
 .itembox.itembox1 .lastnum{color: #9c9c9c;font-weight: 500;text-decoration:line-through;font-family: Microsoft YaHei}
-
+ /* 广告位 */
 .s3imgbox1{width:590px;margin-top: 20px;margin-right: 10px;border: 1px solid #f0f0f0}
-.s3imgbox1.s3imgbox10{width:380px;margin-top: 20px;margin-right: 20px;border: 1px solid #f0f0f0;display: inline-block}
+.s3imgbox1.s3imgbox10{width:382px;margin-top: 20px;margin-right: 20px;border: 1px solid #f0f0f0;display: inline-block}
 .s3imgbox1 img{width: 100%;height: 100%;}
-.s3imgbox1 .imgbox4{width: 380px;height: 164px;}
+.s3imgbox1 .imgbox4{width: 380px;height: 164px;position: relative;}
 .s3imgbox1 .imgbox4 img{width: 380px;height: 164px;}
 .footp{text-align: right;color: #c69c6d;padding: 12px 20px;font-size: 14px}
 .footp .icons{transform: translateY(-2px);margin-left: 18px;margin-right: 2px;}
-
+.hovbox{position: absolute;top: 50%;left: 50%;transform: translate(-50%,-50%);width: 230px;height: 100px;background: #c69c6d;color: #fff;text-align: center;padding: 10px;display: none}
+.hovbox span{font-size: 28px;border-bottom: 2px solid #fff;display: inline-block;padding: 0 5px 2px;}
+.hovbox p {font-size: 16px;margin-top: 6px;}
+.imgbox4:hover >.hovbox,.imgbox4:hover .hovbox{display: inline-block}
 </style>
