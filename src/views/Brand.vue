@@ -124,40 +124,18 @@
                 <Button style="width:80px" type="primary" class="samintbtn" @click="removegoodsall">确定</Button><Button  style="width:80px;margin-left: 30px;display: inline-block;" class="samintbtn" @click="xModal7=false">取消</Button>
             </div>
          </Modal>
-          <Modal v-model="xModal8" width="760"  footer-hide :styles="{top: '200px'}">
+        <Modal v-model="xModal8" width="760"  footer-hide :styles="{top: '200px'}">
             <div class="modalmain">
-              <div class="mtitle">修改广告位1</div>
+              <div class="mtitle">编辑广告位</div>
               <p><span>URL链接</span>
-              <i-input class="sinput" 
+                 <i-input class="sinput" 
                         type="text" v-model="Modal[0]"  clearable placeholder="请输入链接"> </i-input>
               </p>
               <p style="position: relative;"><span style="vertical-align: top;">图        片</span>
-                 <img @click="addimg()" class="bannerbgimg" src="../assets/imgs/a-2-bg1.png" alt="">
-                 <img @click="addimg()" class="bannerimg2" v-show="imgmodels" :src="imgmodels" alt="">
-              </p>
-              <Button size="small" @click="isok6" type="primary" class="btn2">提交</Button>
-            </div>     
-        </Modal>
-         <Modal v-model="xModal9" width="560"  footer-hide :styles="{top: '200px'}">
-            <div class="modalmain">
-              <div class="mtitle">修改广告位2</div>
-              <p><span>URL链接</span>
-                 <i-input class="sinput" 
-                        type="text" v-model="Modal[0]"  clearable placeholder="请输入链接"> </i-input>
-              </p>
-              <p><span>主  标  题</span>
-                 <i-input class="sinput" 
-                        type="text" v-model="Modal[1]"  clearable placeholder="请输入主标题"> </i-input>
-              </p>
-              <p><span>副 标 题</span>
-                 <i-input class="sinput" 
-                        type="text" v-model="Modal[2]"  clearable placeholder="请输入副标题"> </i-input>
-              </p>
-              <p style="position: relative;margin-top: 20px;"><span style="vertical-align: top;">图        片</span>
-                 <img @click="addimg()" class="bannerbgimg" src="../assets/imgs/a-3-bg.png" alt="">
+                 <img @click="addimg()" class="bannerbgimg" src="../assets/imgs/br-3-bg.png" alt="">
                  <img @click="addimg()" class="bannerimg4" v-show="imgmodels" :src="imgmodels" alt="">
               </p>
-              <Button size="small" @click="isok7" type="primary" class="btn2">提交</Button>
+              <Button size="small" @click="isok6" type="primary" class="btn2">提交</Button>
             </div>     
         </Modal>
          <input type="file" ref="uploadfiles" style="display:none" @input="fileChanges"  multiple="multiple" />
@@ -213,7 +191,40 @@
                  <p><span @click="xModal7=true"  style="cursor: pointer;"><Icon class="icons" size="18" type="ios-trash-outline" />清空</span></p>
                </div>
             </TabPane> 
-             <TabPane  label="品牌推荐" icon="md-radio-button-on">
+            <TabPane label="广告位" icon="md-radio-button-on">
+                 <img style="float: right;margin: 20px 10px 20px 0" src="../assets/imgs/br-3-s.png" alt="">
+                <div class="s3imgbox1">
+                  <div class="imgbox3" v-if="advertising">
+                    <img :src="advertising.picture" alt="">
+                  </div>
+                  <p class="footp"><span @click="showModal3" style="cursor: pointer;"><Icon class="icons" size="18" type="ios-create-outline" />编辑</span></p>
+                </div>
+            </TabPane> 
+            <TabPane  label="品牌系列" icon="md-radio-button-on">
+               <img @click="showModal2('add')" style="vertical-align: top;margin: 10px 40px 10px 0;" src="../assets/imgs/add-1.png" alt="">
+               <div class="imglistbox1 imglistbox2">
+                 <div class="imgbox1" v-for="(items,i) in goodsList" :key="i">
+                   <div class="itembox itembox1">
+                     <img style="width: 220px;height: 264px;border:none;"  alt="">
+          
+                    <p>【GUCCL】der/吉尔·桑达Ji绗缝 单肩包绗缝单肩包</p>
+                    <span class="itemnum">￥2198</span><span class="lastnum">￥3298</span>
+                    <span class="itemtab" >活动商品</span>
+                  
+                  </div>
+                   
+                   <p> 
+                     <Select @on-change="setsort2(i)" size="small" placeholder="" v-model="xmodel[i]" style="width:48px;">
+                        <Option v-for="(item,j) in items.sort" :value="item.id" :key="j+1">{{item.sort}}</Option>
+                     </Select>
+                     <span><span @click="showModal2(i)" style="cursor: pointer;"><Icon class="icons" size="18" type="ios-create-outline" />修改</span><span @click="removebrand(i)"  style="cursor: pointer;"><Icon class="icons" size="18" type="ios-trash-outline" />删除</span></span>
+                  </p>
+                 </div>
+                 <p><span @click="xModal7=true"  style="cursor: pointer;"><Icon class="icons" size="18" type="ios-trash-outline" />清空</span></p>
+               </div>
+            </TabPane> 
+    
+              <TabPane  label="其他品牌" icon="md-radio-button-on">
                <img @click="showModal1('add')" style="vertical-align: top;margin: 10px 40px 10px 0;" src="../assets/imgs/add-1.png" alt="">
                <div class="imglistbox1">
                  <div class="imgbox1" v-for="(items,i) in brandList" :key="i">
@@ -228,24 +239,7 @@
                  <p><span @click="xModal5=true"  style="cursor: pointer;"><Icon class="icons" size="18" type="ios-trash-outline" />清空</span></p>
                </div>
             </TabPane>
-            
-            <TabPane  label="折扣商品" icon="md-radio-button-on"></TabPane>
-             <TabPane label="广告位1" icon="md-radio-button-on">
-                <img style="float: right;margin: 20px 10px 20px 0" src="../assets/imgs/a-2-s.png" alt="">
-                <div class="s3imgbox1">
-                  <div class="imgbox3" v-if="advertisingList1[0]">
-                     <img style="width: 588px;height: 148px;" :src="advertisingList1[0].picture" alt=""> 
-                  </div>
-                  <p class="footp"><span @click="showModal3(0)" style="cursor: pointer;"><Icon class="icons" size="18" type="ios-create-outline" />编辑</span></p>
-                </div>
-                <div class="s3imgbox1">
-                  <div class="imgbox3" v-if="advertisingList1[1]">
-                     <img style="width: 588px;height: 148px;" :src="advertisingList1[1].picture" alt=""> 
-                  </div>
-                  <p class="footp"><span @click="showModal3(1)" style="cursor: pointer;"><Icon class="icons" size="18" type="ios-create-outline" />编辑</span></p>
-                </div>
-            </TabPane> 
-              <TabPane label="广告位2" icon="md-radio-button-on">
+            <!--   <TabPane label="广告位2" icon="md-radio-button-on">
                 <img style="float: right;margin: 20px 10px 20px 0" src="../assets/imgs/a-3-s.png" alt="">
                 <div class="s3imgbox1 s3imgbox10">
                   <div class="imgbox4" v-if="advertisingList2[0]">
@@ -277,7 +271,7 @@
                   </div>
                   <p class="footp"><span @click="showModal4(2)" style="cursor: pointer;"><Icon class="icons" size="18" type="ios-create-outline" />编辑</span></p>
                 </div>
-            </TabPane>               
+            </TabPane>                -->
         </Tabs>
      </div>  
     </div>
@@ -305,7 +299,6 @@ export default {
            xModal6:false,
            xModal7:false,
            xModal8:false,
-           xModal9:false,
            isall:false,
            brand:{},
            bannerindex: 0,
@@ -319,10 +312,7 @@ export default {
            generalattribute:[],
            commodity:[],
            category:[],
-           advertisingList1:[],
-           advertisingindex1: 0,
-            advertisingList2:[],
-           advertisingindex2: 0,
+           advertising:"",
            xmodel:[],
            Modal:[],
            navlist:["首页展示","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"],
@@ -396,23 +386,9 @@ export default {
           this.navValue = i
           this.getnavlist() 
       },
-/*       isok1(){
-          if (this.Modal[0]) {
-        this.$axios.post("activity.ashx?action=add",this.$qs.stringify({ activityname: this.Modal[0] }))
-          .then(res => {
-            if (res.status > 0) {
-              this.xModal1 = false
-              this.activityinit() 
-            } else {
-              this.$Message.warning(res.content);
-            }
-          })
-          .catch(() => {}); 
-          }else{this.$Message.warning("活动名不能为空");}
-      }, */
      isok2(){
         if (this.Modal[0]&&this.Modal[1]) {
-        this.$axios.post("brandrecommendation.ashx?action=edit",this.$qs.stringify({ brandintroduction: this.Modal[1],id: this.tabs[this.tvalue1].id}))
+        this.$axios.post("brandrecommendation.ashx?action=edit",this.$qs.stringify({ brandintroduction: this.Modal[1],id: this.brand.id}))
           .then(res => {
             if (res.status > 0) {
               this.xModal2 = false
@@ -454,7 +430,7 @@ export default {
           let parem ={}
           if (this.bannerindex === this.bannerList.length) {
             url = "banner.ashx?action=add"
-            parem = { bannerpicture: this.imgmodels,urllink:this.Modal[0],typeguid: this.tabs[this.tvalue1].guid }
+            parem = { bannerpicture: this.imgmodels,urllink:this.Modal[0],typeguid: this.brand.guid }
           }else{url = "banner.ashx?action=edit"
            parem =  { bannerpicture: this.imgmodels,urllink:this.Modal[0],id: this.bannerList[this.bannerindex].id }
           }
@@ -472,7 +448,7 @@ export default {
     },
     getbannerList(){
          this.$axios
-          .post("banner.ashx?action=selectlist",this.$qs.stringify({ typeguid: this.tabs[this.tvalue1].guid }))
+          .post("banner.ashx?action=selectlist",this.$qs.stringify({ typeguid: this.brand.guid }))
           .then(res => {
             if (res.status >= 0) {
               this.bannerList = res.item;
@@ -490,7 +466,7 @@ export default {
           .catch(() => {});
       },
     removebanner(i){
-        this.$axios.post("banner.ashx?action=delete",this.$qs.stringify({ id: this.bannerList[i].id ,typeguid: this.tabs[this.tvalue1].guid}))
+        this.$axios.post("banner.ashx?action=delete",this.$qs.stringify({ id: this.bannerList[i].id ,typeguid: this.brand.guid}))
           .then(res => {
             if (res.status >= 0) {
               this.getbannerList()
@@ -512,7 +488,7 @@ export default {
           })
           .catch(() => {}); 
     },
-    // 品牌推荐
+    // 其他品牌
      showModal1(i){
       if (i==="add") {
          this.brandindex = this.brandList.length?this.brandList.length: 0
@@ -532,7 +508,7 @@ export default {
           let parem ={}
           if (this.brandindex === this.brandList.length) {
             url = "activity.ashx?action=addbrandrecommend"
-            parem = { generalattributeid: this.Modal[0],brandurl:this.Modal[1],typeguid: this.tabs[this.tvalue1].guid }
+            parem = { generalattributeid: this.Modal[0],brandurl:this.Modal[1],typeguid: this.brand.guid }
           }else{url = "activity.ashx?action=editbrandrecommend"
            parem =  { generalattributeid: this.Modal[0],brandurl:this.Modal[1],id: this.brandList[this.brandindex].id }
           }
@@ -580,7 +556,7 @@ export default {
       },
     getbrandList(){
          this.$axios
-          .post("activity.ashx?action=selectlistbrandrecommend",this.$qs.stringify({ typeguid: this.tabs[this.tvalue1].guid }))
+          .post("activity.ashx?action=selectlistbrandrecommend",this.$qs.stringify({ typeguid: this.brand.guid }))
           .then(res => {
             if (res.status >= 0) {
               this.brandList = res.item;
@@ -598,7 +574,7 @@ export default {
           .catch(() => {});
       },
     removebrand(i){
-        this.$axios.post("activity.ashx?action=deletebrandrecommend",this.$qs.stringify({ id: this.brandList[i].id ,typeguid: this.tabs[this.tvalue1].guid}))
+        this.$axios.post("activity.ashx?action=deletebrandrecommend",this.$qs.stringify({ id: this.brandList[i].id ,typeguid: this.brand.guid}))
           .then(res => {
             if (res.status >= 0) {
               this.getbrandList()
@@ -609,7 +585,7 @@ export default {
           .catch(() => {}); 
     },
      removebrandall(){
-        this.$axios.post("activity.ashx?action=deletebrandrecommend",this.$qs.stringify({ emptys: "清空" ,typeguid: this.tabs[this.tvalue1].guid}))
+        this.$axios.post("activity.ashx?action=deletebrandrecommend",this.$qs.stringify({ emptys: "清空" ,typeguid: this.brand.guid}))
           .then(res => {
             if (res.status >= 0) {
               this.getbrandList()
@@ -654,7 +630,7 @@ export default {
           let parem ={}
           if (this.goodsindex === this.goodsList.length) {
             url = "activity.ashx?action=addactivecommodities"
-            parem = { generalattributeid: this.Modal[1],categoryid:this.Modal[2],typeguid: this.tabs[this.tvalue1].guid ,commodityguid:this.Modal[3]}
+            parem = { generalattributeid: this.Modal[1],categoryid:this.Modal[2],typeguid: this.brand.guid ,commodityguid:this.Modal[3]}
           }else{url = "activity.ashx?action=editactivecommodities"
            parem =  { commodityguid: this.Modal[3]}
           }
@@ -676,7 +652,7 @@ export default {
           .then(res => {
             if (res.status >= 0) {
               this.generalattribute = res.generalattribute[0].item
-              this.Modal[0] = this.tabs[this.tvalue1].guid
+              this.Modal[0] = this.brand.guid
              this.parentcategory = res.parentcategory
               this.parentcategory.forEach(item=>{
                 if (item.isselect) {
@@ -716,7 +692,7 @@ export default {
       },
     getgoodsList(){
          this.$axios
-          .post("brandrecommendation.ashx?action=selectlistbrandrecommendcommodity",this.$qs.stringify({ typeguid: this.tabs[this.tvalue1].guid ,typeid:this.typeid}))
+          .post("brandrecommendation.ashx?action=selectlistbrandrecommendcommodity",this.$qs.stringify({ typeguid: this.brand.guid ,typeid:this.typeid}))
           .then(res => {
             if (res.status >= 0) {
               this.goodsList = res.item;
@@ -735,7 +711,7 @@ export default {
           .catch(() => {});
       },
     removegoods(i){
-        this.$axios.post("brandrecommendation.ashx?action=deletebrandrecommendcommodity",this.$qs.stringify({ id: this.goodsList[i].id ,typeguid: this.tabs[this.tvalue1].guid,typeid:this.typeid}))
+        this.$axios.post("brandrecommendation.ashx?action=deletebrandrecommendcommodity",this.$qs.stringify({ id: this.goodsList[i].id ,typeguid: this.brand.guid,typeid:this.typeid}))
           .then(res => {
             if (res.status >= 0) {
               this.getgoodsList()
@@ -746,7 +722,7 @@ export default {
           .catch(() => {}); 
     },
      removegoodsall(){
-        this.$axios.post("brandrecommendation.ashx?action=deletebrandrecommendcommodity",this.$qs.stringify({ id: "清空" ,typeguid: this.tabs[this.tvalue1].guid,typeid:this.typeid}))
+        this.$axios.post("brandrecommendation.ashx?action=deletebrandrecommendcommodity",this.$qs.stringify({ id: "清空" ,typeguid: this.brand.guid,typeid:this.typeid}))
           .then(res => {
             if (res.status >= 0) {
               this.getgoodsList()
@@ -806,19 +782,22 @@ export default {
           .catch(() => {});
     },
    //广告位1
-    showModal3(i){
-       this.advertisingindex1 = i
-       this.imgmodels = this.advertisingList1[this.advertisingindex1].picture
-       this.Modal[0] = this.advertisingList1[this.advertisingindex1].urllink
-      
+    showModal3(){
+        if (this.advertising) {
+           this.imgmodels = this.advertising.picture
+          this.Modal[0] = this.advertising.urllink  
+        }else{
+          this.imgmodels =""
+          this.Modal[0] = ""
+        }
       this.xModal8 = true
     },
-    getadvertisingList1(){
+    getadvertising(){
          this.$axios
-          .post("activity.ashx?action=selectlistadvertisingposition",this.$qs.stringify({ typeguid: this.tabs[this.tvalue1].guid ,position: 1}))
+          .post("brandrecommendation.ashx?action=selectlistadvertisingposition",this.$qs.stringify({ typeguid: this.brand.guid }))
           .then(res => {
             if (res.status >= 0) {
-             this.advertisingList1 = res.item
+             this.advertising = res.item[0]
             } else {
               this.$Message.warning(res.content);
             }
@@ -830,12 +809,12 @@ export default {
           let url =""
           let parem ={}
            url = "activity.ashx?action=editadvertisingposition"
-           parem =  { picture: this.imgmodels,urllink:this.Modal[0],id: this.advertisingList1[this.advertisingindex1].id }
+           parem =  { picture: this.imgmodels,urllink:this.Modal[0],id: this.advertising.id }
           
          this.$axios.post(url,this.$qs.stringify(parem))
           .then(res => {
             if (res.status >= 0) {
-              this.getadvertisingList1()
+              this.getadvertising()
               this.xModal8 = false
             } else {
               this.$Message.warning(res.content);
@@ -844,59 +823,6 @@ export default {
           .catch(() => {});
       }else{this.$Message.warning("图片必须上传");} 
     },
-   //广告位2
-    showModal4(i){
-       this.advertisingindex2 = i
-       if (this.advertisingList2.length) {
-          this.imgmodels = this.advertisingList2[this.advertisingindex2].picture
-       this.Modal[0] = this.advertisingList2[this.advertisingindex2].urllink
-        this.Modal[1] = this.advertisingList2[this.advertisingindex2].maintitle
-        this.Modal[2] = this.advertisingList2[this.advertisingindex2].vicetitle
-       }else{
-         this.Modal[0] = ""
-         this.Modal[1] = ""
-         this.Modal[2] = ""
-         this.imgmodels = ""
-       }
-      
-      this.xModal9 = true
-    },
-    getadvertisingList2(){
-         this.$axios
-          .post("activity.ashx?action=selectlistadvertisingposition",this.$qs.stringify({ typeguid: this.tabs[this.tvalue1].guid ,position: 2}))
-          .then(res => {
-            if (res.status >= 0) {
-             this.advertisingList2 = res.item
-            } else {
-              this.$Message.warning(res.content);
-            }
-          })
-          .catch(() => {});
-      },
-     isok7(){
-      if (this.imgmodels) {
-          let url =""
-          let parem ={}
-           let id = ""
-          if (this.advertisingList2[this.advertisingindex2]) {
-            id = this.advertisingList2[this.advertisingindex2].id
-          }
-           url = "activity.ashx?action=editadvertisingposition"
-           parem =  { picture: this.imgmodels,urllink:this.Modal[0],id,maintitle:this.Modal[1],vicetitle:this.Modal[2], }
-          
-         this.$axios.post(url,this.$qs.stringify(parem))
-          .then(res => {
-            if (res.status >= 0) {
-              this.getadvertisingList2()
-              this.xModal9 = false
-            } else {
-              this.$Message.warning(res.content);
-            }
-          })
-          .catch(() => {});
-      }else{this.$Message.warning("图片必须上传");} 
-    },
-
 
 
      // 图片上传
@@ -962,14 +888,12 @@ export default {
          this.getgoodsList()
           this.typeid = 1
      }else if (this.tvalue2===3) {
-       this.getbrandList()
+        this.getadvertising()
      }else if (this.tvalue2===4) {
        this.getgoodsList()  
       this.typeid = 2
      }else if (this.tvalue2===5) {
-      this.getadvertisingList1()
-     }else if (this.tvalue2===6) {
-      this.getadvertisingList2()
+      this.getbrandList()
      }
     },
 
@@ -987,7 +911,7 @@ export default {
 </style>
 <style scoped>
 .switch1{color: #c69c6d;vertical-align: middle;line-height: 32px;position: absolute;top: 12px;right: 20px;}
-.switch2{color: #c69c6d;vertical-align: middle;line-height: 32px;position: absolute;top: 130px;right: 20px;}
+.switch2{color: #c69c6d;vertical-align: middle;line-height: 32px;position: absolute;top: 212px;right: 20px;}
 #topbar { padding: 10px 15px 20px;}
 .title {font-size: 18px;line-height: 20px;display: inline-block;color: #282a3c;}
 .title>span{width: 10px;height: 10px;background: #c69c6d;display: inline-block;margin-right: 6px;}
@@ -1025,7 +949,7 @@ export default {
 .bannerimg{position: absolute;width: 680px;height: 195px;top: 0;left: 70px;}
 .bannerimg2{position: absolute;width: 588px;height: 148px;top: 0;left: 70px;}
 .bannerimg3{position: absolute;width: 300px;height: 223px;top: 0;left: 70px;}
-.bannerimg4{position: absolute;width: 380px;height: 164px;top: 0;left: 70px;}
+.bannerimg4{position: absolute;width: 588px;height: 72px;top: 0;left: 70px;}
 .mslimg{position: absolute;top: 95px;right: 50px;}
  /* Banner */
 .imglistbox{display: inline-block;width: 1150px;margin-top: 10px;margin-bottom: 100px;}
@@ -1051,15 +975,9 @@ export default {
 .itembox1{border:none;margin-top: 10px;margin: 0 auto;}
 .itembox.itembox1 .lastnum{color: #9c9c9c;font-weight: 500;text-decoration:line-through;font-family: Microsoft YaHei}
  /* 广告位 */
-.s3imgbox1{width:590px;margin-top: 20px;margin-right: 10px;border: 1px solid #f0f0f0}
-.s3imgbox1.s3imgbox10{width:382px;margin-top: 20px;margin-right: 20px;border: 1px solid #f0f0f0;display: inline-block}
-.s3imgbox1 img{width: 100%;height: 100%;}
-.s3imgbox1 .imgbox4{width: 380px;height: 164px;position: relative;}
-.s3imgbox1 .imgbox4 img{width: 380px;height: 164px;}
+.imgbox3,.imgbox3 img{width: 800px;height: 99px;}
+.s3imgbox1{width:802px;border: 1px solid #f0f0f0;margin: 20px auto;transform: translateX(-100px)}
 .footp{text-align: right;color: #c69c6d;padding: 12px 20px;font-size: 14px}
 .footp .icons{transform: translateY(-2px);margin-left: 18px;margin-right: 2px;}
-.hovbox{position: absolute;top: 50%;left: 50%;transform: translate(-50%,-50%);width: 230px;height: 100px;background: #c69c6d;color: #fff;text-align: center;padding: 10px;display: none}
-.hovbox span{font-size: 28px;border-bottom: 2px solid #fff;display: inline-block;padding: 0 5px 2px;}
-.hovbox p {font-size: 16px;margin-top: 6px;}
-.imgbox4:hover >.hovbox,.imgbox4:hover .hovbox{display: inline-block;}
+
 </style>

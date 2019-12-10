@@ -208,10 +208,11 @@ export default {
     },
     addList() {
       this.tindex = this.data1.length
-      this.isadds = false;
+      this.isadds = false
+      this.specialList = []
+       this.mtitle = ""
        this.$axios.post("category.ashx?action=InitializationAdd").then(res=>{
          if (res.status>=0) {
-             this.mtitle = this.tabs[this.tvalue].title
              this.generalattribute = res.generalattribute
          }else{
            this.$Message.warning(res.content); 
