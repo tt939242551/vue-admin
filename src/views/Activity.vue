@@ -46,7 +46,7 @@
               </p>
               <p><span>活动介绍</span>
                  <i-input class="sinput" 
-                        type="text" v-model="Modal[2]"  clearable placeholder="请输入副标题"> </i-input>
+                      :rows="3"  type="textarea" v-model="Modal[2]"  clearable placeholder="请输入副标题"> </i-input>
               </p>
               <p style="position: relative;margin-top: 20px;"><span style="vertical-align: top;">活动图片</span>
                  <img @click="addimg()" class="bannerbgimg" src="../assets/imgs/a-1-bg2.png" alt="">
@@ -454,7 +454,7 @@ export default {
           .catch(() => {}); 
     }, 
     setsort(i){
-      this.$axios.post("banner.ashx?action=editsort",this.$qs.stringify({ id: this.bannerList[i].id,xgid:this.model[i] }))
+      this.$axios.post("banner.ashx?action=editsort",this.$qs.stringify({ id: this.bannerList[i].id,xgid:this.xmodel[i] }))
           .then(res => {
             if (res.status >= 0) {
               this.getbannerList()
@@ -574,7 +574,7 @@ export default {
           .catch(() => {}); 
     }, 
     setsort1(i){
-      this.$axios.post("banner.ashx?action=editsortbrandrecommend",this.$qs.stringify({ id: this.brandList[i].id,xgid:this.model[i] }))
+      this.$axios.post("banner.ashx?action=editsortbrandrecommend",this.$qs.stringify({ id: this.brandList[i].id,xgid:this.xmodel[i] }))
           .then(res => {
             if (res.status >= 0) {
               this.getbrandList()
@@ -715,7 +715,7 @@ export default {
           .catch(() => {}); 
     }, 
     setsort2(i){
-      this.$axios.post("activity.ashx?action=editsortactivecommodities",this.$qs.stringify({ id: this.goodsList[i].id,xgid:this.model[i] }))
+      this.$axios.post("activity.ashx?action=editsortactivecommodities",this.$qs.stringify({ id: this.goodsList[i].id,xgid:this.xmodel[i] }))
           .then(res => {
             if (res.status >= 0) {
               this.getgoodsList()

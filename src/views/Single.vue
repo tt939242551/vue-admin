@@ -177,9 +177,8 @@ export default {
       this.timeval = this.data1[index].setdate
        this.$axios.post("category.ashx?action=selectdetails",this.$qs.stringify({id:id})).then(res=>{
          if (res.status>=0) {
-             this.generalattribute = res.generalattribute
-             this.specialList = res.specialattributes
-             
+             this.generalattribute = res.item[0].generalattribute
+             this.specialList = res.specialattributes   
          }else{
            this.$Message.warning(res.content); 
          }

@@ -197,6 +197,7 @@ export default {
          otherList:{},
          xModal1:false,
          xModal2:false,
+         xModal3:false,
          banners:["","../assets/imgs/b-1.png"],
          imgmodel:"",
          imgmodels: "",
@@ -271,10 +272,14 @@ export default {
     isok1(){
       if (this.imgmodels) {
           let url =""
+          let parse 
           if (this.bannerindex === this.bannerList.length) {
             url = "banner.ashx?action=add"
-          }else{url = "banner.ashx?action=edit"}
-         this.$axios.post(url,this.$qs.stringify({ bannerpicture: this.imgmodels,urllink:this.xmodel[0],id: this.bannerList[this.bannerindex].id, }))
+            parse = { bannerpicture: this.imgmodels,urllink:this.xmodel[0],id: "", }
+          }else{url = "banner.ashx?action=edit"
+           parse = { bannerpicture: this.imgmodels,urllink:this.xmodel[0],id: this.bannerList[this.bannerindex].id, }
+          }
+         this.$axios.post(url,this.$qs.stringify(parse))
           .then(res => {
             if (res.status >= 0) {
               this.getbannerList()

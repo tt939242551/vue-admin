@@ -532,7 +532,7 @@ export default {
         .then(res => {
           if (res.status >= 0) {
             this.models[2] = res.item[0].title;
-            this.content = res.item[0].commoditydetails;
+            this.content = decodeURIComponent(res.item[0].commoditydetails);
             this.imgLists = JSON.parse(
               res.item[0].commoditypictures1.replace(/\\/g, "")
             );
@@ -932,7 +932,7 @@ export default {
           categoryname,
           categoryid: this.models[1],
           commoditypictures1: JSON.stringify(this.imgLists),
-          commoditydetails: this.content,
+          commoditydetails: encodeURIComponent(this.content),
           specialattributesname: JSON.stringify(specialattributesname),
           specialattributesid: JSON.stringify(this.specialmodels),
           specifications: JSON.stringify(this.mainList),
@@ -952,7 +952,7 @@ export default {
           categoryname,
           categoryid: this.models[1],
           commoditypictures1: JSON.stringify(this.imgLists),
-          commoditydetails: this.content,
+          commoditydetails: encodeURIComponent(this.content),
           specialattributesname: JSON.stringify(specialattributesname),
           specialattributesid: JSON.stringify(this.specialmodels),
           specifications: JSON.stringify(this.mainList),
