@@ -106,9 +106,9 @@
               <Button size="small" @click="isok5" type="primary" class="btn2">提交</Button>
             </div>     
         </Modal>
-        <Modal footer-hide v-model="xModal5" width="360">
+        <Modal footer-hide v-model="xModal5" width="360"  :styles="{top: '200px'}">
           <div style="text-align:center;font-size: 20px;margin: 20px 0 ;">
-              <p>请确认是否清空品牌推荐？</p>
+              <p>请确认是否清空其他品牌？</p>
               <p>清空后数据将不可回复</p>
           </div>
           <div style="text-align:center;margin: 20px 0 ;">
@@ -239,39 +239,6 @@
                  <p><span @click="xModal5=true"  style="cursor: pointer;"><Icon class="icons" size="18" type="ios-trash-outline" />清空</span></p>
                </div>
             </TabPane>
-            <!--   <TabPane label="广告位2" icon="md-radio-button-on">
-                <img style="float: right;margin: 20px 10px 20px 0" src="../assets/imgs/a-3-s.png" alt="">
-                <div class="s3imgbox1 s3imgbox10">
-                  <div class="imgbox4" v-if="advertisingList2[0]">
-                    <img  :src="advertisingList2[0].picture" alt=""> 
-                    <div class="hovbox">
-                        <span>{{advertisingList2[0].maintitle}}</span>
-                         <p>{{advertisingList2[0].vicetitle}}</p>
-                      </div>
-                  </div>
-                  <p class="footp"><span @click="showModal4(0)" style="cursor: pointer;"><Icon class="icons" size="18" type="ios-create-outline" />编辑</span></p>
-                </div>
-                <div class="s3imgbox1 s3imgbox10">
-                  <div class="imgbox4" v-if="advertisingList2[1]">
-                     <img  :src="advertisingList2[1].picture" alt=""> 
-                      <div class="hovbox">
-                         <span>{{advertisingList2[1].maintitle}}</span>
-                         <p>{{advertisingList2[1].vicetitle}}</p>
-                       </div>
-                  </div>
-                  <p class="footp"><span @click="showModal4(1)" style="cursor: pointer;"><Icon class="icons" size="18" type="ios-create-outline" />编辑</span></p>
-                </div>
-                <div class="s3imgbox1 s3imgbox10">
-                  <div class="imgbox4" v-if="advertisingList2[2]">
-                     <img  :src="advertisingList2[1].picture" alt=""> 
-                       <div class="hovbox">
-                         <span>{{advertisingList2[2].maintitle}}</span>
-                         <p>{{advertisingList2[2].vicetitle}}</p>
-                       </div>
-                  </div>
-                  <p class="footp"><span @click="showModal4(2)" style="cursor: pointer;"><Icon class="icons" size="18" type="ios-create-outline" />编辑</span></p>
-                </div>
-            </TabPane>                -->
         </Tabs>
      </div>  
     </div>
@@ -327,14 +294,32 @@ export default {
         switchsth(i){
             let url = ""
             let parme = {}
+            console.log(i)
+            parme.id =  this.brand.id
             if (this.tvalue2===0) {
                url = "brandrecommendation.ashx?action=editishome" 
-               parme.id = this.tabs[this.tvalue1].id
                parme.ishome = i
+            }else if (this.tvalue2===1) {
+              url = "brandrecommendation.ashx?action=editisbanner"
+               parme.isbanner = i
+            }else if (this.tvalue2===2) {
+              url = "brandrecommendation.ashx?action=editisbrandup"
+               parme.isbrandup = i
+            }else if (this.tvalue2===3) {
+              url = "brandrecommendation.ashx?action=editisadvertisingposition"
+               parme.isadvertisingposition = i
+            }else if (this.tvalue2===4) {
+              url = "brandrecommendation.ashx?action=editisbrandseries"
+               parme.isbrandseries = i
+            }else if (this.tvalue2===5) {
+              url = "brandrecommendation.ashx?action=editisotherbrand"
+               parme.isotherbrand = i
             }
         this.$axios.post(url,this.$qs.stringify(parme))
           .then(res => {
-            if (res.status >= 0) {
+            if (res.status > 0) {
+              let str = i?"已开启":"已关闭"
+              this.$Message.warning(str+this.tabs2[this.tvalue2]); 
             } else {
               this.$Message.warning(res.content); 
             }
@@ -409,8 +394,11 @@ export default {
           this.Modal[0] = this.tabs[this.tvalue1].title
           this.Modal[1] = this.brand.brandintroduction
       },
-      getactivityls(i){this.tvalue1=i 
-         this.getbrandinit()}, 
+      getactivityls(i){
+         this.tvalue1=i 
+         this.tvalue2 = 0
+         this.getbrandinit()
+         }, 
       //Banner
      showModal(i){
       if (i==="add") {
@@ -455,7 +443,8 @@ export default {
               this.bannerList.forEach((itmes,i)=>{
                    itmes.sort.forEach((item,j)=>{
                      if (item.isselect) {
-                          this.xmodel[i] = item.id
+                         this.$set(this.xmodel,i,item.id)
+                         // this.xmodel[i] = item.id
                         }
                   })
               })
@@ -478,7 +467,8 @@ export default {
           .catch(() => {}); 
     }, 
     setsort(i){
-      this.$axios.post("banner.ashx?action=editsort",this.$qs.stringify({ id: this.bannerList[i].id,xgid:this.xmodel[i] }))
+      if (this.tvalue2===1) {
+        this.$axios.post("banner.ashx?action=editsort",this.$qs.stringify({ id: this.bannerList[i].id,xgid:this.xmodel[i] }))
           .then(res => {
             if (res.status >= 0) {
               this.getbannerList()
@@ -487,6 +477,8 @@ export default {
             }
           })
           .catch(() => {}); 
+      }
+      
     },
     // 其他品牌
      showModal1(i){
@@ -563,6 +555,7 @@ export default {
               this.brandList.forEach((itmes,i)=>{
                    itmes.sort.forEach((item,j)=>{
                      if (item.isselect) {
+                          //this.$set(this.xmodel,i,item.id)
                           this.xmodel[i] = item.id
                         }
                   })
@@ -598,7 +591,8 @@ export default {
           .catch(() => {}); 
     }, 
     setsort1(i){
-      this.$axios.post("banner.ashx?action=editsortbrandrecommend",this.$qs.stringify({ id: this.brandList[i].id,xgid:this.xmodel[i] }))
+      if (this.tvalue2===5) {
+         this.$axios.post("activity.ashx?action=editsortbrandrecommend",this.$qs.stringify({ id: this.brandList[i].id,xgid:this.xmodel[i] }))
           .then(res => {
             if (res.status >= 0) {
               this.getbrandList()
@@ -607,6 +601,8 @@ export default {
             }
           })
           .catch(() => {}); 
+      }
+     
     },
    // 品牌上新
     showModal2(i){
@@ -625,26 +621,27 @@ export default {
       this.xModal6 = true
     },
     isok5(){
-      if (this.Modal[3]) {
+      if (this.Modal[1]) {
           let url =""
           let parem ={}
           if (this.goodsindex === this.goodsList.length) {
-            url = "activity.ashx?action=addactivecommodities"
-            parem = { generalattributeid: this.Modal[1],categoryid:this.Modal[2],typeguid: this.brand.guid ,commodityguid:this.Modal[3]}
-          }else{url = "activity.ashx?action=editactivecommodities"
-           parem =  { commodityguid: this.Modal[3]}
+            url = "brandrecommendation.ashx?action=addbrandrecommendcommodity"
+            parem = {generalattributeid:this.tabs[this.tvalue1].guid, parentcategoryid: this.Modal[1],categoryid:this.Modal[2],typeguid: this.brand.guid ,commodityguid:this.Modal[3],typeid:this.typeid}
+          }else{url = "brandrecommendation.ashx?action=editbrandrecommendcommodity"
+           parem =  { commodityguid: this.Modal[3],id:this.brand.id}
           }
          this.$axios.post(url,this.$qs.stringify(parem))
           .then(res => {
-            if (res.status >= 0) {
+            if (res.status > 0) {
               this.getgoodsList()
               this.xModal6 = false
             } else {
               this.$Message.warning(res.content);
+              this.xModal6 = false
             }
           })
           .catch(() => {});
-      }else{this.$Message.warning("数据不能为空");} 
+      }else{this.$Message.warning("类别不能为空");} 
     },
     editgoodsinit(){
         this.$axios
@@ -679,7 +676,7 @@ export default {
     },
     getgoodsListall(){
          this.$axios
-          .post("brandrecommendation.ashx?action=addactivecommoditiesinit")
+          .post("brandrecommendation.ashx?action=addactivecommoditiesinit",this.$qs.stringify({ brandid: this.brand.guid}))
           .then(res => {
             if (res.status >= 0) {
              this.generalattribute = res.generalattribute[0].item
@@ -699,7 +696,8 @@ export default {
               this.goodsList.forEach((itmes,i)=>{ 
                   itmes.sort.forEach((item,j)=>{
                      if (item.isselect) {
-                          this.xmodel[i] = item.id
+                         // this.$set(this.xmodel,i,item.id)
+                         this.xmodel[i] = item.id
                         }
                   })
               if(itmes.commoditypictures1 ){ itmes.commoditypictures1 = JSON.parse(items.commoditypictures1).replace(/\[/,"").replace(/\]/,"").split(",")[0]}
@@ -735,7 +733,8 @@ export default {
           .catch(() => {}); 
     }, 
     setsort2(i){
-      this.$axios.post("brandrecommendation.ashx?action=brandrecommendcommodity",this.$qs.stringify({ id: this.goodsList[i].id,xgid:this.xmodel[i] }))
+      if (this.tvalue2===2||this.tvalue2===4) {
+        this.$axios.post("brandrecommendation.ashx?action=brandrecommendcommodity",this.$qs.stringify({ id: this.goodsList[i].id,xgid:this.xmodel[i] }))
           .then(res => {
             if (res.status >= 0) {
               this.getgoodsList()
@@ -744,6 +743,8 @@ export default {
             }
           })
           .catch(() => {}); 
+      }
+      
     },
     getCategory(id) {
       this.Modal[2] = "";
@@ -785,7 +786,7 @@ export default {
     showModal3(){
         if (this.advertising) {
            this.imgmodels = this.advertising.picture
-          this.Modal[0] = this.advertising.urllink  
+           this.$set(this.Modal,0,this.advertising.urllink) 
         }else{
           this.imgmodels =""
           this.Modal[0] = ""
@@ -880,20 +881,27 @@ export default {
     },
     watch: {
     tvalue2: function() {
+      this.xmodel = []
      if (this.tvalue2===0) {
         this.getbrandinit()
+        this.isopen = this.brand.ishome
      }else if (this.tvalue2===1) {
         this.getbannerList()
+        this.isopen = this.brand.isbanner
      }else if (this.tvalue2===2) {
          this.getgoodsList()
+         this.isopen = this.brand.isbrandup
           this.typeid = 1
      }else if (this.tvalue2===3) {
         this.getadvertising()
+        this.isopen = this.brand.isadvertisingposition
      }else if (this.tvalue2===4) {
-       this.getgoodsList()  
+       this.getgoodsList() 
+       this.isopen = this.brand.isbrandseries 
       this.typeid = 2
      }else if (this.tvalue2===5) {
       this.getbrandList()
+      this.isopen = this.brand.isotherbrand
      }
     },
 
@@ -911,7 +919,7 @@ export default {
 </style>
 <style scoped>
 .switch1{color: #c69c6d;vertical-align: middle;line-height: 32px;position: absolute;top: 12px;right: 20px;}
-.switch2{color: #c69c6d;vertical-align: middle;line-height: 32px;position: absolute;top: 212px;right: 20px;}
+ .switch2{color: #c69c6d;vertical-align: middle;line-height: 22px;text-align: right;padding-right: 18px;padding-top: 12px;}
 #topbar { padding: 10px 15px 20px;}
 .title {font-size: 18px;line-height: 20px;display: inline-block;color: #282a3c;}
 .title>span{width: 10px;height: 10px;background: #c69c6d;display: inline-block;margin-right: 6px;}

@@ -386,7 +386,9 @@ export default {
           this.Modal[1] = this.tabs[this.tvalue1].activitytitle
           this.Modal[2] = this.tabs[this.tvalue1].activityinformation
       },
-      getactivityls(i){this.tvalue1=i}, 
+      getactivityls(i){this.tvalue1=i
+       this.tvalue2 = 0
+      }, 
       //Banner
      showModal(i){
       if (i==="add") {
@@ -431,7 +433,8 @@ export default {
               this.bannerList.forEach((itmes,i)=>{
                    itmes.sort.forEach((item,j)=>{
                      if (item.isselect) {
-                          this.xmodel[i] = item.id
+                       this.$set(this.xmodel,i,item.id)
+                          //this.xmodel[i] = item.id
                         }
                   })
               })
@@ -454,7 +457,8 @@ export default {
           .catch(() => {}); 
     }, 
     setsort(i){
-      this.$axios.post("banner.ashx?action=editsort",this.$qs.stringify({ id: this.bannerList[i].id,xgid:this.xmodel[i] }))
+      if (this.tvalue2===1) {
+         this.$axios.post("banner.ashx?action=editsort",this.$qs.stringify({ id: this.bannerList[i].id,xgid:this.xmodel[i] }))
           .then(res => {
             if (res.status >= 0) {
               this.getbannerList()
@@ -463,6 +467,8 @@ export default {
             }
           })
           .catch(() => {}); 
+      }
+     
     },
     // 品牌推荐
      showModal1(i){
@@ -539,7 +545,8 @@ export default {
               this.brandList.forEach((itmes,i)=>{
                    itmes.sort.forEach((item,j)=>{
                      if (item.isselect) {
-                          this.xmodel[i] = item.id
+                        this.$set(this.xmodel,i,item.id)
+                         // this.xmodel[i] = item.id
                         }
                   })
               })
@@ -574,7 +581,8 @@ export default {
           .catch(() => {}); 
     }, 
     setsort1(i){
-      this.$axios.post("banner.ashx?action=editsortbrandrecommend",this.$qs.stringify({ id: this.brandList[i].id,xgid:this.xmodel[i] }))
+      if (this.tvalue2===2) {
+         this.$axios.post("banner.ashx?action=editsortbrandrecommend",this.$qs.stringify({ id: this.brandList[i].id,xgid:this.xmodel[i] }))
           .then(res => {
             if (res.status >= 0) {
               this.getbrandList()
@@ -583,6 +591,8 @@ export default {
             }
           })
           .catch(() => {}); 
+      }
+     
     },
    // 活动商品
     showModal2(i){
@@ -679,7 +689,8 @@ export default {
               this.goodsList.forEach((itmes,i)=>{ 
                   itmes.sort.forEach((item,j)=>{
                      if (item.isselect) {
-                          this.xmodel[i] = item.id
+                       this.$set(this.xmodel,i,item.id)
+                          //this.xmodel[i] = item.id
                         }
                   })
               if(itmes.commoditypictures1 ){ itmes.commoditypictures1 = JSON.parse(items.commoditypictures1).replace(/\[/,"").replace(/\]/,"").split(",")[0]}
@@ -715,7 +726,8 @@ export default {
           .catch(() => {}); 
     }, 
     setsort2(i){
-      this.$axios.post("activity.ashx?action=editsortactivecommodities",this.$qs.stringify({ id: this.goodsList[i].id,xgid:this.xmodel[i] }))
+      if (this.tvalue2===3) {
+         this.$axios.post("activity.ashx?action=editsortactivecommodities",this.$qs.stringify({ id: this.goodsList[i].id,xgid:this.xmodel[i] }))
           .then(res => {
             if (res.status >= 0) {
               this.getgoodsList()
@@ -724,6 +736,8 @@ export default {
             }
           })
           .catch(() => {}); 
+      }
+     
     },
     getCategory(id) {
       this.Modal[2] = "";
@@ -912,6 +926,7 @@ export default {
     },
     watch: {
     tvalue2: function() {
+      this.xmodel = []
      if (this.tvalue2===0) {
        this.activityinit()
      }else if (this.tvalue2===1) {
@@ -943,7 +958,7 @@ export default {
 </style>
 <style scoped>
 .switch1{color: #c69c6d;vertical-align: middle;line-height: 32px;position: absolute;top: 12px;right: 20px;}
-.switch2{color: #c69c6d;vertical-align: middle;line-height: 32px;position: absolute;top: 130px;right: 20px;}
+.switch2{color: #c69c6d;vertical-align: middle;line-height: 22px;text-align: right;padding-right: 18px;padding-top: 12px;}
 #topbar { padding: 10px 15px 20px;}
 .title {font-size: 18px;line-height: 20px;display: inline-block;color: #282a3c;}
 .title>span{width: 10px;height: 10px;background: #c69c6d;display: inline-block;margin-right: 6px;}

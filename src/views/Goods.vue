@@ -789,7 +789,8 @@ export default {
          } )
     },
     createList(i) {
-      if (this.colorarr.indexOf(this.colorList[i].color) === -1) {
+      if (this.colorList[i].color) {
+         if (this.colorarr.indexOf(this.colorList[i].color) === -1) {
         this.colorarr.push(this.colorList[i].color)
         this.creatmainList();
         if (i === this.colorList.length - 1&&this.colorList[i].color) {
@@ -797,13 +798,18 @@ export default {
           this.colorList.push(obj);
         }
       }else{
+         this.colorList[i].color = ""
          this.$Message.warning("该颜色已经存在");
       }
+      }
+     
  
     },
     removeColorList(i) {
       if (this.colorList[i].color) {
+       let index = this.colorarr.indexOf(this.colorList[i].color)
         this.colorList.splice(i, 1);
+        this.colorarr.splice(index, 1);
       }
     },
     creatmainList() {
