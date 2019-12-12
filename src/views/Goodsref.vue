@@ -12,7 +12,7 @@
                  <div class="imgbox1" v-for="(item,j) in items.item" :key="j">
                    <div class="itembox">
                      <img   alt="">
-                     <p>{{item.commodityname}}【GUCCL】der/吉尔·桑达Ji绗缝 单肩包绗缝单肩包</p>
+                     <p class="itemp">{{item.commodityname}}【GUCCL】der/吉尔·桑达Ji绗缝 </p>
                      <span class="itemnum">￥2198</span>
                   </div>
                    <p class="footer"> 
@@ -23,8 +23,9 @@
                <div class="imglistbox1" v-else>
                  <div :class="{imgbox1:true,farstimg:j===0}" v-for="(item,j) in items.item" :key="j">
                    <div class="itembox itembox2">
+                     <img v-if="item.picture" :src="item.picture" alt="">
                      <img v-if="item.commoditypictures1" :src="item.commoditypictures1" alt="">
-                     <img v-else src="../assets/imgs/g-bg.png" alt="">
+                     <img v-if="!item.picture&&!item.commoditypictures1" src="../assets/imgs/g-bg.png" alt="">
                      <p class="logop">【GUCCL】</p>
                      <p>{{item.commodityname}}der/吉尔·桑达Ji绗缝 单肩包绗缝单肩包</p>
                   </div>
@@ -36,6 +37,7 @@
             </TabPane>
         </Tabs>
       </div>
+       <input type="file" ref="uploadfiles" style="display:none" @input="fileChanges"  multiple="multiple" />
          <Modal v-model="xModal1" width="490"  footer-hide :styles="{top: '200px'}">
             <div class="modalmain">
               <div class="mtitle">新增商品推荐</div>
@@ -65,6 +67,46 @@
               <Button style="width:80px" type="primary" class="samintbtn" @click="removebrandall">确定</Button><Button  style="width:80px;margin-left: 30px;display: inline-block;" class="samintbtn" @click="xModal5=false">取消</Button>
           </div>
         </Modal>
+         <Modal v-model="xModal2" width="420"  footer-hide :styles="{top: '200px'}">
+            <div class="modalmain">
+              <div class="mtitle">编辑商品</div>
+              <p><span>品 牌</span>
+                <Select  @on-change="getcommodityList" placeholder="请选择品牌" v-model="Modal[0]" style="width:250px;margin-left: 10px;">
+                        <Option v-for="(item,j) in generalattribute" :value="item.guid" :key="j">{{item.title}}</Option>
+                </Select>
+              </p>
+              <p><span>类 别</span>
+                <Select  placeholder="请选择类别" v-model="Modal[1]" style="width:250px;margin-left: 10px;"  @on-change="getCategory">
+                        <Option v-for="(item,j) in parentcategory" :value="item.guid" :key="j">{{item.title}}</Option>
+                </Select>
+              </p>
+              <p><span>单品名称</span>
+                <Select  placeholder="请选择单品名称"  @on-change="getcommodityList" v-model="Modal[2]" style="width:250px;margin-left: 10px;">
+                        <Option v-for="(item,j) in category" :value="item.guid" :key="j">{{item.title}}</Option>
+                </Select>
+              </p>
+              <p><span>商品名称</span>
+                <Select  placeholder="请选择商品名称" v-model="Modal[3]" style="width:250px;margin-left: 10px;">
+                        <Option v-for="(item,j) in commodity" :value="item.guid" :key="j">{{item.title}}</Option>
+                </Select>
+              </p>
+              <Button size="small" @click="isok2" type="primary" class="btn2">提交</Button>
+            </div>     
+        </Modal>
+        <Modal v-model="xModal3" width="480"  footer-hide :styles="{top: '200px'}">
+            <div class="modalmain">
+              <div class="mtitle">修改图片</div>
+              <p><span>URL链接</span>
+              <i-input class="sinput" 
+                        type="text" v-model="Modal[0]"  clearable placeholder="请输入链接"> </i-input>
+              </p>
+              <p style="position: relative;"><span style="vertical-align: top;">分类图片</span>
+                 <img @click="addimg()" class="bannerbgimg" src="../assets/imgs/g-bg2.png" alt="">
+                 <img @click="addimg()" class="bannerimg2" v-show="imgmodels" :src="imgmodels" alt="">
+              </p>
+              <Button size="small" @click="isok3" type="primary" class="btn2">提交</Button>
+            </div>     
+        </Modal>
     </div>
 </template>
 
@@ -76,9 +118,18 @@ export default {
            tvalue: 0,
            xModal:false,
            xModal1:false,
+           xModal2:false,
+           xModal3:false,
+           parentcategory:[],
+           generalattribute:[],
+           commodity:[],
+           category:[],
            tabs:[],
            Modal:[],
+           imgmodels:"",
+           goodsindex:0,
            styles:1,
+           imgData: {accept: "image/gif, image/jpeg, image/png, image/jpg"},
         }
     },
     mounted(){this.getgoodsinit()},
@@ -118,6 +169,41 @@ export default {
                this.$Message.warning("推荐标题不能为空");
            }
         },
+      isok2(){
+      if (this.Modal[3]) {
+          let  url = "recommendationcommodity.ashx?action=edit"
+          let parem ={ id: this.tabs[this.tvalue].item[this.goodsindex].id,typeid:2 ,commodityguid:this.Modal[3]}
+         this.$axios.post(url,this.$qs.stringify(parem))
+          .then(res => {
+            if (res.status >0) {
+              this.getgoodsinit()
+              this.xModal2 = false
+            } else {
+              this.$Message.warning(res.content);
+            }
+          })
+          .catch(() => {});
+         }else{this.$Message.warning("商品不能为空");} 
+       },
+      isok3(){
+      if (this.imgmodels) {
+          let url =""
+          let parem ={}
+           url = "recommendationcommodity.ashx?action=edit"
+           parem =  { picture: this.imgmodels, id: this.tabs[this.tvalue].item[this.goodsindex].id,typeid:1 , }
+          
+         this.$axios.post(url,this.$qs.stringify(parem))
+          .then(res => {
+            if (res.status > 0) {
+              this.getgoodsinit()
+              this.xModal3 = false
+            } else {
+              this.$Message.warning(res.content);
+            }
+          })
+          .catch(() => {});
+      }else{this.$Message.warning("图片必须上传");} 
+    },
         removebrandall(){
             let arr = []
             arr.push(this.tabs[this.tvalue].id)
@@ -134,6 +220,146 @@ export default {
           })
           .catch(() => {});
         },
+    showModal(i){
+      this.goodsindex = i
+      this.Modal[0] = ""
+      if (i===0&&this.tabs[this.tvalue].item.length===4) {
+           this.xModal3 = true
+         }else{
+         this.editgoodsinit()
+         this.xModal2 = true
+         }
+     
+    },
+      editgoodsinit(){
+        this.$axios
+          .post("recommendationcommodity.ashx?action=editinit",this.$qs.stringify({ id: this.tabs[this.tvalue].item[this.goodsindex].id }))
+          .then(res => {
+            if (res.status >= 0) {
+              this.generalattribute = res.generalattribute[0].item
+              this.generalattribute.forEach(i=>{
+                if (i.isselect) {
+                  this.Modal[0] = i.guid
+                }
+              })
+             this.parentcategory = res.parentcategory
+              this.parentcategory.forEach(item=>{
+                if (item.isselect) {
+                  this.Modal[1] = item.guid
+                }
+              })
+              this.category = res.category
+              this.category.forEach(item=>{
+                if (item.isselect) {
+                  this.Modal[2] = item.guid
+                }
+              })
+              this.commodity = res.commodity
+              this.commodity.forEach(item=>{
+                if (item.isselect) {
+                  this.Modal[3] = item.guid
+                }
+              })
+            } else {
+              this.$Message.warning(res.content);
+            }
+          })
+          .catch(() => {});
+    },
+     getCategory(id) {
+      this.Modal[2] = "";
+      this.getcommodityList()
+       if (id) {
+        this.$axios
+          .post(
+            "category.ashx?action=selectby_parentid",
+            this.$qs.stringify({ parentid: id })
+          )
+          .then(res => {
+            if (res.status >= 0) {
+              this.category = res.item;
+            } else {
+              this.$Message.warning(res.content);
+            }
+          })
+          .catch(() => {});
+      }
+
+    },
+    getcommodityList(){
+      if (this.goodsindex!==0 || this.tabs[this.tvalue].item.length!==4) {
+          this.Modal[3] = "";
+         if (this.Modal[0]) {
+        this.$axios
+          .post(
+            "commodity.ashx?action=selectbyid",
+            this.$qs.stringify({ generalattributeid: this.Modal[0],parentcategoryid:this.Modal[1],categoryid:this.Modal[2]})
+          )
+          .then(res => {
+            if (res.status >= 0) {
+              this.commodity = res.item;
+            } else {
+              this.$Message.warning(res.content);
+            }
+          })
+          .catch(() => {});
+        }else{ this.$Message.warning("品牌必须选择");}
+      }
+     
+    },
+
+         // 图片上传
+    addimg() {
+      this.$refs.uploadfiles.click();
+    },
+    fileChanges(event) {
+      if (!event.target.files[0].size) return;
+      let file = event.target.files[0];
+      this.imgmodel = [];
+      this.fileAdd(file);
+      setTimeout(() => {
+        this.$axios
+          .post(
+            "upload_ajax.ashx?action=UpLoadFile",
+            this.$qs.stringify({ imglist: JSON.stringify(this.imgmodel) })
+          )
+          .then(res => {
+            if (res.status >= 0) {
+              this.imgmodels = res.data[0];
+            } else {
+              this.$Message.warning("图片上传失败");
+            }
+          })
+          .catch(() => {this.$Message.warning("图片上传失败");});
+      }, 100);
+    },
+        // 单张上传
+    fileAdd(file) {
+      // console.log(file);
+      let type = file.type; //文件的类型，判断是否是图片
+      let size = file.size; //文件的大小，判断图片的大小
+      if (this.imgData.accept.indexOf(type) === -1) {
+        this.$Message.warning("请选择我们支持的图片格式！");
+        return false;
+      }
+      if (size > 3145728) {
+        this.$Message.warning("请选择3M以内的图片！");
+        return false;
+      }
+      let that = this;
+      // 总大小
+      this.size = this.size + file.size;
+      let reader = new FileReader();
+      // 调用reader.readAsDataURL()方法，把图片转成base64
+      reader.readAsDataURL(file);
+      // 监听reader对象的onload事件，当图片加载完成时，把base64编码賦值给预览图片
+      reader.onload = function() {
+        file.src = this.result;
+        // console.log(this); 这里的this是FileReader对象
+        // 再把file对象添加到imgList数组
+        that.imgmodel.push(this.result) ;
+      };
+    },
     },
 }
 </script>
@@ -170,4 +396,14 @@ export default {
 .itembox.itembox2>img{width: 260px;height: 274px;border:none;}
 .itembox2 .logop{text-align: center;color: #c69c6d;padding: 10px  0 0;margin: 0 5px;border-top: 1px solid #c69c6d;}
 .itembox2>p:nth-child(3){padding-top: 0;height: 108px;}
+.modalmain{padding: 20px 30px;}
+.modalmain>p{font-size: 14px;font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;margin-top: 10px;}
+.btn2{width: 100px;margin-left: 70px;border-radius:4;font-size: 14px;line-height: 22px;margin-top: 20px;height: 32px;}
+.mtitle{font-size: 20px;font-weight: 500;margin-bottom: 20px;}
+.modalmain>p>span{width: 60px;display: inline-block;}
+.modalmain>p .sinput { width: 300px; margin: 10px 0 10px 10px;}
+.bannerbgimg{margin-left: 10px;}
+.bannerimg2{position: absolute;width: 248px;height: 400px;top: 0;left: 70px;}
+.itemp{height: 54px;}
+.icons{transform: translateY(-1px);}
 </style>

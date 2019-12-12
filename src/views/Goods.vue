@@ -510,8 +510,12 @@ export default {
     },
     movecolor(){  
       for(var i=0;i<this.mainList.length;i++ ){
-       let t1 = 'color' + i
+        let t1 = 'color' + i
         let t2 = 'color' + (i+1)
+         this.$refs[t1][0].style["border-bottom"] = "1px solid #ccc"
+         if (this.$refs[t2]) {
+           this.$refs[t2][0].style.color = "#000"
+         } 
         if (this.$refs[t2]&&this.$refs[t1][0].innerText===this.$refs[t2][0].innerText) {
              this.$refs[t2][0].style.color = "#fff"
              this.$refs[t1][0].style["border-bottom"] = "none"

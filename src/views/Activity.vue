@@ -4,7 +4,7 @@
         <p class="title"><span></span>活动推荐</p>
         <div class="switch1">开启活动推荐 
          <template>
-              <i-switch style="transform: translateY(-2px);margin-left: 8px;" v-model="isopen" size="small"  />
+              <i-switch style="transform: translateY(-2px);margin-left: 8px;" v-model="isopens" size="small"  />
           </template>
        </div>
       </div>
@@ -295,7 +295,8 @@ export default {
     data(){
         return{
            switch1:true,
-           isopen:true,
+           isopen:false,
+           isopens:true,
            tvalue1: 0,
            tvalue2: 0,
            xModal:false,
@@ -321,7 +322,7 @@ export default {
            category:[],
            advertisingList1:[],
            advertisingindex1: 0,
-            advertisingList2:[],
+           advertisingList2:[],
            advertisingindex2: 0,
            xmodel:[],
            Modal:[],
@@ -958,7 +959,7 @@ export default {
 </style>
 <style scoped>
 .switch1{color: #c69c6d;vertical-align: middle;line-height: 32px;position: absolute;top: 12px;right: 20px;}
-.switch2{color: #c69c6d;vertical-align: middle;line-height: 22px;text-align: right;padding-right: 18px;padding-top: 12px;}
+.switch2{color: #c69c6d;vertical-align: middle;line-height: 22px;position: absolute;top: 134px;right: 20px;z-index: 99;}
 #topbar { padding: 10px 15px 20px;}
 .title {font-size: 18px;line-height: 20px;display: inline-block;color: #282a3c;}
 .title>span{width: 10px;height: 10px;background: #c69c6d;display: inline-block;margin-right: 6px;}

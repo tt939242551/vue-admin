@@ -319,7 +319,7 @@ export default {
           .then(res => {
             if (res.status > 0) {
               let str = i?"已开启":"已关闭"
-              this.$Message.warning(str+this.tabs2[this.tvalue2]); 
+              this.$Message.success(str+this.tabs2[this.tvalue2]); 
             } else {
               this.$Message.warning(res.content); 
             }
@@ -919,7 +919,7 @@ export default {
 </style>
 <style scoped>
 .switch1{color: #c69c6d;vertical-align: middle;line-height: 32px;position: absolute;top: 12px;right: 20px;}
- .switch2{color: #c69c6d;vertical-align: middle;line-height: 22px;text-align: right;padding-right: 18px;padding-top: 12px;}
+ .switch2{color: #c69c6d;vertical-align: middle;line-height: 22px;position: absolute;top: 216px;right: 20px;z-index: 99;}
 #topbar { padding: 10px 15px 20px;}
 .title {font-size: 18px;line-height: 20px;display: inline-block;color: #282a3c;}
 .title>span{width: 10px;height: 10px;background: #c69c6d;display: inline-block;margin-right: 6px;}
