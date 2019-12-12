@@ -761,8 +761,9 @@ export default {
 
     },
     getcommodityList(){
-       this.Modal[3] = "";
-       if (this.Modal[0]) {
+      if (this.xModal6) {
+         this.Modal[3] = "";
+        if (this.Modal[0]) {
         this.$axios
           .post(
             "commodity.ashx?action=selectbyid",
@@ -776,7 +777,9 @@ export default {
             }
           })
           .catch(() => {});
-      }else{ this.$Message.warning("品牌必须选择");}
+        }else{ this.$Message.warning("品牌必须选择");}
+      }
+      
     },
    //广告位1
     showModal3(i){

@@ -6,7 +6,7 @@
          <template>
               <i-switch style="transform: translateY(-2px);margin-left: 8px;" v-model="isopens" size="small"  />
           </template>
-       </div>
+         </div>
       </div>
       <div class="tabbar1">
         <span @click="activityinit"  class="tabspan" style="margin-right: 50px;">所有品牌</span>
