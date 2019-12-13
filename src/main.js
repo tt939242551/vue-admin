@@ -7,6 +7,8 @@ import axios from 'axios'
 import qs from	'qs'
 import 'iview/dist/styles/iview.css'
 import './permission'
+/* import echarts from 'echarts'
+Vue.prototype.$echarts = echarts */
 
 Vue.config.productionTip = false
 Vue.use(iView)
