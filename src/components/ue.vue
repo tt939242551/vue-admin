@@ -1,6 +1,6 @@
 <template>
   <div id="wangeditor">
-    <div ref="editorElem" style="text-align:left;max-width:1000px">
+    <div ref="editorElem" style="text-align:left;max-width:1000px;">
   
     </div>
   </div>
@@ -18,10 +18,13 @@ export default {
   // catchData是一个类似回调函数，来自父组件，当然也可以自己写一个函数，主要是用来获取富文本编辑器中的html内容用来传递给服务端
   props: ['catchData',"content"], // 接收父组件的方法
   mounted() {
+ 
     this.editor = new E(this.$refs.editorElem);
     let  _tant = this
     //this.editor.customConfig.uploadImgServer = 'http://sfstyling.bogole.com/admin/common/upload_ajax.ashx?action=UpLoadFile'
     setTimeout(()=>{
+      this.$refs.editorElem.children[1].style["min-height"]="300px"
+      this.$refs.editorElem.children[1].style.height="auto"
        this.editor.txt.html(this.content) 
     },1000)
     this.editor.customConfig.customUploadImg = function (files, insert) {

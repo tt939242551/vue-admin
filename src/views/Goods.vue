@@ -355,12 +355,12 @@ export default {
         },
         {
           title: "类别",
-          key: "categoryname",
+          key: "parentcategoryname",
           align: "center"
         },
         {
           title: "单品",
-          key: "parentcategoryname",
+          key: "categoryname",
           align: "center"
         },
         {

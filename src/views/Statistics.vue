@@ -39,6 +39,7 @@
             </div>
         </header>
         <div class="echarts">
+            <p><img src="../assets/imgs/st-5.png" alt=""></p>
             <div class="chart" :style="{width: '100%', height: '300px'}" ref="myEchartLine" >
             </div>
         </div>
@@ -47,7 +48,7 @@
 
 <script>
 let echarts = require('echarts/lib/echarts');
-// 引入柱状图
+// 引入折线图
 require('echarts/lib/chart/line');
 // 引入提示框和标题组件
 require('echarts/lib/component/tooltip');
@@ -83,7 +84,14 @@ export default {
     getLine() {
       let that = this;
       let myChart = echarts.init(this.$refs.myEchartLine);
-  
+      var base = +new Date();
+        var oneDay = 24 * 3600 * 1000;
+        var date = [];
+        for (var i = 1; i <8; i++) {
+            var now = new Date(base -= oneDay);
+            date.unshift([now.getFullYear(), now.getMonth() + 1, now.getDate()].join('/'));
+         
+       }
       myChart.setOption({
         title: {
             text: '数据统计折线图'
@@ -108,7 +116,7 @@ export default {
         xAxis: {
             type: 'category',
             boundaryGap: false,
-            data: ['周一','周二','周三','周四','周五','周六','周日']
+            data:date
         },
         yAxis: {
             type: 'value'
@@ -117,7 +125,6 @@ export default {
             {
                 name:'总的利润',
                 type:'line',
-                stack: '总量',
                 color:["#c69c6d"],
                 data:[120, 132, 101, 134, 90, 230, 210]
             },
@@ -125,21 +132,18 @@ export default {
                 name:'访问量',
                 type:'line',
                 color:"#36a3f7",
-                stack: '总量',
                 data:[220, 182, 191, 234, 290, 330, 310]
             },
             {
                 name:'新订单',
                 type:'line',
                 color:"#f4516c",
-                stack: '总量',
                 data:[150, 232, 201, 154, 190, 330, 410]
             },
             {
                 name:'新用户',
                 type:'line',
                 color:"#34bfa3",
-                stack: '总量',
                 data:[320, 332, 301, 334, 390, 330, 320]
             },
         ]
@@ -159,4 +163,5 @@ export default {
   .headitem .foots span{float: right;}
   .headitem>.bgbox{transform: translateY(-8px)}
   .echarts{background: #fff;margin: 10px ;padding: 40px 30px;}
+  .echarts p{text-align: center;}
 </style>

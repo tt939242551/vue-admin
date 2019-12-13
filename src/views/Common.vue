@@ -20,7 +20,8 @@
         
       </Tabs>
       <div class="btnbox">
-        <Button  style="color:#c69c6d;border: none;margin-top: 5px;" @click="handleTabsAdd" size="small" icon="md-add">新增属性</Button>
+        <Button style="color:#c69c6d;border: none;margin-top: 5px;" @click="handleTabsAdd" size="small"><Icon  style="transform: translateY(-2px)" size="16" type="md-add" />新增属性</Button>
+          <Button v-show="tvalue!==0" style="color:#c69c6d;border: none;margin-top: 5px;" @click="xModal3 = true" size="small" ><Icon  style="transform: translateY(-2px)" size="16" type="ios-trash" />删除</Button>
         
       </div>
 
@@ -33,6 +34,15 @@
         <Input class="sinput" v-model="value" placeholder="请输入通用属性名称" />
         <Button type="primary" class="samintbtn" @click="isok2" style="width:120px;margin-left: 102px;margin-bottom: 30px;">提交</Button>
     </Modal>
+     <Modal footer-hide v-model="xModal3" width="380" :styles="{top: '200px'}">
+          <div style="text-align:center;font-size: 20px;margin: 20px 0 20px -14px;">
+              <p>请确认是否删除通用属性的名称？</p>
+              <p>删除后数据不可恢复。</p>
+          </div>
+          <div style="text-align:center;margin: 20px 0 20px -14px;">
+              <Button style="width:80px" type="primary" class="samintbtn2" @click="removeTabs">确定</Button><Button  style="width:80px;margin-left: 30px;display: inline-block;" class="samintbtn2" @click="xModal3=false">取消</Button>
+          </div>
+      </Modal>
     <Modal  footer-hide v-model="xModal" :styles="{top: '200px',width:'500px'}">
          <p slot="header" class="headtext">
             编辑{{text1}}
@@ -93,6 +103,7 @@ export default {
       data1:[],
       xModal: false,
       xModal2: false,
+      xModal3: false,
       tvalue: 0,
       tindex: 0,
       isCheck:[],
@@ -156,6 +167,20 @@ export default {
            this.$Message.warning(res.content); 
          }
         
+       }).catch(()=>{
+              
+         } )
+    },
+     removeTabs(){
+      let arr = []
+      arr.push(this.tabs[this.tvalue].id)
+       this.$axios.post("generalattribute.ashx?action=delete",this.$qs.stringify({ids: JSON.stringify(arr)})).then(res=>{
+         if (res.status>=0) {
+           this.xModal3 = false
+            this.gettlist()
+         }else{
+           this.$Message.warning(res.content); 
+         }
        }).catch(()=>{
               
          } )
@@ -338,7 +363,6 @@ export default {
 /*  #general .ivu-tabs-ink-bar{background-color: #c69c6d ;}
   #general .ivu-tabs-nav .ivu-tabs-tab-active{color: #c69c6d ;} */
 .btnbox .ivu-btn.ivu-btn-small {
-  margin-right: 18px;
   color: #787878;
   width: 86px;
   border-radius: 4px;
@@ -353,7 +377,7 @@ export default {
 }
 .x_label .ivu-input.ivu-input-default{width: 200px;}
 .ivu-modal-header p, .ivu-modal-header-inner{font-size: 18px;font-weight:500}
-.ivu-modal-body{padding-left: 30px;}
+.ivu-modal-body{padding-left: 30px;} 
 .ivu-modal-header{border-bottom: none;margin: 0 12px;padding: 40px 15px  0 15px ;}
 .imgupload .control-form > p{font-size: 14px}
 </style>

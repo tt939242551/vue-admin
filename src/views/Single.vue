@@ -20,15 +20,15 @@
               @on-selection-change="selectionChange"
             >
               <template slot-scope="{ row, index }" slot="action">
-                 <span class="acbtn" style="margin-right: 20px" @click="show(index)">修改</span><span class="acbtn" @click="movelist(index)" >删除</span>
+                 <span class="acbtn" style="margin-right: 20px" @click="show(index)">修改</span><span class="acbtn" @click="movelistindex(index)" >删除</span>
               </template>
             </Table>
-            <span class="acbtn2" @click="removeList" ><Icon  style="transform: translateY(-2px)" size="16" type="ios-trash" />删除选择单品</span>
+            <span class="acbtn2" @click="xModal5=isCheck.length===0?false:true" ><Icon  style="transform: translateY(-2px)" size="16" type="ios-trash" />删除选择单品</span>
           </TabPane>
         </Tabs>
         <div class="btnbox">
-          <Button style="color:#c69c6d;border: none;margin-top: 5px;" @click="handleTabsAdd" size="small" icon="md-add">新增类别</Button>
-        
+          <Button style="color:#c69c6d;border: none;margin-top: 5px;" @click="handleTabsAdd" size="small"><Icon  style="transform: translateY(-2px)" size="16" type="md-add" />新增类别</Button>
+          <Button style="color:#c69c6d;border: none;margin-top: 5px;" @click="xModal3 = true" size="small" ><Icon  style="transform: translateY(-2px)" size="16" type="ios-trash" />删除</Button>
         </div>
 
         <div class="foot">
@@ -40,6 +40,42 @@
         <Input class="sinput" v-model="value" placeholder="请输入类别名称" />
         <Button type="primary" class="samintbtn" @click="isok" style="width:120px;margin-left: 115px;margin-bottom: 30px;">提交</Button>
       </Modal>
+        <Modal footer-hide v-model="xModal3" width="380" :styles="{top: '200px'}">
+          <div style="text-align:center;font-size: 20px;margin: 20px 0 ;">
+              <p>请确认是否删除该类别？</p>
+              <p>删除后数据将不可恢复。</p>
+          </div>
+          <div style="text-align:center;margin: 20px 0 20px -6px;">
+              <Button style="width:80px" type="primary" class="samintbtn" @click="removeTabs">确定</Button><Button  style="width:80px;margin-left: 30px;display: inline-block;" class="samintbtn" @click="xModal3=false">取消</Button>
+          </div>
+        </Modal>
+         <Modal footer-hide v-model="xModal4" width="380" :styles="{top: '200px'}">
+          <div style="text-align:center;font-size: 20px;margin: 20px 0 ;">
+              <p>请确认是否删除该单品？</p>
+              <p>删除后数据将不可恢复。</p>
+          </div>
+          <div style="text-align:center;margin: 20px 0 20px -6px;">
+              <Button style="width:80px" type="primary" class="samintbtn" @click="movelist">确定</Button><Button  style="width:80px;margin-left: 30px;display: inline-block;" class="samintbtn" @click="xModal4=false">取消</Button>
+          </div>
+        </Modal>
+        <Modal footer-hide v-model="xModal5" width="380" :styles="{top: '200px'}">
+          <div style="text-align:center;font-size: 20px;margin: 20px 0 ;">
+              <p>请确认是否删除选中单品？</p>
+              <p>删除后数据将不可恢复。</p>
+          </div>
+          <div style="text-align:center;margin: 20px 0 20px -6px;">
+              <Button style="width:80px" type="primary" class="samintbtn" @click="removeList">确定</Button><Button  style="width:80px;margin-left: 30px;display: inline-block;" class="samintbtn" @click="xModal5=false">取消</Button>
+          </div>
+        </Modal>
+        <Modal footer-hide v-model="xModal6" width="380" :styles="{top: '200px'}">
+          <div style="text-align:center;font-size: 20px;margin: 20px 0 ;">
+              <p>该类别单品属性已绑定商品，</p>
+              <p>请调整相关商品属性再进行删除。</p>
+          </div>
+          <div style="text-align:center;margin: 20px 0 20px -6px;">
+              <Button style="width:80px" type="primary" class="samintbtn" @click="xModal6=false">确定</Button>
+          </div>
+        </Modal>
     </div>
     <div v-else>
       <div id="topbar">
@@ -68,7 +104,7 @@
             <DropdownItem v-for="(list,index) in lists.ls" :key="index">{{list}}</DropdownItem>
           </DropdownMenu>
            <Button type="primary"  @click="eaitSpecial(i)" shape="circle" icon="ios-create-outline" style="margin-left: 5px;width:16px;height:16px;" size="small"><Icon type="ios-create-outline" /></Button>
-          <Button   @click="specialList.splice(i,1)" shape="circle" icon="md-remove" style="margin-left: 5px;width:16px;height:16px;" size="small"></Button>
+          <Button   @click="removeSpecial(i)" shape="circle" icon="md-remove" style="margin-left: 5px;width:16px;height:16px;" size="small"></Button>
          
         </Dropdown>
         
@@ -85,6 +121,7 @@
         <Button @click="ls.push('')"  class="samintbtn" size="small">添加副属性<Icon type="md-add" style="font-size: 16px;line-height: 15px;" /></Button>
         <Button type="primary" class="samintbtn" style="width:120px;margin-left: 116px;margin-bottom: 30px;" @click="getSpecial">提交</Button>
       </Modal>
+     
     </div>
   </div>
 </template>
@@ -121,6 +158,10 @@ export default {
       tabs: [],
       xModal1: false,
       xModal2: false,
+      xModal3: false,
+      xModal4: false,
+      xModal5: false,
+      xModal6: false,
       tvalue: 0,
       tindex: 0,
       isCheck: [],
@@ -168,7 +209,22 @@ export default {
               
          } )
     },
-
+    removeTabs(){
+      let arr = []
+      arr.push(this.tabs[this.tvalue].id)
+       this.$axios.post("category.ashx?action=delete",this.$qs.stringify({ids: JSON.stringify(arr)})).then(res=>{
+         if (res.status>0) {
+           this.xModal3 = false
+            this.getSingleList()
+         }else{
+           this.xModal3 = false
+           this.xModal6 = true
+           this.$Message.warning(res.content); 
+         }
+       }).catch(()=>{
+              
+         } )
+    },
     show(index) {
       this.isadds = false;
       this.tindex = index
@@ -223,22 +279,32 @@ export default {
     },
     removeList() {
        this.$axios.post("category.ashx?action=delete",this.$qs.stringify({ids: JSON.stringify(this.isCheck)})).then(res=>{
-         if (res.status>=0) {
+         if (res.status>0) {
+            this.xModal5 = false
             this.getSingleList()
          }else{
+           this.xModal5 = false
+           this.xModal6 = true
            this.$Message.warning(res.content); 
          }
        }).catch(()=>{
               
          } )
     },
-    movelist(i){
+    movelistindex(i){
+          this.tindex = i
+          this.xModal4 = true
+    },
+    movelist(){
       let url = "category.ashx?action=delete"
-      let arr = [this.data1[i].id]
+      let arr = [this.data1[this.tindex].id]
        this.$axios.post(url,this.$qs.stringify({ids: JSON.stringify(arr)})).then(res=>{
-         if (res.status>=0) {
+         if (res.status>0) {
+             this.xModal4 = false
              this.getSingleList()
          }else{
+           this.xModal4 = false
+           this.xModal6 = true
            this.$Message.warning(res.content); 
          }
        }).catch(()=>{
@@ -279,6 +345,10 @@ export default {
        this.ms = ""
        this.ls = []
       }
+    },
+    removeSpecial(i){
+      this.specialList.splice(i,1)
+      this.specialindex = null
     },
     getSpecial(){
       this.xModal1 = false
@@ -342,7 +412,6 @@ export default {
 </script>
 <style>
 .btnbox .ivu-btn.ivu-btn-small {
-  margin-right: 18px;
   color: #787878;
   width: 86px;
   border-radius: 4px;

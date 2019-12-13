@@ -143,12 +143,12 @@
     <div class="order2" v-else>
        <p><span></span>我的订单 > <span style="cursor: pointer;" @click="islist=true">全部订单</span> >  订单详情</p>
        <div class="content">
-        <div class="msg">
+         <div class="msg">
            
            <p>订单状态：<span style="color:#c69c6d;"> {{Orderlist[0].tradingstatus}}</span></p>
            <div>订单详情</div>
-        </div>
-        <main>
+         </div>
+         <main>
            <div style="font-size: 16px;">订单信息</div>
            <p>会员ID:  {{Orderlist[0].vipid}}</p>
            <p>订单编号:  {{Orderlist[0].ordernumber}}</p>
@@ -281,6 +281,7 @@ export default {
          this.$axios.post("order_management.ashx?action=FAH",this.$qs.stringify({id:this.orderList[this.tindex].id,express:this.value})).then(res=>{
            if (res.status>0) {
             this.xModal1=false
+            this.getgoodslist()
          }else{
            this.$Message.warning(res.content); 
            this.xModal1=false
@@ -418,8 +419,9 @@ export default {
   width: 230px;
   margin: 20px 0 30px 40px;
 }
+
 .order2 .content>div{border: none}
-.order2 .content{background: #fff;display: inline-block;border: 1px solid #f9f6f1;padding: 20px 0px;font-size: 14px;color: #191919;margin-bottom: 20px;margin-left: 10px;}
+.order2 .content{background: #fff;display: inline-block;border: 1px solid #f9f6f1;padding: 20px 0px;font-size: 14px;color: #191919;margin-bottom: 20px;margin-left: 10px;width: 98.5%;}
 .order2 .msg>p:nth-child(2){font-size: 16px;margin-top: 16px;}
 .order2 .msg{margin-bottom: 15px;padding-left: 18px;}
 .order2>p{margin: 10px 20px 20px 20px ;}
