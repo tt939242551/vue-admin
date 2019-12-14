@@ -4,7 +4,7 @@
         <p class="title"><span></span>活动推荐</p>
         <div class="switch1">开启活动推荐 
          <template>
-              <i-switch style="transform: translateY(-2px);margin-left: 8px;" v-model="isopens" size="small"  />
+              <i-switch  @on-change="switchsthactivity" style="transform: translateY(-2px);margin-left: 8px;" v-model="isopens" size="small"  />
           </template>
        </div>
       </div>
@@ -16,10 +16,10 @@
       </div>
       <div v-show="tvalue2>1" class="switch2">开启{{tabs2[tvalue2]}}
          <template>
-              <i-switch style="transform: translateY(-2px);margin-left: 8px;" v-model="isopen" size="small"  />
+              <i-switch  @on-change="switchsth" style="transform: translateY(-2px);margin-left: 8px;" v-model="isopen" size="small"  />
           </template>
       </div>
-      <Modal footer-hide v-model="xModal" width="360">
+      <Modal footer-hide v-model="xModal" width="360" :styles="{top: '200px'}">
         <div style="text-align:center;font-size: 20px;margin: 20px 0 ;">
             <p>请确认是否删除{{tabs[tvalue1].activityname}}？</p>
             <p>删除后数据将不可回复</p>
@@ -111,8 +111,8 @@
               <Button size="small" @click="isok5" type="primary" class="btn2">提交</Button>
             </div>     
         </Modal>
-        <Modal footer-hide v-model="xModal5" width="360">
-          <div style="text-align:center;font-size: 20px;margin: 20px 0 ;">
+        <Modal footer-hide v-model="xModal5" width="360" :styles="{top: '200px'}">
+          <div style="text-align:center;font-size: 20px;margin: 20px 0 ;" >
               <p>请确认是否清空品牌推荐？</p>
               <p>清空后数据将不可回复</p>
           </div>
@@ -120,7 +120,7 @@
               <Button style="width:80px" type="primary" class="samintbtn" @click="removebrandall">确定</Button><Button  style="width:80px;margin-left: 30px;display: inline-block;" class="samintbtn" @click="xModal5=false">取消</Button>
           </div>
          </Modal>
-          <Modal footer-hide v-model="xModal7" width="360">
+          <Modal footer-hide v-model="xModal7" width="360" :styles="{top: '200px'}">
             <div style="text-align:center;font-size: 20px;margin: 20px 0 ;">
                 <p>请确认是否清空活动商品？</p>
                 <p>清空后数据将不可回复</p>
@@ -177,7 +177,8 @@
                         <div class="footbtn"><span></span></div>
                     </div>
                     <div class="imgbox s1imgbox">
-                       <img v-if="tabs[tvalue1]" :src="tabs[tvalue1].activitypicture" alt="">
+                       <img v-if="tabs[tvalue1].activitypicture" :src="tabs[tvalue1].activitypicture" alt="">
+                       <img class="s1bgimg" v-else src="../assets/imgs/a-1-bg.png" alt="">
                     </div> 
                 </div>
                 <div class="bgbox"></div>
@@ -201,7 +202,7 @@
                <img @click="showModal1('add')" style="vertical-align: top;margin: 10px 40px 10px 0;" src="../assets/imgs/add-1.png" alt="">
                <div class="imglistbox1">
                  <div class="imgbox1" v-for="(items,i) in brandList" :key="i">
-                   <img style="width: 220px;height: 80px;" :src="items.logo" alt="">
+                   <img v-if="items.logo" style="width: 220px;height: 80px;" :src="items.logo" alt=""><span style="width: 220px;height: 80px;" class="bgtext3" v-else>暂无品牌图</span>
                    <p> 
                      <Select @on-change="setsort1(i)" size="small" placeholder="" v-model="xmodel[i]" style="width:48px;">
                         <Option v-for="(item,j) in items.sort" :value="item.id" :key="j+1">{{item.sort}}</Option>
@@ -217,10 +218,9 @@
                <div class="imglistbox1 imglistbox2">
                  <div class="imgbox1" v-for="(items,i) in goodsList" :key="i">
                    <div class="itembox itembox1">
-                     <img style="width: 220px;height: 264px;border:none;"  alt="">
-          
-                    <p>【GUCCL】der/吉尔·桑达Ji绗缝 单肩包绗缝单肩包</p>
-                    <span class="itemnum">￥2198</span><span class="lastnum">￥3298</span>
+                    <img v-if="items.commoditypictures1" style="width: 220px;height: 264px;border:none;" :src="items.commoditypictures1" alt="">  <span v-else class="bgtext">暂无图片</span>
+                    <p v-if="items.commodityname">{{items.commodityname}}</p><p v-else>商品名称</p>
+                    <span  v-if="items.Price" class="itemnum">￥{{items.Price}}</span> <span v-else class="itemnum">  价格</span>
                     <span class="itemtab" >活动商品</span>
                   
                   </div>
@@ -229,7 +229,7 @@
                      <Select @on-change="setsort2(i)" size="small" placeholder="" v-model="xmodel[i]" style="width:48px;">
                         <Option v-for="(item,j) in items.sort" :value="item.id" :key="j+1">{{item.sort}}</Option>
                      </Select>
-                     <span><span @click="showModal2(i)" style="cursor: pointer;"><Icon class="icons" size="18" type="ios-create-outline" />修改</span><span @click="removebrand(i)"  style="cursor: pointer;"><Icon class="icons" size="18" type="ios-trash-outline" />删除</span></span>
+                     <span><span @click="showModal2(i)" style="cursor: pointer;"><Icon class="icons" size="18" type="ios-create-outline" />修改</span><span @click="removegoods(i)"  style="cursor: pointer;"><Icon class="icons" size="18" type="ios-trash-outline" />删除</span></span>
                   </p>
                  </div>
                  <p><span @click="xModal7=true"  style="cursor: pointer;"><Icon class="icons" size="18" type="ios-trash-outline" />清空</span></p>
@@ -240,13 +240,13 @@
                 <img style="float: right;margin: 20px 10px 20px 0" src="../assets/imgs/a-2-s.png" alt="">
                 <div class="s3imgbox1">
                   <div class="imgbox3" v-if="advertisingList1[0]">
-                     <img style="width: 588px;height: 148px;" :src="advertisingList1[0].picture" alt=""> 
+                     <img v-if="advertisingList1[0].picture" style="width: 588px;height: 148px;" :src="advertisingList1[0].picture" alt="">  <span v-else class="bgtext1">暂无图片</span>
                   </div>
                   <p class="footp"><span @click="showModal3(0)" style="cursor: pointer;"><Icon class="icons" size="18" type="ios-create-outline" />编辑</span></p>
                 </div>
                 <div class="s3imgbox1">
                   <div class="imgbox3" v-if="advertisingList1[1]">
-                     <img style="width: 588px;height: 148px;" :src="advertisingList1[1].picture" alt=""> 
+                     <img v-if="advertisingList1[1].picture" style="width: 588px;height: 148px;" :src="advertisingList1[1].picture" alt="">  <span v-else class="bgtext1">暂无图片</span>
                   </div>
                   <p class="footp"><span @click="showModal3(1)" style="cursor: pointer;"><Icon class="icons" size="18" type="ios-create-outline" />编辑</span></p>
                 </div>
@@ -255,30 +255,30 @@
                 <img style="float: right;margin: 20px 10px 20px 0" src="../assets/imgs/a-3-s.png" alt="">
                 <div class="s3imgbox1 s3imgbox10">
                   <div class="imgbox4" v-if="advertisingList2[0]">
-                    <img  :src="advertisingList2[0].picture" alt=""> 
+                    <img v-if="advertisingList2[0].picture" :src="advertisingList2[0].picture" alt=""> <span v-else class="bgtext2">暂无图片</span>
                     <div class="hovbox">
-                        <span>{{advertisingList2[0].maintitle}}</span>
-                         <p>{{advertisingList2[0].vicetitle}}</p>
+                        <span v-if="advertisingList2[0].maintitle">{{advertisingList2[0].maintitle}}</span><span v-else>主标题</span>
+                         <p v-if="advertisingList2[0].vicetitle">{{advertisingList2[0].vicetitle}}</p><p v-else>副标题</p>
                       </div>
                   </div>
                   <p class="footp"><span @click="showModal4(0)" style="cursor: pointer;"><Icon class="icons" size="18" type="ios-create-outline" />编辑</span></p>
                 </div>
                 <div class="s3imgbox1 s3imgbox10">
                   <div class="imgbox4" v-if="advertisingList2[1]">
-                     <img  :src="advertisingList2[1].picture" alt=""> 
+                     <img v-if="advertisingList2[1].picture" :src="advertisingList2[1].picture" alt=""> <span v-else class="bgtext2">暂无图片</span>
                       <div class="hovbox">
-                         <span>{{advertisingList2[1].maintitle}}</span>
-                         <p>{{advertisingList2[1].vicetitle}}</p>
+                          <span v-if="advertisingList2[1].maintitle">{{advertisingList2[1].maintitle}}</span><span v-else>主标题</span>
+                         <p v-if="advertisingList2[1].vicetitle">{{advertisingList2[1].vicetitle}}</p><p v-else>副标题</p>
                        </div>
                   </div>
                   <p class="footp"><span @click="showModal4(1)" style="cursor: pointer;"><Icon class="icons" size="18" type="ios-create-outline" />编辑</span></p>
                 </div>
                 <div class="s3imgbox1 s3imgbox10">
                   <div class="imgbox4" v-if="advertisingList2[2]">
-                     <img  :src="advertisingList2[1].picture" alt=""> 
+                     <img v-if="advertisingList2[2].picture" :src="advertisingList2[2].picture" alt=""> <span v-else class="bgtext2">暂无图片</span> 
                        <div class="hovbox">
-                         <span>{{advertisingList2[2].maintitle}}</span>
-                         <p>{{advertisingList2[2].vicetitle}}</p>
+                           <span v-if="advertisingList2[2].maintitle">{{advertisingList2[2].maintitle}}</span><span v-else>主标题</span>
+                         <p v-if="advertisingList2[2].vicetitle">{{advertisingList2[2].vicetitle}}</p><p v-else>副标题</p>
                        </div>
                   </div>
                   <p class="footp"><span @click="showModal4(2)" style="cursor: pointer;"><Icon class="icons" size="18" type="ios-create-outline" />编辑</span></p>
@@ -334,15 +334,59 @@ export default {
     },
     mounted(){this.activityinit()},
     methods:{
+      switchsth(i){
+            let url = ""
+            let parme = {}
+            parme.id =  this.tabs[this.tvalue1].id
+             if (this.tvalue2===1) {
+              url = "activity.ashx?action=editisopenbanner"
+               parme.isopenbanner = i
+            }else if (this.tvalue2===2) {
+              url = "activity.ashx?action=editisbrand"
+               parme.isbrand = i
+            }else if (this.tvalue2===3) {
+              url = "activity.ashx?action=editisactivity"
+               parme.isactivity = i
+            }else if (this.tvalue2===4) {
+              url = ""
+            }else if (this.tvalue2===5) {
+              url = "activity.ashx?action=editisadvertisement1"
+               parme.isadvertisement1 = i
+            }else if (this.tvalue2===6) {
+              url = "activity.ashx?action=editisadvertisement2"
+               parme.isadvertisement2 = i
+            }
+        this.$axios.post(url,this.$qs.stringify(parme))
+          .then(res => {
+            if (res.status > 0) {
+              let str = i?"已开启":"已关闭"
+              this.$Message.success(str+this.tabs2[this.tvalue2]); 
+            } else {
+              this.$Message.warning(res.content); 
+            }
+          })
+          .catch(() => {}); 
+        },
+        switchsthactivity(i){
+         let url = "activity.ashx?action=editisactivitys"
+        this.$axios.post(url,this.$qs.stringify({isactivitys:i}))
+          .then(res => {
+            if (res.status > 0) {
+              let str = i?"已开启":"已关闭"
+              this.$Message.success(str+"活动推荐板块"); 
+            } else {
+              this.$Message.warning(res.content); 
+            }
+          })
+          .catch(() => {})
+        },
       activityinit(){
            this.$axios.post("activity.ashx?action=selectlist")
           .then(res => {
             if (res.status >= 0) {
               this.tabs = res.item
-              if (this.tabs[this.tvalue1].isopenid==='1') {
-                
-                  this.isopen = true
-              }else{ this.isopen = false}  
+              this.isopens = res.isactivity
+              
             } else {
               this.$Message.warning(res.content); 
             }
@@ -379,7 +423,19 @@ export default {
       },
   
       removeactivity(){
-          xModal=false
+         let arr = []
+            arr.push(this.tabs[this.tvalue1].id)
+         this.$axios
+          .post("activity.ashx?action=delete",this.$qs.stringify({ids: JSON.stringify(arr)}))
+          .then(res => {
+            if (res.status >= 0) {
+              this.activityinit()
+                this.xModal=false
+            } else {
+              this.$Message.warning(res.content);
+            }
+          })
+          .catch(() => {});
       },
       eitactivity(){
           this.xModal2 = true
@@ -597,12 +653,12 @@ export default {
     },
    // 活动商品
     showModal2(i){
-      if (i==="add") {
-         this.goodsindex = this.goodsList.length?this.goodsList.length: 0
          this.Modal[0] = ""
          this.Modal[1] = ""
          this.Modal[2] = ""
          this.Modal[3] = ""
+      if (i==="add") {
+         this.goodsindex = this.goodsList.length?this.goodsList.length: 0
          this.getgoodsListall()
          }else{
          this.goodsindex = i
@@ -612,14 +668,14 @@ export default {
       this.xModal6 = true
     },
     isok5(){
-      if (this.Modal[3]) {
+      if (this.commodity.length) {
           let url =""
           let parem ={}
           if (this.goodsindex === this.goodsList.length) {
             url = "activity.ashx?action=addactivecommodities"
             parem = { generalattributeid: this.Modal[1],categoryid:this.Modal[2],typeguid: this.tabs[this.tvalue1].guid ,commodityguid:this.Modal[3]}
           }else{url = "activity.ashx?action=editactivecommodities"
-           parem =  { commodityguid: this.Modal[3]}
+           parem =  { commodityguid: this.Modal[3],id:this.goodsList[this.goodsindex].id}
           }
          this.$axios.post(url,this.$qs.stringify(parem))
           .then(res => {
@@ -631,7 +687,7 @@ export default {
             }
           })
           .catch(() => {});
-      }else{this.$Message.warning("数据不能为空");} 
+      }else{this.$Message.warning("没有商品无法提交");} 
     },
     editgoodsinit(){
         this.$axios
@@ -691,10 +747,11 @@ export default {
                   itmes.sort.forEach((item,j)=>{
                      if (item.isselect) {
                        this.$set(this.xmodel,i,item.id)
-                          //this.xmodel[i] = item.id
                         }
                   })
-              if(itmes.commoditypictures1 ){ itmes.commoditypictures1 = JSON.parse(items.commoditypictures1).replace(/\[/,"").replace(/\]/,"").split(",")[0]}
+                if(itmes.commoditypictures1){ 
+                    itmes.commoditypictures1 = JSON.parse(itmes.commoditypictures1.split(",")[0].replace(/\[/,"")) 
+                 }
               })
             } else {
               this.$Message.warning(res.content);
@@ -714,7 +771,7 @@ export default {
           .catch(() => {}); 
     },
      removegoodsall(){
-        this.$axios.post("activity.ashx?action=deletebrandrecommend",this.$qs.stringify({ id: "清空" ,typeguid: this.tabs[this.tvalue1].guid}))
+        this.$axios.post("activity.ashx?action=deleteactivecommodities",this.$qs.stringify({ id: "清空" ,typeguid: this.tabs[this.tvalue1].guid}))
           .then(res => {
             if (res.status >= 0) {
               this.getgoodsList()
@@ -740,10 +797,16 @@ export default {
       }
      
     },
-    getCategory(id) {
+    getCategory(guid) {
       this.Modal[2] = "";
       this.getcommodityList()
-       if (id) {
+       if (guid) {
+         let id 
+         this.parentcategory.forEach(item=>{
+           if (item.guid === guid) {
+             id = item.id
+           }
+         })
         this.$axios
           .post(
             "category.ashx?action=selectby_parentid",
@@ -763,7 +826,6 @@ export default {
     getcommodityList(){
       if (this.xModal6) {
          this.Modal[3] = "";
-        if (this.Modal[0]) {
         this.$axios
           .post(
             "commodity.ashx?action=selectbyid",
@@ -777,7 +839,6 @@ export default {
             }
           })
           .catch(() => {});
-        }else{ this.$Message.warning("品牌必须选择");}
       }
       
     },
@@ -935,16 +996,21 @@ export default {
        this.activityinit()
      }else if (this.tvalue2===1) {
         this.getbannerList()
+        this.isopen = this.tabs[this.tvalue1].isopenbanner
      }else if (this.tvalue2===2) {
        this.getbrandList()
+       this.isopen = this.tabs[this.tvalue1].isbrand
      }else if (this.tvalue2===3) {
       this.getgoodsList()
+      this.isopen = this.tabs[this.tvalue1].isactivity
      }else if (this.tvalue2===4) {
       
      }else if (this.tvalue2===5) {
       this.getadvertisingList1()
+      this.isopen = this.tabs[this.tvalue1].isadvertisement1
      }else if (this.tvalue2===6) {
       this.getadvertisingList2()
+      this.isopen = this.tabs[this.tvalue1].isadvertisement2
      }
     },
 
@@ -981,9 +1047,10 @@ export default {
 .tabbox  .footbtn{text-align: right;}
 .tabbox  .footbtn span{margin-left: 10px;width: 30px;height: 30px;background: #c69c6d;display: inline-block;margin-top: 50px;cursor: pointer;}
 .t1foot   {background: #c69c6d;height: 50px;padding: 0 20px;margin-top: 30px;}
- .tabbox .bgbox{background:#f6f6f6 ;height: 310px;width: 1800px;position: absolute;top: 68px;left: 0;z-index: -1;}
-.tabbox  .s1imgbox{width: 600px;height: 460px;display: inline-block;background: url(../assets/imgs/a-1-bg.png);}
-.s1imgbox img{width: 580px;height: 430px;margin: 19px 10px;}
+ .tabbox .bgbox{background:#f6f6f6 ;height: 310px;width: 1800px;position: absolute;top: 72px;left: 0;z-index: -1;}
+.tabbox  .s1imgbox{width: 600px;height: 450px;display: inline-block;background: #fff;position: relative;margin-top: 6px;}
+.s1imgbox img{width: 580px;height: 430px;margin: 9px }
+.s1imgbox .s1bgimg{width: 610px;height: 460px;position: absolute;top: -20px;left:-10px;}
 .modalmain{padding: 20px 30px;}
 .modalmain>p{font-size: 14px;font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;margin-top: 10px;}
 .btn2{width: 100px;margin-left: 70px;border-radius:4;font-size: 14px;line-height: 22px;margin-top: 20px;height: 32px;}
@@ -991,7 +1058,7 @@ export default {
 .modalmain>p>span{width: 60px;display: inline-block;}
 .modalmain>p .sinput { width: 300px; margin: 10px 0 10px 10px;}
 .bannerbgimg{margin-left: 10px;}
-.bannerimg{position: absolute;width: 750px;height: 220px;top: 0;right: 8px;}
+.bannerimg{position: absolute;width: 750px;height: 220px;top: 0;left: 70px;}
 .bannerimg2{position: absolute;width: 588px;height: 148px;top: 0;left: 70px;}
 .bannerimg3{position: absolute;width: 300px;height: 223px;top: 0;left: 70px;}
 .bannerimg4{position: absolute;width: 380px;height: 164px;top: 0;left: 70px;}
@@ -1003,32 +1070,37 @@ export default {
 .imgbox p>span{float: right;color: #c69c6d;}
 .imgbox p .icons{transform: translateY(-2px);margin-left: 18px;margin-right: 2px;}
  /* 品牌推荐 */
-.imglistbox1{display: inline-block;margin-top: 10px;width:978px;}
+.imglistbox1{display: inline-block;margin-top: 10px;width: calc(100% - 200px);}
 .imglistbox1>p  .icons{margin: 0;}
 .imglistbox1>p{margin-top: -10px;}
-.imgbox1{display: inline-block;margin-right: 30px;margin-bottom: 30px;border: 1px solid #f0f0f0}
-.imgbox1 p{padding: 6px 18px 12px;}
+.imgbox1{display: inline-block;margin-right: 30px;margin-bottom: 30px;border: 1px solid #f0f0f0;width: 222px;}
+.imgbox1 p{padding: 8px 12px 12px;}
 .imgbox1 p>span{float: right;color: #c69c6d;}
 .imgbox1 p .icons{transform: translateY(-2px);margin-left: 18px;margin-right: 2px;}
  /* 活动推荐 */
-.imglistbox1.imglistbox2{display: inline-block;width: 1010px;}
+.imglistbox1.imglistbox2{display: inline-block;width: calc(100% - 200px);}
 .itembox{width: 220px;height: 360px;background:#f6f6f6;position: relative;display: inline-block;margin-right: 16px}
 .itembox img{width: 100%;}
-.itembox p{font-size: 14px;color: #2f2f2f;padding: 0 10px;}
+.itembox p{font-size: 14px;color: #2f2f2f;padding: 0 10px;height: 42px;}
 .itemtab{position: absolute;top: 0;left: 0;background: #191919;color: #fff;padding: 3px 12px;border-bottom-right-radius: 10px }
-.itemnum{border-top: 1px solid #c69c6d;padding-top: 4px;margin: 10px 10px;display: inline-block;padding-right: 5px;}
-.itembox1{border:none;margin-top: 10px;margin: 0 auto;}
+.itemnum{border-top: 1px solid #c69c6d;padding-top: 4px;margin: 10px 10px;display: inline-block;padding-right: 4px;}
+.itembox1{border:none;margin-top: 10px;margin: 0 auto;background: #fff;border-bottom: 1px solid #f0f0f0}
 .itembox.itembox1 .lastnum{color: #9c9c9c;font-weight: 500;text-decoration:line-through;font-family: Microsoft YaHei}
+ .imglistbox1.imglistbox2 .imgbox1>p{padding: 12px ;}
  /* 广告位 */
-.s3imgbox1{width:590px;margin-top: 20px;margin-right: 10px;border: 1px solid #f0f0f0}
+.s3imgbox1{width:590px;margin-top: 20px;margin-right: 10px;border: 1px solid #f0f0f0;display: inline-block}
 .s3imgbox1.s3imgbox10{width:382px;margin-top: 20px;margin-right: 20px;border: 1px solid #f0f0f0;display: inline-block}
 .s3imgbox1 img{width: 100%;height: 100%;}
 .s3imgbox1 .imgbox4{width: 380px;height: 164px;position: relative;}
 .s3imgbox1 .imgbox4 img{width: 380px;height: 164px;}
-.footp{text-align: right;color: #c69c6d;padding: 12px 20px;font-size: 14px}
+.footp{text-align: right;color: #c69c6d;padding: 12px 20px;font-size: 14px;border-top: 1px solid #f0f0f0}
 .footp .icons{transform: translateY(-2px);margin-left: 18px;margin-right: 2px;}
 .hovbox{position: absolute;top: 50%;left: 50%;transform: translate(-50%,-50%);width: 230px;height: 100px;background: #c69c6d;color: #fff;text-align: center;padding: 10px;display: none}
 .hovbox span{font-size: 28px;border-bottom: 2px solid #fff;display: inline-block;padding: 0 5px 2px;}
 .hovbox p {font-size: 16px;margin-top: 6px;}
 .imgbox4:hover >.hovbox,.imgbox4:hover .hovbox{display: inline-block}
+.bgtext{font-size: 24px;color: #9c9c9c;display: inline-block;width: 220px;height: 264px;padding: 110px 62px;}
+.bgtext1{font-size: 24px;color: #9c9c9c;display: inline-block;margin: 60px 245px;}
+.bgtext2{font-size: 24px;color: #9c9c9c;display: inline-block;margin: 60px 142px;}
+.bgtext3{font-size: 24px;color: #9c9c9c;display: inline-block;padding: 21px 50px;margin-bottom: 5px;}
 </style>

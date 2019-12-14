@@ -46,7 +46,7 @@
               <p>删除后数据将不可恢复。</p>
           </div>
           <div style="text-align:center;margin: 20px 0 20px -6px;">
-              <Button style="width:80px" type="primary" class="samintbtn" @click="removeTabs">确定</Button><Button  style="width:80px;margin-left: 30px;display: inline-block;" class="samintbtn" @click="xModal3=false">取消</Button>
+              <Button style="width:80px" type="primary"  @click="removeTabs">确定</Button><Button  style="width:80px;margin-left: 30px;display: inline-block;" class="samintbtn" @click="xModal3=false">取消</Button>
           </div>
         </Modal>
          <Modal footer-hide v-model="xModal4" width="380" :styles="{top: '200px'}">
@@ -55,7 +55,7 @@
               <p>删除后数据将不可恢复。</p>
           </div>
           <div style="text-align:center;margin: 20px 0 20px -6px;">
-              <Button style="width:80px" type="primary" class="samintbtn" @click="movelist">确定</Button><Button  style="width:80px;margin-left: 30px;display: inline-block;" class="samintbtn" @click="xModal4=false">取消</Button>
+              <Button style="width:80px" type="primary" @click="movelist">确定</Button><Button  style="width:80px;margin-left: 30px;display: inline-block;" class="samintbtn" @click="xModal4=false">取消</Button>
           </div>
         </Modal>
         <Modal footer-hide v-model="xModal5" width="380" :styles="{top: '200px'}">
@@ -64,7 +64,7 @@
               <p>删除后数据将不可恢复。</p>
           </div>
           <div style="text-align:center;margin: 20px 0 20px -6px;">
-              <Button style="width:80px" type="primary" class="samintbtn" @click="removeList">确定</Button><Button  style="width:80px;margin-left: 30px;display: inline-block;" class="samintbtn" @click="xModal5=false">取消</Button>
+              <Button style="width:80px" type="primary"  @click="removeList">确定</Button><Button  style="width:80px;margin-left: 30px;display: inline-block;" class="samintbtn" @click="xModal5=false">取消</Button>
           </div>
         </Modal>
         <Modal footer-hide v-model="xModal6" width="380" :styles="{top: '200px'}">
@@ -213,14 +213,13 @@ export default {
       let arr = []
       arr.push(this.tabs[this.tvalue].id)
        this.$axios.post("category.ashx?action=delete",this.$qs.stringify({ids: JSON.stringify(arr)})).then(res=>{
-         if (res.status>0) {
+         if (res.status>=0) {
            this.xModal3 = false
             this.getSingleList()
-         }else{
+         }else if (res.status===-1)  {
            this.xModal3 = false
            this.xModal6 = true
-           this.$Message.warning(res.content); 
-         }
+         }else{this.$Message.warning(res.content); }
        }).catch(()=>{
               
          } )
@@ -279,14 +278,13 @@ export default {
     },
     removeList() {
        this.$axios.post("category.ashx?action=delete",this.$qs.stringify({ids: JSON.stringify(this.isCheck)})).then(res=>{
-         if (res.status>0) {
+         if (res.status>=0) {
             this.xModal5 = false
             this.getSingleList()
-         }else{
+         }else if (res.status===-1)  {
            this.xModal5 = false
            this.xModal6 = true
-           this.$Message.warning(res.content); 
-         }
+         }else{this.$Message.warning(res.content); }
        }).catch(()=>{
               
          } )
@@ -299,14 +297,13 @@ export default {
       let url = "category.ashx?action=delete"
       let arr = [this.data1[this.tindex].id]
        this.$axios.post(url,this.$qs.stringify({ids: JSON.stringify(arr)})).then(res=>{
-         if (res.status>0) {
+         if (res.status>=0) {
              this.xModal4 = false
              this.getSingleList()
-         }else{
+         }else if (res.status===-1)  {
            this.xModal4 = false
            this.xModal6 = true
-           this.$Message.warning(res.content); 
-         }
+         }else{this.$Message.warning(res.content); }
        }).catch(()=>{
          } )
     },
@@ -416,11 +413,10 @@ export default {
   width: 86px;
   border-radius: 4px;
 }
-.ivu-modal-body{padding-left: 12px;}
 footer .ivu-icon.ivu-icon-md-remove{transform: translateY(-4px);font-size: 12px}
 footer .ivu-icon.ivu-icon-ios-create-outline{transform: translate(-6px,-4px);font-size: 12px}
 .single .ivu-tag:not(.ivu-tag-border):not(.ivu-tag-dot):not(.ivu-tag-checked){border: 1px solid #c69c6d}
-.single .ivu-tag-error, .ivu-tag-primary, .ivu-tag-success, .ivu-tag-warning{border: 1px solid #c69c6d}
+.single .ivu-tag-error, .ivu-tag-primary,.single .ivu-tag-success, .ivu-tag-warning{border: 1px solid #c69c6d}
 /* #tabbox.tabbox .ivu-table-wrapper{border: none}
 #tabbox.tabbox .ivu-table:before{height: 0;} */
 </style>

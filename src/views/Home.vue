@@ -1,9 +1,9 @@
 <template>
   <div class="home">
      <div class="order">
-       <div class="switch1">开启{{tabs[tvalue]}} 
+       <div v-show="tvalue<3" class="switch1">开启{{tabs[tvalue]}} 
          <template>
-              <i-switch style="transform: translateY(-2px);margin-left: 8px;" v-model="switch1" size="small"  />
+              <i-switch @on-change="switchsth" style="transform: translateY(-2px);margin-left: 8px;" v-model="isopen" size="small"  />
           </template>
        </div>
         <Tabs v-model="tvalue">
@@ -26,7 +26,7 @@
               <img style="float: right; margin: 20px 10px 20px 0" src="../assets/imgs/b-3.png" alt="">
               <div class="main2">
                 <div class="s2imgbox1">
-                  <div class="imgbox1">
+                  <div class="imgbox1" v-if="goodsList[0]">
                     <img :src="goodsList[0].Picture" alt="">
                     <div class="hovbox">
                       <span>{{goodsList[0].maintitle}}</span>
@@ -53,7 +53,7 @@
             <TabPane label="广告位" >
                 <img style="float: right;margin: 20px 10px 20px 0" src="../assets/imgs/b-6-1.png" alt="">
                 <div class="s3imgbox1">
-                  <div class="imgbox3">
+                  <div class="imgbox3" v-if="advertising">
                     <img :src="advertising.picture" alt="">
                   </div>
                   <p class="footp"><span @click="showModal3" style="cursor: pointer;"><Icon class="icons" size="18" type="ios-create-outline" />编辑</span></p>
@@ -120,7 +120,7 @@
                
             </div>
         </div>
-        <Modal v-model="xModal1" width="920"  footer-hide :styles="{top: '200px'}">
+        <Modal v-model="xModal1" width="940"  footer-hide :styles="{top: '200px'}">
             <div class="modalmain">
               <div class="mtitle">新建Banner</div>
               <p><span>URL链接</span>
@@ -186,7 +186,7 @@ export default {
     data(){
         return{
          tvalue: 0,
-         switch1: true,
+         isopen: true,
          bannerindex: 0,
          bannerList:[],
          goodsList:[],
@@ -212,6 +212,31 @@ export default {
                this.getother()
               },
     methods:{
+       switchsth(i){
+            let url = ""
+            let parme = {}
+            parme.id =  this.otherList.id
+            if (this.tvalue2===0) {
+               url = "banner.ashx?action=editisbanner" 
+               parme.isbanner = i
+            }else if (this.tvalue2===1) {
+              url = "banner.ashx?action=editiscommoditytype"
+               parme.iscommoditytype = i
+            }else if (this.tvalue2===2) {
+              url = "banner.ashx?action=editisadvertisingposition"
+               parme.isadvertisingposition = i
+            }
+        this.$axios.post(url,this.$qs.stringify(parme))
+          .then(res => {
+            if (res.status > 0) {
+              let str = i?"已开启":"已关闭"
+              this.$Message.success(str+this.tabs2[this.tvalue2]); 
+            } else {
+              this.$Message.warning(res.content); 
+            }
+          })
+          .catch(() => {}); 
+        },
       getbannerList(){
          this.$axios
           .post("banner.ashx?action=selectlist")
@@ -239,6 +264,7 @@ export default {
       if (i==="add") {
          this.bannerindex = this.bannerList.length
         this.imgmodels = ""
+        this.xmodel[0] = ""
          }else{
          this.bannerindex = i
          this.imgmodels = this.bannerList[i].bannerpicture
@@ -434,6 +460,7 @@ export default {
           .then(res => {
             if (res.status >= 0) {
               this.otherList = res.item[0];
+              this.isopen = this.otherList.isbanner
             } else {
               this.$Message.warning(res.content);
             }
@@ -468,10 +495,13 @@ export default {
     tvalue: function() {
      if (this.tvalue===0) {
        this.getbannerList()
+       this.isopen = this.otherList.isbanner
      }else if (this.tvalue===1) {
        this.getgoodsList()
+       this.isopen = this.otherList.iscommoditytype
      }else if (this.tvalue===2) {
        this.getadvertising()
+       this.isopen = this.otherList.isadvertisingposition
      }else if (this.tvalue===3) {
        this.getother()
      }
@@ -487,7 +517,7 @@ export default {
 .order .ivu-tabs-nav .ivu-tabs-tab{padding-bottom: 12px;}
 .imglistbox .ivu-select-small.ivu-select-single .ivu-select-selection{border-radius: 18px;border-color: #c69c6d;color: #c69c6d;height: 20px;}
 .order .ivu-select-arrow{color: #c69c6d}
-.order .ivu-select-small.ivu-select-single .ivu-select-selection .ivu-select-placeholder, .ivu-select-small.ivu-select-single .ivu-select-selection .ivu-select-selected-value{line-height: 18px;}
+.order .ivu-select-small.ivu-select-single .ivu-select-selection .ivu-select-placeholder,.order .ivu-select-small.ivu-select-single .ivu-select-selection .ivu-select-selected-value{line-height: 18px;}
 </style>
 <style  scoped>
 .imglistbox{display: inline-block;width: 1150px;margin-top: 10px;margin-bottom: 100px;}
@@ -522,7 +552,7 @@ export default {
   margin: 10px 0 10px 10px;
 }
 .bannerbgimg{margin-left: 10px;}
-.bannerimg{position: absolute;width: 750px;height: 220px;top: 0;right: 8px;}
+.bannerimg{position: absolute;width: 750px;height: 220px;top: 0;left: 70px;}
 .bannerimg2{position: absolute;width: 208px;height: 330px;top: 0;left: 70px;}
 .bannerimg3{position: absolute;width: 314px;height: 244px;top: 0;left: 70px;}
 .bannerimg4{position: absolute;width: 732px;height: 112px;top: 0;left: 70px;}

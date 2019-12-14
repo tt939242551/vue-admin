@@ -215,7 +215,6 @@ export default {
 }
 .x_label .ivu-input.ivu-input-default{width: 200px;}
 .ivu-modal-header p, .ivu-modal-header-inner{font-size: 18px;font-weight:500}
-.ivu-modal-body{padding-left: 30px;}
 .ivu-modal-header{border-bottom: none;margin: 0 12px;padding: 40px 15px  0 15px ;}
 .imgupload .control-form > p{font-size: 14px}
 </style>

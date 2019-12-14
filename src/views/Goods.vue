@@ -41,7 +41,7 @@
         <Input search class="topsearch" size="small" v-model="smodels[3]" @on-search="getDatalist" enter-button="搜索" placeholder="搜索" />
       </div>
       <div class="btnbox">
-        <Button type="primary" class="btn1" @click="addList" ><Icon size="16" style="transform: translateY(-1px)" type="md-add" />新增</Button>
+        <Button type="primary" class="btn1" @click="addList" ><Icon size="16" style="transform: translateY(-2px)" type="md-add" />新增</Button>
         <div class="tabtop"><span>操作</span> 热销置顶</div>
       </div>
       <Table
@@ -350,7 +350,7 @@ export default {
         },
         {
           title: "品牌",
-          key: "brandname",
+          key: "generalattributenames",
           align: "center"
         },
         {
@@ -1160,7 +1160,7 @@ export default {
   margin-left: 5px;
   font-size: 14px;
 }
-.ivu-tabs{overflow: visible}
+.goods .ivu-tabs{overflow: visible}
 .sction .ivu-tabs-nav{margin: 0;}
 /* .goods .ivu-tabs-bar{margin-bottom: 0;} */
 </style>

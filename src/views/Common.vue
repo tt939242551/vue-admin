@@ -29,18 +29,18 @@
         <Page :total="total" prev-text="上一页" next-text="下一页" @on-change="getlist" />
       </div>
     </div>
-    <Modal width="380" footer-hide v-model="xModal2" :styles="{top: '200px'}">
+    <Modal width="360" footer-hide v-model="xModal2" :styles="{top: '200px'}">
         <p class="stitle">新增通用属性</p>
         <Input class="sinput" v-model="value" placeholder="请输入通用属性名称" />
         <Button type="primary" class="samintbtn" @click="isok2" style="width:120px;margin-left: 102px;margin-bottom: 30px;">提交</Button>
     </Modal>
-     <Modal footer-hide v-model="xModal3" width="380" :styles="{top: '200px'}">
-          <div style="text-align:center;font-size: 20px;margin: 20px 0 20px -14px;">
+     <Modal footer-hide v-model="xModal3" width="360" :styles="{top: '200px'}">
+          <div style="text-align:center;font-size: 20px;margin: 20px 0 20px 0;">
               <p>请确认是否删除通用属性的名称？</p>
               <p>删除后数据不可恢复。</p>
           </div>
-          <div style="text-align:center;margin: 20px 0 20px -14px;">
-              <Button style="width:80px" type="primary" class="samintbtn2" @click="removeTabs">确定</Button><Button  style="width:80px;margin-left: 30px;display: inline-block;" class="samintbtn2" @click="xModal3=false">取消</Button>
+          <div style="text-align:center;margin: 20px 0 20px -12px;">
+              <Button style="width:80px" type="primary"  @click="removeTabs">确定</Button><Button  style="width:80px;margin-left: 30px;display: inline-block;" class="samintbtn2" @click="xModal3=false">取消</Button>
           </div>
       </Modal>
     <Modal  footer-hide v-model="xModal" :styles="{top: '200px',width:'500px'}">
@@ -49,11 +49,11 @@
         </p>
       <label class="x_label">
         <p>{{text1}}</p>
-        <Input v-model="value1" style="width:200px;margin-left:-25px;"  :placeholder="'请输入'+text1+'名称'" />
+        <Input v-model="value1" style="width:200px;margin-left:5px;"  :placeholder="'请输入'+text1+'名称'" />
       </label>
       <label class="x_label">
         <p>设置日期</p> 
-        <DatePicker type="date" placeholder="设置时间" transfer :value="value2" @on-change="gettimeval" style="width: 200px;margin-left:-23px;"></DatePicker>
+        <DatePicker type="date" placeholder="设置时间" transfer :value="value2" @on-change="gettimeval" style="width: 200px;margin-left:5px;"></DatePicker>
       </label>
       <div class="postimg" v-show="isshow">
           <p>{{text1}}图</p>
@@ -64,7 +64,7 @@
          @imgs="getImgUrl2"></upload>
       </div>
         
-      <Button style="width: 80px;margin-right:15px;margin-left: 93px;" type="primary" class="samintbtn" @click="isok1">提交</Button>
+      <Button style="width: 80px;margin-right:20px;margin-left: 102px;" type="primary" class="samintbtn" @click="isok1">提交</Button>
       <Button style="width: 80px;" @click="isoff">返回</Button>
     </Modal>
   </div>
@@ -375,11 +375,10 @@ export default {
 .btnbox .ivu-btn > span + .ivu-icon {
   margin-left: 0;
 }
-.x_label .ivu-input.ivu-input-default{width: 200px;}
-.ivu-modal-header p, .ivu-modal-header-inner{font-size: 18px;font-weight:500}
-.ivu-modal-body{padding-left: 30px;} 
-.ivu-modal-header{border-bottom: none;margin: 0 12px;padding: 40px 15px  0 15px ;}
-.imgupload .control-form > p{font-size: 14px}
+ .x_label .ivu-input.ivu-input-default{width: 200px;}
+ .ivu-modal-header p, .ivu-modal-header-inner{font-size: 18px;font-weight:500}
+ .ivu-modal-header{border-bottom: none;margin: 0 12px;padding: 40px 15px  0 15px ;}
+ .imgupload .control-form > p{font-size: 14px}
 </style>
 
 <style scoped>
@@ -425,10 +424,10 @@ export default {
   padding-top: 20px;
 }
 .x_label{width: 310px;display: inline-block;font-size: 16px;margin: 20px 100px 10px 20px;}
-.x_label p {width: 100px;line-height: 32px;display: inline-block;}
+.x_label p {width: 76px;line-height: 32px;display: inline-block;text-align: center;}
 .samintbtn{margin: 30px 10px 30px 32px;}
 .postimg{display: flex;padding: 10px 0 20px 20px;flex-wrap: wrap}
-.postimg p {margin: 0 15px; font-size: 15px;line-height: 36px;}
+.postimg p {margin: 0 23px 0 15px; font-size: 15px;line-height: 36px;}
 .headtext{font-size: 20px;color: #282a3c;}
 .btn1{height: 32px;font-size: 14px;line-height: 16px;}
 .acbtn{display: inline-block;color: #c69c6d;cursor: pointer;}

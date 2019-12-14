@@ -364,8 +364,8 @@ export default {
 }
 </script>
 <style >
-.ivu-tabs-nav{margin: 10px  10px 0;}
-.ivu-tabs-nav .ivu-tabs-tab{font-size: 16px;padding: 8px 16px 16px;}
+.order  .ivu-tabs-nav{margin: 10px  10px 0;}
+.order  .ivu-tabs-nav .ivu-tabs-tab{font-size: 16px;padding: 8px 16px 16px;}
 </style>
 <style scoped>
 .order{

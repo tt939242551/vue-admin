@@ -460,7 +460,6 @@ export default {
 <style>
    #discountgoods .ivu-tabs-nav .ivu-tabs-tab{font-size: 16px;padding: 14px 12px;}
   #discountgoods .ivu-tabs-bar{margin-bottom: 0;}
-.ivu-modal-body{padding-left: 12px;}
  #discountgoods .ivu-icon.ivu-icon-md-remove{transform: translateY(-2px);font-size: 18px;color: #c69c6d;}
  #discountgoods .ivu-icon.ivu-icon-ios-create-outline{transform: translate(-4px,-3px);font-size: 16px}
 </style>
