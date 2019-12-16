@@ -4,6 +4,7 @@
             <div>
                 <div class="headitem">
                     <img src="../assets/imgs/st-1.png" alt="">
+                   
                     <p style="color:#c69c6d"><span style="font-size: 20px;">￥</span>{{data1.tlr}}</p>
                     <div></div>
                     <div class="bgbox" :style="{width:data1.jrlrbfb,background:'#c69c6d'}" ref="box1"></div>
@@ -40,6 +41,14 @@
         </header>
         <div class="echarts">
             <p><img src="../assets/imgs/st-5.png" alt=""></p>
+             <p><span @click="getLine(1)"></span><span @click="getLine(2)"></span><span @click="getLine(3)"></span><span @click="getLine(4)"></span></p>
+             <Select  @on-change="getdays" size="small" placeholder="请选择天数" v-model="days" style="width:48px;">
+                 <Option  value="7">最近7天</Option>
+                 <Option  value="30">最近30天</Option>
+                 <Option  value="91">最近3个月</Option>
+                 <Option  value="182">最近半年</Option>
+                 <Option  value="365">最近一年</Option>
+            </Select>
             <div class="chart" :style="{width: '100%', height: '300px'}" ref="myEchartLine" >
             </div>
         </div>
@@ -59,7 +68,9 @@ export default {
     name: 'statistics',
     data(){
         return{
-           data1:[] 
+           data1:[] ,
+           days:7,
+           tvalue:0,
         }
     },
     mounted(){this.init()
@@ -81,47 +92,34 @@ export default {
           })
           .catch(() => {});
         },
-    getLine() {
+        getdays(){
+             this.$axios
+          .post(
+            "datastatistics.ashx?action=selectlist",
+            this.$qs.stringify({ daycoun: 1})
+          )
+          .then(res => {
+            if (res.status >= 0) {
+              this.data1 = res.item[0];
+              
+            } else {
+              this.$Message.warning(res.content);
+            }
+          })
+          .catch(() => {});
+        },
+    getLine(index) {
       let that = this;
       let myChart = echarts.init(this.$refs.myEchartLine);
-      var base = +new Date();
-        var oneDay = 24 * 3600 * 1000;
-        var date = [];
-        for (var i = 1; i <8; i++) {
-            var now = new Date(base -= oneDay);
-            date.unshift([now.getFullYear(), now.getMonth() + 1, now.getDate()].join('/'));
-         
+      let base = +new Date();
+      let oneDay = 24 * 3600 * 1000;
+      let date = [];
+      let days = this.days
+        for (let i = 1; i <= days; i++) {
+            let now = new Date(base -= oneDay);
+            date.unshift([now.getFullYear(), now.getMonth() + 1, now.getDate()].join('/')); 
        }
-      myChart.setOption({
-        title: {
-            text: '数据统计折线图'
-        },
-        tooltip: {
-            trigger: 'axis'
-        },
-        legend: {
-            data:['总的利润','访问量','新订单','新用户',]
-        },
-        grid: {
-            left: '3%',
-            right: '4%',
-            bottom: '3%',
-            containLabel: true
-        },
-        toolbox: {
-            feature: {
-                saveAsImage: {}
-            }
-        },
-        xAxis: {
-            type: 'category',
-            boundaryGap: false,
-            data:date
-        },
-        yAxis: {
-            type: 'value'
-        },
-        series: [
+      let sdata = [
             {
                 name:'总的利润',
                 type:'line',
@@ -147,6 +145,46 @@ export default {
                 data:[320, 332, 301, 334, 390, 330, 320]
             },
         ]
+        if (index) {
+           sdata.slice(index,index+1) 
+        }
+      myChart.setOption({
+        title: {
+            text: '数据统计折线图'
+        },
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+            type: 'cross',
+            show: true
+           }
+        },
+        legend: {
+            data:['总的利润','访问量','新订单','新用户',]
+        },
+        grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+        },
+        toolbox: {
+            feature: {
+                saveAsImage: {
+                    
+                }
+            },
+            show : true
+        },
+        xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            data:date
+        },
+        yAxis: {
+            type: 'value'
+        },
+        series: sdata
         });
     },
     }

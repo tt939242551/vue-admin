@@ -641,7 +641,7 @@ export default {
     }, 
     setsort1(i){
       if (this.tvalue2===2) {
-         this.$axios.post("banner.ashx?action=editsortbrandrecommend",this.$qs.stringify({ id: this.brandList[i].id,xgid:this.xmodel[i] }))
+         this.$axios.post("activity.ashx?action=editsortbrandrecommend",this.$qs.stringify({ id: this.brandList[i].id,xgid:this.xmodel[i] }))
           .then(res => {
             if (res.status >= 0) {
               this.getbrandList()
@@ -675,7 +675,7 @@ export default {
           let parem ={}
           if (this.goodsindex === this.goodsList.length) {
             url = "activity.ashx?action=addactivecommodities"
-            parem = { generalattributeid: this.Modal[1],categoryid:this.Modal[2],typeguid: this.tabs[this.tvalue1].guid ,commodityguid:this.Modal[3]}
+            parem = {generalattributeid:this.Modal[0], parentcategoryid: this.Modal[1],categoryid:this.Modal[2],typeguid: this.tabs[this.tvalue1].guid ,commodityguid:this.Modal[3]}
           }else{url = "activity.ashx?action=editactivecommodities"
            parem =  { commodityguid: this.Modal[3],id:this.goodsList[this.goodsindex].id}
           }

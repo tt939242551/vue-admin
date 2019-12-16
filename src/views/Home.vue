@@ -104,7 +104,7 @@
                    <div v-else>
                      <p><span>搜索广告:</span> <i-input class="sinput" type="text" v-model="otherList.advertisement"  clearable > </i-input>
                       </p>
-                     <p><span>提示标签:</span><Button @click="otherList.tipsLabel.push({})" size="small" type="primary" style="width:80px;margin: 10px 0 15px 0;"><Icon size="18" type="md-add" /></Button>
+                     <p><span>提示标签:</span><Button @click="otherList.tipsLabel.push({id:'',title:'',urllink:''})" size="small" type="primary" style="width:80px;margin: 10px 0 15px 0;"><Icon size="18" type="md-add" /></Button>
                          <span style="display:block;margin-left: 70px;" v-for="(item,i) in otherList.tipsLabel" :key="item.id">
                            <i-input class="sinput"  type="text"  v-model="item.title"  clearable > </i-input><i-input class="sinput" type="text" placeholder="设置对应URL" v-model="item.urllink"  clearable > </i-input><Icon @click="otherList.tipsLabel.splice(i,1)" class="urlicons" size="16" type="md-remove" />
                          </span>
@@ -356,6 +356,7 @@ export default {
           let url ="Other.ashx?action=edit"
           let prima = this.otherList
           prima.tipsLabel = JSON.stringify(prima.tipsLabel)
+
          this.$axios.post(url,this.$qs.stringify(prima))
           .then(res => {
             if (res.status >= 0) {
