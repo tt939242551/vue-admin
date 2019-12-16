@@ -359,8 +359,10 @@ export default {
         this.$axios.post(url,this.$qs.stringify(parme))
           .then(res => {
             if (res.status > 0) {
+              this.activityinit()
               let str = i?"已开启":"已关闭"
               this.$Message.success(str+this.tabs2[this.tvalue2]); 
+
             } else {
               this.$Message.warning(res.content); 
             }

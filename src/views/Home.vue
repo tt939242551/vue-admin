@@ -216,19 +216,20 @@ export default {
             let url = ""
             let parme = {}
             parme.id =  this.otherList.id
-            if (this.tvalue2===0) {
-               url = "banner.ashx?action=editisbanner" 
+            if (this.tvalue===0) {
+               url = "Other.ashx?action=editisbanner" 
                parme.isbanner = i
-            }else if (this.tvalue2===1) {
-              url = "banner.ashx?action=editiscommoditytype"
+            }else if (this.tvalue===1) {
+              url = "Other.ashx?action=editiscommoditytype"
                parme.iscommoditytype = i
-            }else if (this.tvalue2===2) {
-              url = "banner.ashx?action=editisadvertisingposition"
+            }else if (this.tvalue===2) {
+              url = "Other.ashx?action=editisadvertisingposition"
                parme.isadvertisingposition = i
             }
         this.$axios.post(url,this.$qs.stringify(parme))
           .then(res => {
             if (res.status > 0) {
+              this.getother()
               let str = i?"已开启":"已关闭"
               this.$Message.success(str+this.tabs2[this.tvalue2]); 
             } else {
@@ -460,7 +461,7 @@ export default {
           .then(res => {
             if (res.status >= 0) {
               this.otherList = res.item[0];
-              this.isopen = this.otherList.isbanner
+              this.isopen = Boolean(this.otherList.isbanner==="1")
             } else {
               this.$Message.warning(res.content);
             }
@@ -495,13 +496,14 @@ export default {
     tvalue: function() {
      if (this.tvalue===0) {
        this.getbannerList()
-       this.isopen = this.otherList.isbanner
+       this.isopen =  Boolean(this.otherList.isbanner==="1")
+       console.log(this.isopen)
      }else if (this.tvalue===1) {
        this.getgoodsList()
-       this.isopen = this.otherList.iscommoditytype
+       this.isopen = Boolean(this.otherList.iscommoditytype==="1")
      }else if (this.tvalue===2) {
        this.getadvertising()
-       this.isopen = this.otherList.isadvertisingposition
+       this.isopen = Boolean(this.otherList.isadvertisingposition==="1")
      }else if (this.tvalue===3) {
        this.getother()
      }
@@ -556,7 +558,7 @@ export default {
 .bannerimg2{position: absolute;width: 208px;height: 330px;top: 0;left: 70px;}
 .bannerimg3{position: absolute;width: 314px;height: 244px;top: 0;left: 70px;}
 .bannerimg4{position: absolute;width: 732px;height: 112px;top: 0;left: 70px;}
-.switch1{color: #c69c6d;vertical-align: middle;line-height: 32px;position: absolute;top: 12px;right: 20px;}
+.switch1{color: #c69c6d;vertical-align: middle;line-height: 32px;position: absolute;top: 12px;right: 20px;z-index: 99;}
 .mslimg{position: absolute;top: 95px;right: 55px;}
 /* 商品分类 */
 .s2imgbox1{display: inline-block;width: 354px;margin-right: 30px;border: 1px solid #f0f0f0;margin-top: 20px;}

@@ -316,6 +316,7 @@ export default {
           .then(res => {
             if (res.status > 0) {
               let str = i?"已开启":"已关闭"
+              this.getbrandinit()
               this.$Message.success(str+this.tabs2[this.tvalue2]); 
             } else {
               this.$Message.warning(res.content); 
@@ -355,7 +356,10 @@ export default {
           .then(res => {
             if (res.status > 0) {
              this.brand = res.item[0]
-             this.isopen =  this.brand.ishome
+             if (this.tvalue2===0) {
+                this.isopen =  this.brand.ishome
+             }
+            
             } else {
               this.$Message.warning(res.content);
             }
