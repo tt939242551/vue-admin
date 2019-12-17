@@ -11,6 +11,7 @@
               style="width:120px;margin-right: 30px;"
               placeholder="请选择品牌"
             >
+              <Option value="" >不限</Option>
               <Option v-for="(item,index) in generalattribute" :value="item.title" :key="index">{{ item.title }}</Option>
             </Select>
             <span>类别</span>
@@ -20,7 +21,7 @@
               size="small"
               style="width:120px;margin-right: 30px;"
               placeholder="请选择类别"
-            >
+            ><Option value="" >不限</Option>
               <Option v-for="item in parentcategory" :value="item.title" :key="item.title">{{ item.title }}</Option>
             </Select>
             <span>单品</span>
@@ -29,14 +30,15 @@
               v-model="smodels[2]"
               size="small"
               style="width:120px"
-              placeholder="请选择单品"
-            >
+              placeholder="请先选择类别"
+            ><Option value="" >不限</Option>
               <Option
                 v-for="(item,index) in SingleList"
                 :value="item.title"
                 :key="index"
               >{{ item.title }}</Option>
             </Select>
+            <Button type="primary" size="small" style="width:60px;margin-left: 30px;"  @click="initsmodels" >重置</Button>
          </p>
         <Input search class="topsearch" size="small" v-model="smodels[3]" @on-search="getDatalist" enter-button="搜索" placeholder="搜索" />
       </div>
@@ -88,7 +90,7 @@
                 v-model="models[1]"
                 size="small"
                 style="width:200px;margin-bottom: 30px;"
-                placeholder="请选择单品"
+                placeholder="请先选择类别"
               >
                 <Option
                   v-for="(item,index) in categoryItem"
@@ -106,8 +108,8 @@
                <Select
                 v-model="bmodels[i]"
                 size="small"
-                style="width:200px;margin-right: 30px;"
-                placeholder="请选择品牌"
+                style="width:200px;margin-right: 30px"
+                placeholder="请选择"
               >
                 <Option v-for="(item,index) in items.item" :value="item.guid" :key="index">{{ item.title }}</Option>
               </Select>
@@ -557,9 +559,9 @@ export default {
               });
             });
             }
+          
             this.category.forEach(i => {
               if (i.isselect) {
-                console.log(i.isselect)
                 this.models[0] = i.id;
                 this.categoryItem = i.item;
               }
@@ -567,10 +569,15 @@ export default {
             this.categoryItem.forEach(i => {
               if (i.isselect) {
                 this.models[1] = i.guid;
-                 this.getSingle(i.guid)
               }
             });
-           
+             this.generalattribute.forEach((i,index) => {
+                 i.item.forEach(j => {
+                  if (j.isselect) { 
+                  this.bmodels[index] = j.guid
+                  
+                } });
+            });
             this.colorarr = [];
             this.sizearr = [];
             this.colorList =  [{ color: "", remark: "", colorpictures: ""}]
@@ -623,6 +630,10 @@ export default {
     getlist(index) {
       this.page = index;
       this.getInit();
+    },
+    initsmodels(){
+      this.smodels =[]
+      this.SingleList =[]
     },
     selectionChange(a) {
       this.isCheck = [];
@@ -730,6 +741,7 @@ export default {
             if (res.status >= 0) {
               this.generalattribute = res.generalattribute;
               this.specialList = res.specialattributes;
+               this.bmodels=[]
               this.generalattribute.forEach((i,index) => {
               i.item.forEach(j=>{
                 if (j.isselect) {
@@ -1304,7 +1316,7 @@ p.titl1,div.titl1{background: #fff;margin-left: 10px;margin-bottom: 20px;}
   display: inline-block;
   padding: 0;
 }
-.sctions{display: inline-block}
+.sctions{display: inline-block;margin-bottom: 20px;}
 .acbtn{display: inline-block;color: #c69c6d;cursor: pointer;}
 .btn1{color: #fff;margin: 8px 0 30px;font-size: 14px;height: 32px;line-height: 18px;}
 .acbtn2{display: inline-block;cursor: pointer;color: #787878;margin-top: 20px;}

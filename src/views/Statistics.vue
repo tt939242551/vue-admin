@@ -40,15 +40,17 @@
             </div>
         </header>
         <div class="echarts">
-            <p><img src="../assets/imgs/st-5.png" alt=""></p>
+            <p><img src="../assets/imgs/st-5.png" alt="">
+                 <Select  @on-change="getdays" size="small" placeholder="请选择天数" v-model="days" style="float: right;width:200px;margin-right: 58px;">
+                    <Option  :value="7">最近7天</Option>
+                    <Option  :value="30">最近30天</Option>
+                    <Option  :value="91">最近3个月</Option>
+                    <Option  :value="182">最近半年</Option>
+                    <Option  :value="365">最近一年</Option>
+                 </Select>
+            </p>
              <p><span @click="getLine(1)"></span><span @click="getLine(2)"></span><span @click="getLine(3)"></span><span @click="getLine(4)"></span></p>
-             <Select  @on-change="getdays" size="small" placeholder="请选择天数" v-model="days" style="width:48px;">
-                 <Option  value="7">最近7天</Option>
-                 <Option  value="30">最近30天</Option>
-                 <Option  value="91">最近3个月</Option>
-                 <Option  value="182">最近半年</Option>
-                 <Option  value="365">最近一年</Option>
-            </Select>
+            
             <div class="chart" :style="{width: '100%', height: '300px'}" ref="myEchartLine" >
             </div>
         </div>
@@ -71,10 +73,37 @@ export default {
            data1:[] ,
            days:7,
            tvalue:0,
+           date:[],
+           sdata:[
+            {
+                name:'总的利润',
+                type:'line',
+                color:["#c69c6d"],
+                data:[]
+            },
+            {
+                name:'访问量',
+                type:'line',
+                color:"#36a3f7",
+                data:[]
+            },
+            {
+                name:'新订单',
+                type:'line',
+                color:"#f4516c",
+                data:[]
+            },
+            {
+                name:'新用户',
+                type:'line',
+                color:"#34bfa3",
+                data:[]
+            },
+        ]
         }
     },
     mounted(){this.init()
-     this.getLine();},
+     this.getdays();},
     methods:{
         init(){
          this.$axios
@@ -93,15 +122,57 @@ export default {
           .catch(() => {});
         },
         getdays(){
+             let days = this.days
+            let base = +new Date();
+            let oneDay = 24 * 3600 * 1000;
+                for (let i = 1; i <= days; i++) {
+                    let now = new Date(base -= oneDay);
+                     this.date.unshift([now.getFullYear(), now.getMonth() + 1, now.getDate()].join('-')); 
+                }
              this.$axios
           .post(
             "datastatistics.ashx?action=selectlist",
-            this.$qs.stringify({ daycoun: 1})
+            this.$qs.stringify({ daycoun: this.days})
           )
           .then(res => {
             if (res.status >= 0) {
-              this.data1 = res.item[0];
-              
+                for (let i = 0; i < days; i++) {
+                    if(res.lrlist.length){
+                       res.lrlist.forEach(e => {
+                           if (e.newdate===this.date[i]) {
+                               this.sdata[0].data[i]=e.counts
+                           }else{ this.sdata[0].data[i]=0}
+                       }); 
+                    }else{ this.sdata[0].data[i]=0} 
+                }
+                for (let i = 0; i < days; i++) {
+                    if(res.fwllist.length){
+                       res.fwllist.forEach(e => {
+                           if (e.newdate===this.date[i]) {
+                               this.sdata[1].data[i]=e.counts
+                           }else{ this.sdata[1].data[i]=0}
+                       }); 
+                    }else{ this.sdata[1].data[i]=0} 
+                }
+                 for (let i = 0; i < days; i++) {
+                    if(res.ddlist.length){
+                       res.ddlist.forEach(e => {
+                           if (e.newdate===this.date[i]) {
+                               this.sdata[2].data[i]=e.counts
+                           }else{ this.sdata[2].data[i]=0}
+                       }); 
+                    }else{ this.sdata[2].data[i]=0} 
+                }
+                 for (let i = 0; i < days; i++) {
+                    if(res.yhlist.length){
+                       res.yhlist.forEach(e => {
+                           if (e.newdate===this.date[i]) {
+                               this.sdata[3].data[i]=e.counts
+                           }else{ this.sdata[3].data[i]=0}
+                       }); 
+                    }else{ this.sdata[3].data[i]=0} 
+                }
+               this.getLine()
             } else {
               this.$Message.warning(res.content);
             }
@@ -111,40 +182,8 @@ export default {
     getLine(index) {
       let that = this;
       let myChart = echarts.init(this.$refs.myEchartLine);
-      let base = +new Date();
-      let oneDay = 24 * 3600 * 1000;
-      let date = [];
-      let days = this.days
-        for (let i = 1; i <= days; i++) {
-            let now = new Date(base -= oneDay);
-            date.unshift([now.getFullYear(), now.getMonth() + 1, now.getDate()].join('/')); 
-       }
-      let sdata = [
-            {
-                name:'总的利润',
-                type:'line',
-                color:["#c69c6d"],
-                data:[120, 132, 101, 134, 90, 230, 210]
-            },
-            {
-                name:'访问量',
-                type:'line',
-                color:"#36a3f7",
-                data:[220, 182, 191, 234, 290, 330, 310]
-            },
-            {
-                name:'新订单',
-                type:'line',
-                color:"#f4516c",
-                data:[150, 232, 201, 154, 190, 330, 410]
-            },
-            {
-                name:'新用户',
-                type:'line',
-                color:"#34bfa3",
-                data:[320, 332, 301, 334, 390, 330, 320]
-            },
-        ]
+    
+      
         if (index) {
            sdata.slice(index,index+1) 
         }
@@ -160,7 +199,7 @@ export default {
            }
         },
         legend: {
-            data:['总的利润','访问量','新订单','新用户',]
+            data:['总的利润','访问量','新订单','新用户']
         },
         grid: {
             left: '3%',
@@ -170,8 +209,7 @@ export default {
         },
         toolbox: {
             feature: {
-                saveAsImage: {
-                    
+                saveAsImage: {  
                 }
             },
             show : true
@@ -179,12 +217,12 @@ export default {
         xAxis: {
             type: 'category',
             boundaryGap: false,
-            data:date
+            data:this.date
         },
         yAxis: {
             type: 'value'
         },
-        series: sdata
+        series: this.sdata
         });
     },
     }

@@ -403,7 +403,7 @@ export default {
 }
 .btnbox {
   position: absolute;
-  top: 95px;
+  top: 65px;
   right: 10px;
 }
 .stitle {

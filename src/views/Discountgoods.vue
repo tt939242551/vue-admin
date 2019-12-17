@@ -292,7 +292,7 @@ export default {
           .catch(() => {});
        },
     isok2(){
-      if (this.Modal[3]&&this.Modal[4]) {
+      if (this.Modal[4]) {
           let url =""
           let parem ={}
           if (this.goodsindex === this.goodsList.length) {
@@ -311,7 +311,7 @@ export default {
             }
           })
           .catch(() => {});
-         }else{this.$Message.warning("商品和折扣必须选择");} 
+         }else{this.$Message.warning("折扣必须选择");} 
        },
         removegoods(i){
            let arr = []
@@ -342,10 +342,16 @@ export default {
           })
           .catch(() => {});
         },
-      getCategory(id) {
+      getCategory(guid) {
         this.Modal[2] = "";
         this.getcommodityList()
-        if (id) {
+        if (guid) {
+           let id 
+         this.parentcategory.forEach(item=>{
+           if (item.guid === guid) {
+             id = item.id
+           }
+         })
         this.$axios
           .post(
             "category.ashx?action=selectby_parentid",

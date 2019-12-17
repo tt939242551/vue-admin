@@ -360,9 +360,8 @@ export default {
          this.$axios.post(url,this.$qs.stringify(prima))
           .then(res => {
             if (res.status >= 0) {
+              
               this.getother()
-              this.isedit=false
-              this.editindex= 0
             } else {
               this.$Message.warning(res.content);
             }
@@ -371,9 +370,9 @@ export default {
       }else{this.$Message.warning("数据不能为空");} 
     },
     closeotheredit(){
+     
       this.getother()
-      this.isedit=false
-      this.editindex= 0
+      
     },
     editindexs(i){
       this.editindex = i
@@ -463,6 +462,8 @@ export default {
             if (res.status >= 0) {
               this.otherList = res.item[0];
               this.isopen = Boolean(this.otherList.isbanner==="1")
+                this.isedit=false
+              this.editindex= 0
             } else {
               this.$Message.warning(res.content);
             }

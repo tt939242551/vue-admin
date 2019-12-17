@@ -193,8 +193,11 @@
             <TabPane label="广告位" icon="md-radio-button-on">
                  <img style="float: right;margin: 20px 10px 20px 0" src="../assets/imgs/br-3-s.png" alt="">
                 <div class="s3imgbox1">
-                  <div class="imgbox3" v-if="advertising">
+                  <div class="imgbox3" v-if="advertising.picture">
                     <img :src="advertising.picture" alt="">
+                  </div>
+                   <div class="imgbox3" v-else>
+                     <img  src="../assets/imgs/a3-bg.png" alt=""> 
                   </div>
                   <p class="footp"><span @click="showModal3" style="cursor: pointer;"><Icon class="icons" size="18" type="ios-create-outline" />编辑</span></p>
                 </div>
@@ -917,14 +920,14 @@ export default {
      }else if (this.tvalue2===2) {
          this.getgoodsList()
          this.isopen = this.brand.isbrandup
-          this.typeid = 1
+          this.typeid = 2
      }else if (this.tvalue2===3) {
         this.getadvertising()
         this.isopen = this.brand.isadvertisingposition
      }else if (this.tvalue2===4) {
        this.getgoodsList() 
        this.isopen = this.brand.isbrandseries 
-      this.typeid = 2
+      this.typeid = 1
      }else if (this.tvalue2===5) {
       this.getbrandList()
       this.isopen = this.brand.isotherbrand

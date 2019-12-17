@@ -215,7 +215,8 @@ export default {
        this.$axios.post("category.ashx?action=delete",this.$qs.stringify({ids: JSON.stringify(arr)})).then(res=>{
          if (res.status>=0) {
            this.xModal3 = false
-            this.getSingleList()
+      
+            this.getInit()
          }else if (res.status===-1)  {
            this.xModal3 = false
            this.xModal6 = true

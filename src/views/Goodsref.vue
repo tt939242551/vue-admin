@@ -11,9 +11,9 @@
                 <div class="imglistbox1" v-if="items.item.length===5">
                  <div class="imgbox1" v-for="(item,j) in items.item" :key="j">
                    <div class="itembox">
-                     <img   alt="">
-                     <p class="itemp">{{item.commodityname}}【GUCCL】der/吉尔·桑达Ji绗缝 </p>
-                     <span class="itemnum">￥2198</span>
+                     <img v-if="item.commoditypictures1" :src="item.commoditypictures1"  alt=""><img v-else  src="../assets/imgs/g2-bg.png" alt="">
+                      <p v-if="item.commodityname">{{item.commodityname}}</p><p v-else>商品名称</p>
+                     <span  v-if="item.Price" class="itemnum">￥{{item.Price}}</span> <span v-else class="itemnum">  价格</span>
                   </div>
                    <p class="footer"> 
                      <span @click="showModal(j)" style="cursor: pointer;"><Icon class="icons" size="18" type="ios-create-outline" />编辑</span>
@@ -25,9 +25,10 @@
                    <div class="itembox itembox2">
                      <img v-if="item.picture" :src="item.picture" alt="">
                      <img v-if="item.commoditypictures1" :src="item.commoditypictures1" alt="">
-                     <img v-if="!item.picture&&!item.commoditypictures1" src="../assets/imgs/g-bg.png" alt="">
-                     <p class="logop">【GUCCL】</p>
-                     <p>{{item.commodityname}}der/吉尔·桑达Ji绗缝 单肩包绗缝单肩包</p>
+                     <img v-if="!item.picture&&!item.commoditypictures1&&j>0"  src="../assets/imgs/g2-bg.png" alt="">
+                     <img v-if="!item.picture&&!item.commoditypictures1&&j===0"  src="../assets/imgs/g-bg.png" alt="">
+                     <p v-if="item.generalattributename" class="logop">{{item.generalattributename}}</p><p class="logop" v-else>品牌</p>
+                     <p v-if="item.commodityname">{{item.commodityname}}</p><p v-else>商品名称</p>
                   </div>
                    <p class="footer"> 
                      <span @click="showModal(j)" style="cursor: pointer;"><Icon class="icons" size="18" type="ios-create-outline" />编辑</span>
@@ -211,6 +212,7 @@ export default {
           .post("recommendationcommodity.ashx?action=delete",this.$qs.stringify({ids: JSON.stringify(arr)}))
           .then(res => {
             if (res.status >= 0) {
+            this.tvalue = 0
             this.xModal = false
              this.getgoodsinit()
             } else {
@@ -266,10 +268,16 @@ export default {
           })
           .catch(() => {});
     },
-     getCategory(id) {
+     getCategory(guid) {
       this.Modal[2] = "";
       this.getcommodityList()
-       if (id) {
+       if (guid) {
+          let id 
+         this.parentcategory.forEach(item=>{
+           if (item.guid === guid) {
+             id = item.id
+           }
+         })
         this.$axios
           .post(
             "category.ashx?action=selectby_parentid",
@@ -289,7 +297,7 @@ export default {
     getcommodityList(){
       if (this.goodsindex!==0 || this.tabs[this.tvalue].item.length!==4) {
           this.Modal[3] = "";
-         if (this.Modal[0]) {
+         if (this.Modal[0]&&this.xModal2) {
         this.$axios
           .post(
             "commodity.ashx?action=selectbyid",
@@ -303,7 +311,7 @@ export default {
             }
           })
           .catch(() => {});
-        }else{ this.$Message.warning("品牌必须选择");}
+        }
       }
      
     },
@@ -394,8 +402,8 @@ export default {
 .itemnum{border-top: 1px solid #c69c6d;padding-top: 4px;margin: 10px 10px;display: inline-block;padding-right: 5px;}
 .itembox.itembox2{text-align: center;width: 260px;}
 .itembox.itembox2>img{width: 260px;height: 274px;border:none;}
-.itembox2 .logop{text-align: center;color: #c69c6d;padding: 10px  0 0;margin: 0 5px;border-top: 1px solid #c69c6d;}
-.itembox2>p:nth-child(3){padding-top: 0;height: 108px;}
+.itembox2 .logop{text-align: center;color: #c69c6d;padding: 10px  0 2px;margin: 0 5px;border-top: 1px solid #c69c6d;}
+.itembox2>p:nth-child(3){padding-top: 0;height: 106px;}
 .modalmain{padding: 20px 30px;}
 .modalmain>p{font-size: 14px;font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;margin-top: 10px;}
 .btn2{width: 100px;margin-left: 70px;border-radius:4;font-size: 14px;line-height: 22px;margin-top: 20px;height: 32px;}

@@ -12,7 +12,7 @@
         <span v-show="tabs.length===0" class="tabspan">暂无数据</span>
         <span @click="getactivityls(i)" :class="{tabspan: true,active:tvalue1===i}" v-for="(itme,i) in tabs" :key="i">{{itme.activityname}}</span>
         <span @click="xModal=true"  style="cursor: pointer;float: right;color: #c69c6d;font-size: 14px;margin-top: 16px;"><Icon class="icons" size="18" type="ios-trash-outline" />删除</span>  
-        <span @click="xModal1 = true" style="cursor: pointer;float: right;color: #c69c6d;font-size: 14px;margin-top: 16px;"><Icon class="icons" size="18" type="md-add" />新增</span>
+        <span @click="addactiv" style="cursor: pointer;float: right;color: #c69c6d;font-size: 14px;margin-top: 16px;"><Icon class="icons" size="18" type="md-add" />新增</span>
       </div>
       <div v-show="tvalue2>1" class="switch2">开启{{tabs2[tvalue2]}}
          <template>
@@ -22,7 +22,7 @@
       <Modal footer-hide v-model="xModal" width="360" :styles="{top: '200px'}">
         <div style="text-align:center;font-size: 20px;margin: 20px 0 ;">
             <p>请确认是否删除{{tabs[tvalue1].activityname}}？</p>
-            <p>删除后数据将不可回复</p>
+            <p>删除后数据将不可恢复</p>
         </div>
         <div style="text-align:center;margin: 20px 0 ;">
              <Button style="width:80px" type="primary" class="samintbtn" @click="removeactivity">确定</Button><Button  style="width:80px;margin-left: 30px;display: inline-block;" class="samintbtn" @click="xModal=false">取消</Button>
@@ -114,7 +114,7 @@
         <Modal footer-hide v-model="xModal5" width="360" :styles="{top: '200px'}">
           <div style="text-align:center;font-size: 20px;margin: 20px 0 ;" >
               <p>请确认是否清空品牌推荐？</p>
-              <p>清空后数据将不可回复</p>
+              <p>清空后数据将不可恢复</p>
           </div>
           <div style="text-align:center;margin: 20px 0 ;">
               <Button style="width:80px" type="primary" class="samintbtn" @click="removebrandall">确定</Button><Button  style="width:80px;margin-left: 30px;display: inline-block;" class="samintbtn" @click="xModal5=false">取消</Button>
@@ -123,7 +123,7 @@
           <Modal footer-hide v-model="xModal7" width="360" :styles="{top: '200px'}">
             <div style="text-align:center;font-size: 20px;margin: 20px 0 ;">
                 <p>请确认是否清空活动商品？</p>
-                <p>清空后数据将不可回复</p>
+                <p>清空后数据将不可恢复</p>
             </div>
             <div style="text-align:center;margin: 20px 0 ;">
                 <Button style="width:80px" type="primary" class="samintbtn" @click="removegoodsall">确定</Button><Button  style="width:80px;margin-left: 30px;display: inline-block;" class="samintbtn" @click="xModal7=false">取消</Button>
@@ -240,13 +240,13 @@
                 <img style="float: right;margin: 20px 10px 20px 0" src="../assets/imgs/a-2-s.png" alt="">
                 <div class="s3imgbox1">
                   <div class="imgbox3" v-if="advertisingList1[0]">
-                     <img v-if="advertisingList1[0].picture" style="width: 588px;height: 148px;" :src="advertisingList1[0].picture" alt="">  <span v-else class="bgtext1">暂无图片</span>
+                     <img v-if="advertisingList1[0].picture" style="width: 588px;height: 148px;" :src="advertisingList1[0].picture" alt=""><img style="width: 588px;height: 148px;" v-else src="../assets/imgs/a1-bg.png" alt=""> 
                   </div>
                   <p class="footp"><span @click="showModal3(0)" style="cursor: pointer;"><Icon class="icons" size="18" type="ios-create-outline" />编辑</span></p>
                 </div>
                 <div class="s3imgbox1">
                   <div class="imgbox3" v-if="advertisingList1[1]">
-                     <img v-if="advertisingList1[1].picture" style="width: 588px;height: 148px;" :src="advertisingList1[1].picture" alt="">  <span v-else class="bgtext1">暂无图片</span>
+                     <img v-if="advertisingList1[1].picture" style="width: 588px;height: 148px;" :src="advertisingList1[1].picture" alt=""><img  style="width: 588px;height: 148px;" v-else src="../assets/imgs/a1-bg.png" alt=""> 
                   </div>
                   <p class="footp"><span @click="showModal3(1)" style="cursor: pointer;"><Icon class="icons" size="18" type="ios-create-outline" />编辑</span></p>
                 </div>
@@ -255,7 +255,7 @@
                 <img style="float: right;margin: 20px 10px 20px 0" src="../assets/imgs/a-3-s.png" alt="">
                 <div class="s3imgbox1 s3imgbox10">
                   <div class="imgbox4" v-if="advertisingList2[0]">
-                    <img v-if="advertisingList2[0].picture" :src="advertisingList2[0].picture" alt=""> <span v-else class="bgtext2">暂无图片</span>
+                    <img v-if="advertisingList2[0].picture" :src="advertisingList2[0].picture" alt=""><img v-else src="../assets/imgs/a2-bg.png" alt=""> 
                     <div class="hovbox">
                         <span v-if="advertisingList2[0].maintitle">{{advertisingList2[0].maintitle}}</span><span v-else>主标题</span>
                          <p v-if="advertisingList2[0].vicetitle">{{advertisingList2[0].vicetitle}}</p><p v-else>副标题</p>
@@ -265,7 +265,7 @@
                 </div>
                 <div class="s3imgbox1 s3imgbox10">
                   <div class="imgbox4" v-if="advertisingList2[1]">
-                     <img v-if="advertisingList2[1].picture" :src="advertisingList2[1].picture" alt=""> <span v-else class="bgtext2">暂无图片</span>
+                     <img v-if="advertisingList2[1].picture" :src="advertisingList2[1].picture" alt=""><img v-else src="../assets/imgs/a2-bg.png" alt=""> 
                       <div class="hovbox">
                           <span v-if="advertisingList2[1].maintitle">{{advertisingList2[1].maintitle}}</span><span v-else>主标题</span>
                          <p v-if="advertisingList2[1].vicetitle">{{advertisingList2[1].vicetitle}}</p><p v-else>副标题</p>
@@ -275,7 +275,7 @@
                 </div>
                 <div class="s3imgbox1 s3imgbox10">
                   <div class="imgbox4" v-if="advertisingList2[2]">
-                     <img v-if="advertisingList2[2].picture" :src="advertisingList2[2].picture" alt=""> <span v-else class="bgtext2">暂无图片</span> 
+                     <img v-if="advertisingList2[2].picture" :src="advertisingList2[2].picture" alt=""><img v-else src="../assets/imgs/a2-bg.png" alt=""> 
                        <div class="hovbox">
                            <span v-if="advertisingList2[2].maintitle">{{advertisingList2[2].maintitle}}</span><span v-else>主标题</span>
                          <p v-if="advertisingList2[2].vicetitle">{{advertisingList2[2].vicetitle}}</p><p v-else>副标题</p>
@@ -395,6 +395,10 @@ export default {
           })
           .catch(() => {}); 
       },
+      addactiv(){
+        this.xModal1 = true
+        this.Modal[0]=""
+      },
       isok1(){
           if (this.Modal[0]) {
         this.$axios.post("activity.ashx?action=add",this.$qs.stringify({ activityname: this.Modal[0] }))
@@ -433,6 +437,7 @@ export default {
             if (res.status >= 0) {
               this.activityinit()
                 this.xModal=false
+                this.tvalue1 = 0
             } else {
               this.$Message.warning(res.content);
             }
@@ -752,7 +757,7 @@ export default {
                         }
                   })
                 if(itmes.commoditypictures1){ 
-                    itmes.commoditypictures1 = JSON.parse(itmes.commoditypictures1.split(",")[0].replace(/\[/,"")) 
+                    itmes.commoditypictures1 = JSON.parse(itmes.commoditypictures1.split(",")[0].replace(/\[/g,"").replace(/\]/g,"")) 
                  }
               })
             } else {
@@ -1093,6 +1098,7 @@ export default {
 .s3imgbox1{width:590px;margin-top: 20px;margin-right: 10px;border: 1px solid #f0f0f0;display: inline-block}
 .s3imgbox1.s3imgbox10{width:382px;margin-top: 20px;margin-right: 20px;border: 1px solid #f0f0f0;display: inline-block}
 .s3imgbox1 img{width: 100%;height: 100%;}
+.s3imgbox1 .imgbox3{width: 590px;height: 148px;position: relative;}
 .s3imgbox1 .imgbox4{width: 380px;height: 164px;position: relative;}
 .s3imgbox1 .imgbox4 img{width: 380px;height: 164px;}
 .footp{text-align: right;color: #c69c6d;padding: 12px 20px;font-size: 14px;border-top: 1px solid #f0f0f0}
