@@ -24,21 +24,20 @@
                     <div class="imglistbox1 imglistbox2">
                         <div class="imgbox1" v-for="(item,i) in goodslist" :key="i">
                             <div class="itembox itembox1">
-                                <img style="width: 220px;height: 264px;border:none;"  alt="">
-                    
-                                <p>【GUCCL】der/吉尔·桑达Ji绗缝 单肩包绗缝单肩包</p>
-                                <span class="itemnum">￥2198</span><span class="lastnum">￥3298</span>
+                                 <img v-if="item.commoditypictures1" style="width: 220px;height: 264px;border:none;" :src="item.commoditypictures1" alt="">  <span v-else class="bgtext">暂无图片</span>
+                                 <p v-if="item.commodityname">{{item.commodityname}}</p><p v-else>商品名称</p>
+                                 <span  v-if="item.Price" class="itemnum">￥{{item.Price*item.discount}}</span> <span v-else class="itemnum"> 价格</span><span class="lastnum">￥{{item.Price}}</span>
                                 <span class="itemtab" >折扣商品</span>
                             
                             </div>
                             <p class="footerp"> 
                                 <template>
-                                    <i-switch style="transform: translateY(-2px);margin-left: 8px;" v-model="item.isselect" size="small"  />
+                                    <i-switch @on-change="switchsth(i)" style="transform: translateY(-2px);margin-left: 8px;" v-model="item.isselect" size="small"  />
                                 </template>
                                 <span class="floutspan"><span @click="eaitgoods(i)" style="cursor: pointer;"><Icon class="icons" size="18" type="ios-create-outline" />修改</span><span @click="removegoods(i)"  style="cursor: pointer;"><Icon class="icons" size="18" type="ios-trash-outline" />删除</span></span>
                             </p>
                         </div>
-                        <p><span @click="xModal3=true"  style="cursor: pointer;"><Icon class="icons" size="18" type="ios-trash-outline" />清空</span></p>
+                        <p><span  @click="xModal3=true"  style="cursor: pointer;"><Icon class="icons" size="18" type="ios-trash-outline" />清空</span></p>
                     </div>
                 </div>
             </TabPane>
@@ -163,10 +162,14 @@ export default {
         getinit(){
            this.$axios.post("discount.ashx?action=selectlist")
           .then(res => {
-            if (res.status >= 0) {
+            if (res.status > 0) {
               this.categoryList = res.discountsettings1
               this.goodslist = res.discountsettings2
-              
+               this.goodslist.forEach((itmes)=>{ 
+                if(itmes.commoditypictures1){ 
+                    itmes.commoditypictures1 = JSON.parse(itmes.commoditypictures1.split(",")[0].replace(/\[/g,"").replace(/\]/g,"")) 
+                 }
+              })
             } else {
               this.$Message.warning(res.content); 
             }
@@ -293,9 +296,10 @@ export default {
        },
     isok2(){
       if (this.Modal[4]) {
-          let url =""
+        if (this.Modal[0]||this.Modal[1]) {
+            let url =""
           let parem ={}
-          if (this.goodsindex === this.goodsList.length) {
+          if (this.goodsindex === "add") {
             url = "discount.ashx?action=add"
             parem = { generalattributeid: this.Modal[0],parentcategoryid:this.Modal[1],categoryid:this.Modal[2],typeid: 2 ,commodityguid:this.Modal[3],dsid:this.Modal[4],}
           }else{url = "discount.ashx?action=edit"
@@ -311,6 +315,8 @@ export default {
             }
           })
           .catch(() => {});
+        }else{this.$Message.warning("品牌或类别必须选择一个");} 
+        
          }else{this.$Message.warning("折扣必须选择");} 
        },
         removegoods(i){
@@ -336,7 +342,9 @@ export default {
           .then(res => {
             if (res.status >= 0) {
               this.getinit()
+              this.xModal5 = false
             } else {
+               this.xModal5 = false
               this.$Message.warning(res.content);
             }
           })
@@ -384,9 +392,22 @@ export default {
                     }
                 })
                 .catch(() => {});
-            }else{ this.$Message.warning("品牌必须选择");} 
+            } 
         }
       
+    },
+    switchsth(i){   
+          let parme = {}
+          parme.id =  this.goodslist[i].id
+          parme.isselect = this.goodslist[i].isselect
+        this.$axios.post("discount.ashx?action=editisselect",this.$qs.stringify(parme))
+          .then(res => {
+            if (res.status > 0) {
+            } else {
+              this.$Message.warning(res.content); 
+            }
+          })
+          .catch(() => {}); 
     },
     //折扣设置
     getdiscountlist(){
@@ -496,7 +517,7 @@ export default {
 .imgbox1 p>.floutspan{float: right;color: #c69c6d;}
 .imgbox1 p .icons{transform: translateY(-2px);margin-left: 18px;}
 .imglistbox1.imglistbox2{display: inline-block;min-width: 520px;margin-top: 10px;}
-.itembox{width: 220px;height: 360px;background:#f6f6f6;position: relative;display: inline-block;margin-right: 16px}
+.itembox{width: 220px;height: 360px;position: relative;display: inline-block;margin-right: 16px}
 .itembox img{width: 100%;}
 .itembox p{font-size: 14px;color: #2f2f2f;padding: 0 10px;height: 42px;}
 .itemtab{position: absolute;top: 0;left: 0;background: #191919;color: #fff;padding: 3px 12px;border-bottom-right-radius: 10px }

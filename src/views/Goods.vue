@@ -285,7 +285,7 @@
           style="width: 200px;margin-right: 25px;"
         />
         <span>总数量</span>
-        <Input v-model="models[9]" :disabled="mainList.length!==0" size="small" style="width: 200px;margin-right: 30px;" />
+           <Input v-model="models[9]" :disabled="mainList.length!==0" size="small" style="width: 200px;margin-right: 30px;" />
         <div style="margin-top:40px">
           <span>设置日期</span>
           <DatePicker
@@ -537,7 +537,8 @@ export default {
         )
         .then(res => {
           if (res.status >= 0) {
-            this.models[2] = res.item[0].title;
+            this.models[2] = res.item[0].title
+            this.models[9] = res.item[0].number
             this.content = decodeURIComponent(res.item[0].commoditydetails);
             this.imgLists = JSON.parse(
               res.item[0].commoditypictures1.replace(/\\/g, "")
@@ -829,7 +830,6 @@ export default {
       }
     },
     creatmainList() {
- 
       this.mainList = [];
       let t = "disabledGroup" + (this.tvalue2 + 1);
       let arr = this[t];
@@ -898,7 +898,7 @@ export default {
           .catch(() => {});
     },
     getgoods() {
-      if (!this.content && !this.setdate && !this.imgLists.length) {
+      if (!this.content && !this.setdate && !this.imgLists.length && !this.mainList.length) {
         this.$Message.warning("输入数据不能为空");
         return false;
       }
@@ -959,7 +959,8 @@ export default {
           specialattributesid: JSON.stringify(this.specialmodels),
           specifications: JSON.stringify(this.mainList),
           setdate: this.setdate,
-          Price: this.models[8]
+          Price: this.models[8],
+          number: this.models[9],
         };
       } else {
         url = "commodity.ashx?action=edit";
@@ -979,7 +980,8 @@ export default {
           specialattributesid: JSON.stringify(this.specialmodels),
           specifications: JSON.stringify(this.mainList),
           setdate: this.setdate,
-          Price: this.models[8]
+          Price: this.models[8],
+          number: this.models[9],
         };
       }
       this.$axios
@@ -1029,6 +1031,7 @@ export default {
           .then(res => {
             if (res.status >= 0) {
               this.colorList[this.colorindex].colorpictures = res.data[0];
+               this.creatmainList();
             } else {
               that.$Message.warning(res.content);
             }
