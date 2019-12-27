@@ -12,7 +12,7 @@
          <Tabs v-model="tvalue">
             <TabPane  label="折扣商品">
                 <div class="main1">
-                     <p v-for="(item,i) in categoryList" :key="i">  <span>{{item.title}}</span>
+                     <p v-for="(item,i) in categoryList" :key="i"><span style="cursor: pointer;" :class="{activ:i===categoryvalue}"  @click="categoryvalue=i">{{item.title}}</span>
                           <Button type="primary"  @click="eaitcategory(i)" shape="circle" icon="ios-create-outline" style="width:24px;height:24px;" size="small"><Icon type="ios-create-outline" /></Button>
                           <Button   @click="removecategory(i)" shape="circle" icon="md-remove" style="margin-left: 8px;width:24px;height:24px;" size="small"></Button>
                     </p>
@@ -22,7 +22,7 @@
                 <div class="main2">
                     <img @click="eaitgoods('add')" style="vertical-align: top;margin: 10px 40px 10px 0;" src="../assets/imgs/add-1.png" alt="">
                     <div class="imglistbox1 imglistbox2">
-                        <div class="imgbox1" v-for="(item,i) in goodslist" :key="i">
+                        <div class="imgbox1" v-for="(item,i) in categoryList[categoryvalue].item" :key="i">
                             <div class="itembox itembox1">
                                  <img v-if="item.commoditypictures1" style="width: 220px;height: 264px;border:none;" :src="item.commoditypictures1" alt="">  <span v-else class="bgtext">暂无图片</span>
                                  <p v-if="item.commodityname">{{item.commodityname}}</p><p v-else>商品名称</p>
@@ -62,10 +62,6 @@
               <p><span>类别</span>
                  <i-input class="sinput" 
                      placeholder="请填写类别"   type="text" v-model="Modal[0]"  clearable> </i-input>
-              </p>
-              <p><span >URL链接</span>
-                 <i-input class="sinput" 
-                        type="text" v-model="Modal[1]"  clearable placeholder="请输入链接"> </i-input>
               </p>
               <Button size="small" @click="isok1" type="primary" class="btn2">提交</Button>
             </div>     
@@ -144,7 +140,7 @@ export default {
            Modal:[],
            categoryList: [], 
            categoryindex:0,
-           goodslist:[],
+           categoryvalue:0,
            goodsindex:0,
            discountsettings:[],
            parentcategory:[],
@@ -163,13 +159,15 @@ export default {
            this.$axios.post("discount.ashx?action=selectlist")
           .then(res => {
             if (res.status > 0) {
-              this.categoryList = res.discountsettings1
-              this.goodslist = res.discountsettings2
-               this.goodslist.forEach((itmes)=>{ 
-                if(itmes.commoditypictures1){ 
-                    itmes.commoditypictures1 = JSON.parse(itmes.commoditypictures1.split(",")[0].replace(/\[/g,"").replace(/\]/g,"")) 
+              this.categoryList = res.discounts
+               this.categoryList.forEach(item=>{
+                  item.item.forEach((itmes)=>{ 
+                   if(itmes.commoditypictures1){ 
+                    itmes.commoditypictures1 = itmes.commoditypictures1.match(/https:\/\/oss.bogole.com\/project\/code\/public\/e19102801\/upfile\/20\d{6,30}\.jpg/)[0] 
                  }
               })
+               })
+              
             } else {
               this.$Message.warning(res.content); 
             }
@@ -188,14 +186,14 @@ export default {
              this.xModal1 = true
         },
         isok1(){
-        if (this.Modal[0]&&this.Modal[1]) {
+        if (this.Modal[0]) {
           let url =""
           let parem ={}
           if (this.categoryindex === "add") {
             url = "discount.ashx?action=add"
-            parem = {title: this.Modal[0], discounturl: this.Modal[1],typeid:1}
+            parem = {title: this.Modal[0],typeid:1,parentid:0}
           }else{url = "discount.ashx?action=edit"
-           parem =  { title: this.Modal[0], discounturl: this.Modal[1],id:this.categoryList[this.categoryindex].id}
+           parem =  { title: this.Modal[0],id:this.categoryList[this.categoryindex].id,}
           }
          this.$axios.post(url,this.$qs.stringify(parem))
           .then(res => {
@@ -255,7 +253,7 @@ export default {
         },
         editgoodsinit(){
         this.$axios
-          .post("discount.ashx?action=editinit",this.$qs.stringify({ id: this.goodslist[this.goodsindex].id }))
+          .post("discount.ashx?action=editinit",this.$qs.stringify({ id: this.categoryList[this.categoryvalue].item[this.goodsindex].id }))
           .then(res => {
             if (res.status >= 0) {
               this.generalattribute = res.generalattribute[0].item
@@ -301,9 +299,9 @@ export default {
           let parem ={}
           if (this.goodsindex === "add") {
             url = "discount.ashx?action=add"
-            parem = { generalattributeid: this.Modal[0],parentcategoryid:this.Modal[1],categoryid:this.Modal[2],typeid: 2 ,commodityguid:this.Modal[3],dsid:this.Modal[4],}
+            parem = { generalattributeid: this.Modal[0],parentcategoryid:this.Modal[1],categoryid:this.Modal[2],typeid: 2 ,commodityid:this.Modal[3],dsid:this.Modal[4],title:this.categoryList[this.categoryvalue].title,parentid:this.categoryList[this.categoryvalue].id}
           }else{url = "discount.ashx?action=edit"
-           parem =  { commodityguid: this.Modal[3],dsguid:this.Modal[4],id:this.goodslist[this.goodsindex].id}
+           parem =  { commodityid: this.Modal[3],dsguid:this.Modal[4],id:this.categoryList[this.categoryvalue].item[this.goodsindex].id,title:this.categoryList[this.categoryvalue].title,parentid:this.categoryList[this.categoryvalue].id}
           }
          this.$axios.post(url,this.$qs.stringify(parem))
           .then(res => {
@@ -398,8 +396,8 @@ export default {
     },
     switchsth(i){   
           let parme = {}
-          parme.id =  this.goodslist[i].id
-          parme.isselect = this.goodslist[i].isselect
+          parme.id =  this.categoryList[this.categoryvalue].item[i].id
+          parme.isselect = this.categoryList[this.categoryvalue].item[i].isselect
         this.$axios.post("discount.ashx?action=editisselect",this.$qs.stringify(parme))
           .then(res => {
             if (res.status > 0) {
@@ -508,7 +506,7 @@ export default {
 .main1>p{margin-bottom: 20px;}
 .main1{padding-top: 20px;width: 270px;height: 100%;display: inline-block;vertical-align: top;}
 .main2{display: inline-block;width: calc(100% - 280px);padding-top: 10px;border-left: 1px solid #e6e6e6;padding-left: 50px;padding-bottom: 40px;}
-
+.activ{border: 1px solid #c69c6d}
  /* 折扣商品 */
 .imglistbox1>p{margin-top: -10px;}
 .imglistbox1>p .icons{transform: translateY(-2px);}
@@ -519,7 +517,7 @@ export default {
 .imglistbox1.imglistbox2{display: inline-block;min-width: 520px;margin-top: 10px;}
 .itembox{width: 220px;height: 360px;position: relative;display: inline-block;margin-right: 16px}
 .itembox img{width: 100%;}
-.itembox p{font-size: 14px;color: #2f2f2f;padding: 0 10px;height: 42px;}
+.itembox p{font-size: 14px;color: #2f2f2f;padding: 0 10px;height: 42px;overflow: hidden;}
 .itemtab{position: absolute;top: 0;left: 0;background: #191919;color: #fff;padding: 3px 12px;border-bottom-right-radius: 10px }
 .itemnum{border-top: 1px solid #c69c6d;padding-top: 4px;margin: 10px 10px;display: inline-block;padding-right: 5px;}
 .itembox1{border:none;margin-top: 10px;margin: 0 auto;}

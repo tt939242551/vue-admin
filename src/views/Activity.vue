@@ -1088,7 +1088,7 @@ export default {
 .imglistbox1.imglistbox2{display: inline-block;width: calc(100% - 200px);}
 .itembox{width: 220px;height: 360px;background:#f6f6f6;position: relative;display: inline-block;margin-right: 16px}
 .itembox img{width: 100%;}
-.itembox p{font-size: 14px;color: #2f2f2f;padding: 0 10px;height: 42px;}
+.itembox p{font-size: 14px;color: #2f2f2f;padding: 0 10px;height: 42px;overflow: hidden;}
 .itemtab{position: absolute;top: 0;left: 0;background: #191919;color: #fff;padding: 3px 12px;border-bottom-right-radius: 10px }
 .itemnum{border-top: 1px solid #c69c6d;padding-top: 4px;margin: 10px 10px;display: inline-block;padding-right: 4px;}
 .itembox1{border:none;margin-top: 10px;margin: 0 auto;background: #fff;border-bottom: 1px solid #f0f0f0}

@@ -184,7 +184,7 @@
                      <Select @on-change="setsort2(i)" size="small" placeholder="" v-model="xmodel[i]" style="width:48px;">
                         <Option v-for="(item,j) in items.sort" :value="item.id" :key="j+1">{{item.sort}}</Option>
                      </Select>
-                     <span><span @click="showModal2(i)" style="cursor: pointer;"><Icon class="icons" size="18" type="ios-create-outline" />修改</span><span @click="removebrand(i)"  style="cursor: pointer;"><Icon class="icons" size="18" type="ios-trash-outline" />删除</span></span>
+                     <span><span @click="showModal2(i)" style="cursor: pointer;"><Icon class="icons" size="18" type="ios-create-outline" />修改</span><span @click="removegoods(i)"  style="cursor: pointer;"><Icon class="icons" size="18" type="ios-trash-outline" />删除</span></span>
                   </p>
                  </div>
                  <p><span @click="xModal7=true"  style="cursor: pointer;"><Icon class="icons" size="18" type="ios-trash-outline" />清空</span></p>
@@ -218,7 +218,7 @@
                      <Select @on-change="setsort2(i)" size="small" placeholder="" v-model="xmodel[i]" style="width:48px;">
                         <Option v-for="(item,j) in items.sort" :value="item.id" :key="j+1">{{item.sort}}</Option>
                      </Select>
-                     <span><span @click="showModal2(i)" style="cursor: pointer;"><Icon class="icons" size="18" type="ios-create-outline" />修改</span><span @click="removebrand(i)"  style="cursor: pointer;"><Icon class="icons" size="18" type="ios-trash-outline" />删除</span></span>
+                     <span><span @click="showModal2(i)" style="cursor: pointer;"><Icon class="icons" size="18" type="ios-create-outline" />修改</span><span @click="removegoods(i)"  style="cursor: pointer;"><Icon class="icons" size="18" type="ios-trash-outline" />删除</span></span>
                   </p>
                  </div>
                  <p><span @click="xModal7=true"  style="cursor: pointer;"><Icon class="icons" size="18" type="ios-trash-outline" />清空</span></p>
@@ -694,7 +694,7 @@ export default {
     },
     getgoodsListall(){
          this.$axios
-          .post("brandrecommendation.ashx?action=addactivecommoditiesinit",this.$qs.stringify({ brandid: this.brand.guid}))
+          .post("brandrecommendation.ashx?action=addactivecommoditiesinit",this.$qs.stringify({ brandid: this.brand.id}))
           .then(res => {
             if (res.status >= 0) {
              this.generalattribute = res.generalattribute[0].item
@@ -757,7 +757,7 @@ export default {
     }, 
     setsort2(i){
       if (this.tvalue2===2||this.tvalue2===4) {
-        this.$axios.post("brandrecommendation.ashx?action=brandrecommendcommodity",this.$qs.stringify({ id: this.goodsList[i].id,xgid:this.xmodel[i] }))
+        this.$axios.post("brandrecommendation.ashx?action=editsortbrandrecommendcommodity",this.$qs.stringify({ id: this.goodsList[i].id,xgid:this.xmodel[i] }))
           .then(res => {
             if (res.status >= 0) {
               this.getgoodsList()
@@ -918,16 +918,18 @@ export default {
         this.getbannerList()
         this.isopen = this.brand.isbanner
      }else if (this.tvalue2===2) {
+        this.typeid = 2
          this.getgoodsList()
          this.isopen = this.brand.isbrandup
-          this.typeid = 2
+         
      }else if (this.tvalue2===3) {
         this.getadvertising()
         this.isopen = this.brand.isadvertisingposition
      }else if (this.tvalue2===4) {
+       this.typeid = 1
        this.getgoodsList() 
        this.isopen = this.brand.isbrandseries 
-      this.typeid = 1
+      
      }else if (this.tvalue2===5) {
       this.getbrandList()
       this.isopen = this.brand.isotherbrand
@@ -1006,7 +1008,7 @@ export default {
 .imglistbox1.imglistbox2{display: inline-block;width: calc(100% - 200px);}
 .itembox{width: 220px;height: 360px;background:#fff;position: relative;display: inline-block;margin-right: 16px}
 .itembox img{width: 100%;}
-.itembox p{font-size: 14px;color: #2f2f2f;padding: 0 10px;}
+.itembox p{font-size: 14px;color: #2f2f2f;padding: 0 10px;height: 42px;overflow: hidden;}
 .itemtab{position: absolute;top: 0;left: 0;background: #191919;color: #fff;padding: 3px 12px;border-bottom-right-radius: 10px }
 .itemnum{border-top: 1px solid #c69c6d;padding-top: 4px;margin: 10px 10px;display: inline-block;padding-right: 5px;}
 .itembox1{border:none;margin-top: 10px;margin: 0 auto;}

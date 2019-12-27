@@ -141,7 +141,14 @@ export default {
           .then(res => {
             if (res.status >= 0) {
              this.tabs = res.recommendationcommodity
-
+             this.tabs.forEach(i=>{
+                i.item.forEach((itmes)=>{ 
+                if(itmes.commoditypictures1){ 
+                    itmes.commoditypictures1 = JSON.parse(itmes.commoditypictures1.split(",")[0].replace(/\[/g,"").replace(/\]/g,"")) 
+                 }
+              })
+             })
+             
             } else {
               this.$Message.warning(res.content);
             }
@@ -398,12 +405,13 @@ export default {
 .imgbox1 p .icons{transform: translateY(-2px);margin-left: 18px;margin-right: 2px;}
 .itembox{width: 220px;}
 .itembox>img{width: 220px;height: 230px;border:none;}
+.itembox>p{height: 42px;overflow: hidden;padding: 0 10px;}
 .farstimg .itembox.itembox2>img{width: 260px;height: 420px;border:none;margin-bottom: -146px;position: relative;z-index: 9}
 .itemnum{border-top: 1px solid #c69c6d;padding-top: 4px;margin: 10px 10px;display: inline-block;padding-right: 5px;}
-.itembox.itembox2{text-align: center;width: 260px;}
+.itembox.itembox2{text-align: center;width: 260px;height: 420px;}
 .itembox.itembox2>img{width: 260px;height: 274px;border:none;}
 .itembox2 .logop{text-align: center;color: #c69c6d;padding: 10px  0 2px;margin: 0 5px;border-top: 1px solid #c69c6d;}
-.itembox2>p:nth-child(3){padding-top: 0;height: 106px;}
+.itembox2>p:nth-child(3){padding-top: 0;height: 100px;}
 .modalmain{padding: 20px 30px;}
 .modalmain>p{font-size: 14px;font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;margin-top: 10px;}
 .btn2{width: 100px;margin-left: 70px;border-radius:4;font-size: 14px;line-height: 22px;margin-top: 20px;height: 32px;}
