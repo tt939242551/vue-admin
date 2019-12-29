@@ -54,7 +54,7 @@
                 <img style="float: right;margin: 20px 10px 20px 0" src="../assets/imgs/b-6-1.png" alt="">
                 <div class="s3imgbox1">
                   <div class="imgbox3" v-if="advertising">
-                    <img :src="advertising.picture" alt="">
+                    <img style="width:960px;height: 90px;" :src="advertising.picture" alt="">
                   </div>
                   <p class="footp"><span @click="showModal3" style="cursor: pointer;"><Icon class="icons" size="18" type="ios-create-outline" />编辑</span></p>
                 </div>
@@ -109,6 +109,20 @@
                            <i-input class="sinput"  type="text"  v-model="item.title"  clearable > </i-input><i-input class="sinput" type="text" placeholder="设置对应URL" v-model="item.urllink"  clearable > </i-input><Icon @click="otherList.tipsLabel.splice(i,1)" class="urlicons" size="16" type="md-remove" />
                          </span>
                      </p>
+                      <Button type="primary" @click="getotheredit" style="width:80px;margin: 10px 0 15px 72px;">提交</Button>
+                      <Button  @click="closeotheredit" style="width:80px;margin: 10px 0 15px 20px;border-color: #c69c6d;color: #c69c6d;">取消</Button>
+                   </div>
+                  </section> 
+                 <section>
+                   <p :class="{active:editindex===4}">导航栏<span v-show="!isedit" @click="editindexs(4)"  style="cursor: pointer;float: right;font-size: 14px;"><Icon class="icons" size="20" type="ios-create-outline" />修改</span></p>
+                   <div v-if="editindex !== 4">
+                     <p><span>导航展示:</span><span class="switchurl" v-for="item in otherList.tipsLabel" :key="item.id">{{item.title}}</span></p>
+                   </div>
+                   <div v-else>
+                     <p><span>导航展示:</span><span class="switchurl" v-for="item in otherList.tipsLabel" :key="item.id">{{item.title}}</span></p>
+                     <p><span>选项:</span><!-- <Button :type="craterbrandlist.indexOf(item.guid)>=0?'default':'primary'" size="small"  @click="craterlist(item)" v-for="(item,i) in generalattribute[0].item" :key="i">{{item.title}}</Button> -->
+                     </p>
+                     <p><span style="margin-left: 60px;color:#a6a6a6;width:95px;">（最多选择6个）</span></p>
                       <Button type="primary" @click="getotheredit" style="width:80px;margin: 10px 0 15px 72px;">提交</Button>
                       <Button  @click="closeotheredit" style="width:80px;margin: 10px 0 15px 20px;border-color: #c69c6d;color: #c69c6d;">取消</Button>
                    </div>
@@ -370,9 +384,8 @@ export default {
       }else{this.$Message.warning("数据不能为空");} 
     },
     closeotheredit(){
-     
-      this.getother()
-      
+        this.isedit=false
+        this.editindex= 0
     },
     editindexs(i){
       this.editindex = i
@@ -569,10 +582,10 @@ export default {
 .bgbox2{background:#f6f6f6 ;height: 530px;width: 2200px;position: absolute;top: 270px;left: -500px;z-index: -1;position: relative;}
 .imgbox1{background: no-repeat url(../assets/imgs/b-4-1.png);background-size: cover;width: 352px;height: 559px;position: relative;}
 .imgbox2{background-image: url(../assets/imgs/b-bg2.png);background-size: cover;width: 312px;height: 240px;position: relative;}
-.imgbox3,.imgbox3 img{width: 750px;height: 115px;}
-.s3imgbox1{width:752px;margin-top: 20px;margin-right: 10px;border: 1px solid #f0f0f0}
+
+.s3imgbox1{width:962px;margin-top: 20px;margin-right: 10px;border: 1px solid #f0f0f0}
 .main2 img{width: 100%;height: 100%;}
-.footp{text-align: right;color: #c69c6d;padding: 12px 20px;font-size: 14px}
+.footp{text-align: right;color: #c69c6d;padding: 8px 20px 10px;font-size: 14px}
 .footp .icons{transform: translateY(-2px);margin-left: 18px;margin-right: 2px;}
 .hovbox{position: absolute;top: 50%;left: 50%;transform: translate(-50%,-50%);width: 230px;height: 136px;background: #c69c6d;color: #fff;text-align: center;padding: 20px;display: none}
 .hovbox span{font-size: 28px;border-bottom: 2px solid #fff;display: inline-block;padding: 0 5px 6px;}

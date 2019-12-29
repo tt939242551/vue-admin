@@ -9,7 +9,7 @@
          </div>
       </div>
       <div class="tabbar1">
-        <span @click="activityinit"  class="tabspan" style="margin-right: 50px;">所有品牌</span>
+        <span @click="activityinit" :class="{tabspan: true,active:navValue===-1}" style="margin-right: 50px;">所有品牌</span>
         <span @click="getnavls(i)" :class="{tabspan: true,active:navValue===i}" v-for="(itme,i) in navlist" :key="i">{{itme}}</span>
          <Input search v-model="searchvalue" class="topsearch" size="small" enter-button="搜索" placeholder="在当前条件下搜索" />
       </div>
@@ -23,20 +23,7 @@
               <i-switch @on-change="switchsth" style="transform: translateY(-2px);margin-left: 8px;" v-model="isopen" size="small"  />
           </template>
       </div>
-    <!--   <Modal footer-hide v-model="xModal" width="360">
-        <div style="text-align:center;font-size: 20px;margin: 20px 0 ;">
-            <p>请确认是否删除{{tabs[tvalue1].activityname}}？</p>
-            <p>删除后数据将不可回复</p>
-        </div>
-        <div style="text-align:center;margin: 20px 0 ;">
-             <Button style="width:80px" type="primary" class="samintbtn" @click="removeactivity">确定</Button><Button  style="width:80px;margin-left: 30px;display: inline-block;" class="samintbtn" @click="xModal=false">取消</Button>
-        </div>
-    </Modal> -->
-     <!--   <Modal width="380" footer-hide v-model="xModal1" :styles="{top: '200px'}">
-        <p class="stitle">新增活动</p>
-        <Input class="sinput" v-model="Modal[0]" placeholder="请输入活动名称" />
-        <Button type="primary" class="samintbtn" @click="isok1" style="width:80px;margin-left: 135px;margin-bottom: 30px;">提交</Button>
-      </Modal> -->
+
        <Modal v-model="xModal2" width="480"  footer-hide :styles="{top: '200px'}">
             <div class="modalmain">
               <div class="mtitle">品牌信息</div>
@@ -90,16 +77,19 @@
               </p>
               <p><span>类 别</span>
                 <Select  placeholder="请选择类别" v-model="Modal[1]" style="width:250px;margin-left: 10px;"  @on-change="getCategory">
+                        <Option value="" >不限</Option>
                         <Option v-for="(item,j) in parentcategory" :value="item.guid" :key="j">{{item.title}}</Option>
                 </Select>
               </p>
               <p><span>单品名称</span>
                 <Select  placeholder="请选择单品名称"  @on-change="getcommodityList" v-model="Modal[2]" style="width:250px;margin-left: 10px;">
+                        <Option value="" >不限</Option>
                         <Option v-for="(item,j) in category" :value="item.guid" :key="j">{{item.title}}</Option>
                 </Select>
               </p>
               <p><span>商品名称</span>
                 <Select  placeholder="请选择商品名称" v-model="Modal[3]" style="width:250px;margin-left: 10px;">
+                        <Option value="" >不限</Option>
                         <Option v-for="(item,j) in commodity" :value="item.guid" :key="j">{{item.title}}</Option>
                 </Select>
               </p>
@@ -109,7 +99,7 @@
         <Modal footer-hide v-model="xModal5" width="360"  :styles="{top: '200px'}">
           <div style="text-align:center;font-size: 20px;margin: 20px 0 ;">
               <p>请确认是否清空其他品牌？</p>
-              <p>清空后数据将不可回复</p>
+              <p>清空后数据将不可恢复</p>
           </div>
           <div style="text-align:center;margin: 20px 0 ;">
               <Button style="width:80px" type="primary" class="samintbtn" @click="removebrandall">确定</Button><Button  style="width:80px;margin-left: 30px;display: inline-block;" class="samintbtn" @click="xModal5=false">取消</Button>
@@ -118,7 +108,7 @@
           <Modal footer-hide v-model="xModal7" width="360" :styles="{top: '200px'}">
             <div style="text-align:center;font-size: 20px;margin: 20px 0 ;">
                 <p>请确认是否清空{{typeid===1?"品牌上新":"品牌系列"}}商品？</p>
-                <p>清空后数据将不可回复</p>
+                <p>清空后数据将不可恢复</p>
             </div>
             <div style="text-align:center;margin: 20px 0 ;">
                 <Button style="width:80px" type="primary" class="samintbtn" @click="removegoodsall">确定</Button><Button  style="width:80px;margin-left: 30px;display: inline-block;" class="samintbtn" @click="xModal7=false">取消</Button>
@@ -346,7 +336,6 @@ export default {
           .then(res => {
             if (res.status >= 0) {
               this.tabs = res.item
-              this.isopens = res.isbrandrecommendation
               this.getbrandinit()
             } else {
               this.$Message.warning(res.content); 
@@ -359,6 +348,7 @@ export default {
           .then(res => {
             if (res.status > 0) {
              this.brand = res.item[0]
+             this.isopens = res.isbrandrecommendation
              if (this.tvalue2===0) {
                 this.isopen =  this.brand.ishome
              }
@@ -374,7 +364,10 @@ export default {
           .then(res => {
             if (res.status >= 0) {
               if ( res.item.length>0) {
-                this.tabs = res.item  
+                this.tabs = res.item 
+                this.tvalue1 = 0 
+                this.tvalue2 = 0 
+                this.getbrandinit()
               }else{
                   for(let i = 0;i<this.tabs.length;i++){ this.$set(this.tabs,i,"") }
                   }
@@ -390,7 +383,7 @@ export default {
           this.getnavlist() 
       },
      isok2(){
-        if (this.Modal[0]&&this.Modal[1]) {
+        if (this.Modal[1]) {
         this.$axios.post("brandrecommendation.ashx?action=edit",this.$qs.stringify({ brandintroduction: this.Modal[1],id: this.brand.id}))
           .then(res => {
             if (res.status > 0) {
@@ -631,10 +624,10 @@ export default {
          this.Modal[2] = ""
          this.Modal[3] = ""
          this.getgoodsListall()
+         this.getcommodityList()
          }else{
          this.goodsindex = i
          this.editgoodsinit()
-        
          }
       this.xModal6 = true
     },
@@ -694,7 +687,7 @@ export default {
     },
     getgoodsListall(){
          this.$axios
-          .post("brandrecommendation.ashx?action=addactivecommoditiesinit",this.$qs.stringify({ brandid: this.brand.id}))
+          .post("brandrecommendation.ashx?action=addactivecommoditiesinit",this.$qs.stringify({ brandid: this.tabs[this.tvalue1].guid}))
           .then(res => {
             if (res.status >= 0) {
              this.generalattribute = res.generalattribute[0].item

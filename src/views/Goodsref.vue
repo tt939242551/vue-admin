@@ -3,7 +3,7 @@
       <div :class="{tabbar:true,shows:tabs.length}">
         <span v-show="tabs.length===0" class="tabspan">暂无数据</span>
         <span @click="xModal=true"  style="cursor: pointer;float: right;color: #c69c6d;font-size: 14px;"><Icon class="icons" size="18" type="ios-trash-outline" />删除</span>  
-        <span @click="xModal1 = true" style="margin-right: 10px;cursor: pointer;float: right;color: #c69c6d;font-size: 14px;"><Icon class="icons" size="18" type="md-add" />新增</span>
+        <span @click="addgoodst" style="margin-right: 10px;cursor: pointer;float: right;color: #c69c6d;font-size: 14px;"><Icon class="icons" size="18" type="md-add" />新增</span>
       </div>
       <div class="tabsbox">
         <Tabs v-model="tvalue" v-if="tabs.length">
@@ -73,16 +73,19 @@
               <div class="mtitle">编辑商品</div>
               <p><span>品 牌</span>
                 <Select  @on-change="getcommodityList" placeholder="请选择品牌" v-model="Modal[0]" style="width:250px;margin-left: 10px;">
+                        <Option value="" >不限</Option>
                         <Option v-for="(item,j) in generalattribute" :value="item.guid" :key="j">{{item.title}}</Option>
                 </Select>
               </p>
               <p><span>类 别</span>
                 <Select  placeholder="请选择类别" v-model="Modal[1]" style="width:250px;margin-left: 10px;"  @on-change="getCategory">
+                        <Option value="" >不限</Option>
                         <Option v-for="(item,j) in parentcategory" :value="item.guid" :key="j">{{item.title}}</Option>
                 </Select>
               </p>
               <p><span>单品名称</span>
                 <Select  placeholder="请选择单品名称"  @on-change="getcommodityList" v-model="Modal[2]" style="width:250px;margin-left: 10px;">
+                        <Option value="" >不限</Option>
                         <Option v-for="(item,j) in category" :value="item.guid" :key="j">{{item.title}}</Option>
                 </Select>
               </p>
@@ -94,7 +97,7 @@
               <Button size="small" @click="isok2" type="primary" class="btn2">提交</Button>
             </div>     
         </Modal>
-        <Modal v-model="xModal3" width="480"  footer-hide :styles="{top: '200px'}">
+        <Modal v-model="xModal3" width="480"  footer-hide :styles="{top: '100px'}">
             <div class="modalmain">
               <div class="mtitle">修改图片</div>
               <p><span>URL链接</span>
@@ -232,6 +235,9 @@ export default {
     showModal(i){
       this.goodsindex = i
       this.Modal[0] = ""
+      this.Modal[1] = -1
+      this.Modal[2] = -1
+      this.Modal[3] = -1
       if (i===0&&this.tabs[this.tvalue].item.length===4) {
            this.xModal3 = true
          }else{
@@ -322,7 +328,10 @@ export default {
       }
      
     },
-
+    addgoodst(){
+        this.Modal[0] = ""
+        this.xModal1 = true
+    },
          // 图片上传
     addimg() {
       this.$refs.uploadfiles.click();

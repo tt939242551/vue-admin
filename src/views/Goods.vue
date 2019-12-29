@@ -251,7 +251,7 @@
         <table class="colorbox" style="margin-top: -20px">
           <thead>
             <tr>
-              <th style="margin-left: 0px;border: 1px solid #ccc;">颜色</th>
+              <th style="margin-left: 0px;border: 1px solid #ccc;">分类</th>
               <th>尺码</th>
               <th>价格 (元)</th>
               <th>数量 (件)</th>

@@ -11,7 +11,7 @@
       <div class="tabbox">
          <Tabs v-model="tvalue">
             <TabPane  label="折扣商品">
-                <div class="main1">
+                <div class="main1" >
                      <p v-for="(item,i) in categoryList" :key="i"><span style="cursor: pointer;" :class="{activ:i===categoryvalue}"  @click="categoryvalue=i">{{item.title}}</span>
                           <Button type="primary"  @click="eaitcategory(i)" shape="circle" icon="ios-create-outline" style="width:24px;height:24px;" size="small"><Icon type="ios-create-outline" /></Button>
                           <Button   @click="removecategory(i)" shape="circle" icon="md-remove" style="margin-left: 8px;width:24px;height:24px;" size="small"></Button>
@@ -19,14 +19,14 @@
                       <Button  type="primary" :disabled="categoryList.length>=4"  style="height: 28px;margin: 0 20px 20px;width:100px;border-radius: 4px; border:none" @click="eaitcategory('add')" ><Icon size="18" style="transform: translateY(-2px)" type="md-add" /></Button> 
                     <p><span>MORE+</span></p>
                 </div>
-                <div class="main2">
+                <div class="main2" v-if="categoryList.length">
                     <img @click="eaitgoods('add')" style="vertical-align: top;margin: 10px 40px 10px 0;" src="../assets/imgs/add-1.png" alt="">
-                    <div class="imglistbox1 imglistbox2">
+                    <div class="imglistbox1 imglistbox2" >
                         <div class="imgbox1" v-for="(item,i) in categoryList[categoryvalue].item" :key="i">
                             <div class="itembox itembox1">
                                  <img v-if="item.commoditypictures1" style="width: 220px;height: 264px;border:none;" :src="item.commoditypictures1" alt="">  <span v-else class="bgtext">暂无图片</span>
                                  <p v-if="item.commodityname">{{item.commodityname}}</p><p v-else>商品名称</p>
-                                 <span  v-if="item.Price" class="itemnum">￥{{item.Price*item.discount}}</span> <span v-else class="itemnum"> 价格</span><span class="lastnum">￥{{item.Price}}</span>
+                                 <span  v-if="item.Price" class="itemnum">￥{{Math.round(item.Price*item.discount*100)/100}}</span> <span v-else class="itemnum"> 价格</span><span class="lastnum">￥{{item.Price}}</span>
                                 <span class="itemtab" >折扣商品</span>
                             
                             </div>
@@ -76,21 +76,25 @@
               </p>
               <p><span>品 牌</span>
                 <Select  @on-change="getcommodityList" placeholder="请选择品牌" v-model="Modal[0]" style="width:250px;margin-left: 10px;">
+                        <Option value="" >不限</Option>
                         <Option v-for="(item,j) in generalattribute" :value="item.guid" :key="j">{{item.title}}</Option>
                 </Select>
               </p>
               <p><span>类 别</span>
                 <Select  placeholder="请选择类别" v-model="Modal[1]" style="width:250px;margin-left: 10px;"  @on-change="getCategory">
+                        <Option value="" >不限</Option>
                         <Option v-for="(item,j) in parentcategory" :value="item.guid" :key="j">{{item.title}}</Option>
                 </Select>
               </p>
               <p><span>单品名称</span>
                 <Select  placeholder="请选择单品名称"  @on-change="getcommodityList" v-model="Modal[2]" style="width:250px;margin-left: 10px;">
+                        <Option value="" >不限</Option>
                         <Option v-for="(item,j) in category" :value="item.guid" :key="j">{{item.title}}</Option>
                 </Select>
               </p>
               <p><span>商品名称</span>
                 <Select  placeholder="请选择商品名称" v-model="Modal[3]" style="width:250px;margin-left: 10px;">
+                        <Option value="" >不限</Option>
                         <Option v-for="(item,j) in commodity" :value="item.guid" :key="j">{{item.title}}</Option>
                 </Select>
               </p>
@@ -100,12 +104,13 @@
         <Modal footer-hide v-model="xModal3" width="360" :styles="{top: '200px'}">
             <div style="text-align:center;font-size: 20px;margin: 20px 0 ;">
                 <p>请确认是否清空商品？</p>
-                <p>清空后数据将不可回复</p>
+                <p>清空后数据将不可恢复</p>
             </div>
             <div style="text-align:center;margin: 20px 0 ;">
                 <Button style="width:80px" type="primary" class="samintbtn" @click="removegoodslist">确定</Button><Button  style="width:80px;margin-left: 30px;display: inline-block;" class="samintbtn" @click="xModal3=false">取消</Button>
             </div>
         </Modal>
+        
         <Modal width="380" footer-hide v-model="xModal4" :styles="{top: '200px'}">
             <p class="stitle">{{discountindex === "add"?"新增": "修改"}}折扣</p>
             <Input class="sinput" :maxlength="4" v-model="Modal[0]" placeholder="请输入折扣" />
@@ -115,10 +120,19 @@
         <Modal footer-hide v-model="xModal5" width="360" :styles="{top: '200px'}">
             <div style="text-align:center;font-size: 20px;margin: 20px 0 ;">
                 <p>请确认是否清空设置？</p>
-                <p>清空后数据将不可回复</p>
+                <p>清空后数据将不可恢复</p>
             </div>
             <div style="text-align:center;margin: 20px 0 ;">
                 <Button style="width:80px" type="primary" class="samintbtn" @click="removediscountall">确定</Button><Button  style="width:80px;margin-left: 30px;display: inline-block;" class="samintbtn" @click="xModal5=false">取消</Button>
+            </div>
+        </Modal>
+         <Modal footer-hide v-model="xModal6" width="360" :styles="{top: '200px'}">
+            <div style="text-align:center;font-size: 20px;margin: 20px 0 ;">
+                <p>首页展示位商品已满。</p>
+                <p>请关闭其中展示位再进行开启</p>
+            </div>
+            <div style="text-align:center;margin: 20px 0 ;">
+                <Button style="width:80px" type="primary" class="samintbtn" @click="xModal6=false">确定</Button>
             </div>
         </Modal>
     
@@ -137,6 +151,7 @@ export default {
            xModal3:false,
            xModal4:false,
            xModal5:false,
+           xModal6:false,
            Modal:[],
            categoryList: [], 
            categoryindex:0,
@@ -160,13 +175,16 @@ export default {
           .then(res => {
             if (res.status > 0) {
               this.categoryList = res.discounts
-               this.categoryList.forEach(item=>{
+              if (this.categoryList.length) {
+                  this.categoryList.forEach(item=>{
                   item.item.forEach((itmes)=>{ 
                    if(itmes.commoditypictures1){ 
                     itmes.commoditypictures1 = itmes.commoditypictures1.match(/https:\/\/oss.bogole.com\/project\/code\/public\/e19102801\/upfile\/20\d{6,30}\.jpg/)[0] 
                  }
               })
                })
+              }
+             
               
             } else {
               this.$Message.warning(res.content); 
@@ -319,9 +337,9 @@ export default {
        },
         removegoods(i){
            let arr = []
-            arr.push(this.categoryList[i].id)
+            arr.push(this.categoryList[this.categoryvalue].item[i].id)
           this.$axios
-          .post("discount.ashx?action=delete",this.$qs.stringify({ids: JSON.stringify(arr)}))
+          .post("discount.ashx?action=delete",this.$qs.stringify({ids: JSON.stringify(arr),parentid:this.categoryList[this.categoryvalue].id}))
           .then(res => {
             if (res.status >= 0) {
              this.getinit()
@@ -335,14 +353,14 @@ export default {
          this.$axios
           .post(
             "discount.ashx?action=delete",
-            this.$qs.stringify({ emptys: "清空" })
+            this.$qs.stringify({ emptys: "清空" ,parentid:this.categoryList[this.categoryvalue].id})
           )
           .then(res => {
             if (res.status >= 0) {
               this.getinit()
-              this.xModal5 = false
+              this.xModal3 = false
             } else {
-               this.xModal5 = false
+               this.xModal3 = false
               this.$Message.warning(res.content);
             }
           })
@@ -394,18 +412,31 @@ export default {
         }
       
     },
-    switchsth(i){   
-          let parme = {}
-          parme.id =  this.categoryList[this.categoryvalue].item[i].id
-          parme.isselect = this.categoryList[this.categoryvalue].item[i].isselect
-        this.$axios.post("discount.ashx?action=editisselect",this.$qs.stringify(parme))
-          .then(res => {
-            if (res.status > 0) {
-            } else {
-              this.$Message.warning(res.content); 
-            }
-          })
-          .catch(() => {}); 
+    switchsth(i){  
+         let n = 0
+         let goodsList =  this.categoryList[this.categoryvalue].item
+         goodsList.forEach(item=>{
+           if (item.isselect) {
+             n++
+           }
+         })
+         if (n>4) {
+          this.getinit()
+          this.xModal6 = true
+         }else{
+              let parme = {}
+              parme.id =  goodsList[i].id
+              parme.isselect = goodsList[i].isselect
+            this.$axios.post("discount.ashx?action=editisselect",this.$qs.stringify(parme))
+              .then(res => {
+                if (res.status > 0) {
+                } else {
+                  this.$Message.warning(res.content); 
+                }
+              })
+              .catch(() => {}); 
+         }
+      
     },
     //折扣设置
     getdiscountlist(){
@@ -525,7 +556,7 @@ export default {
  /* 折扣设置 */
 .stitle {font-size: 18px;text-align: center; margin: 25px 0;}
  .sinput {width: 240px; margin: 10px 0 40px 58px;font-size: 14px}
-.imglistbox1.imglistbox3{width: 800px;display: inline-block;margin-top: 25px;}
+.imglistbox1.imglistbox3{width: 800px;display: inline-block;margin-top: 25px;padding-bottom: 40px;}
 .imglistbox1.imglistbox3 .imgbox1{text-align: center;position: relative;width: 160px;height: 150px;}
 .imglistbox1.imglistbox3 .imgbox1 .disnumber{color: #c69c6d;width: 100%;text-align: center;position: absolute;left: 0;top: 48px;font-size: 36px;font-family: Microsoft YaHei}
 .imglistbox1.imglistbox3 .imgbox1>p{border-top: 1px solid #f0f0f0;margin-top: 40px;padding: 0; padding-top: 12px;color: #c69c6d;padding-left: 20px;}

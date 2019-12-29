@@ -90,21 +90,25 @@
               <div class="mtitle">{{goodsindex === goodsList.length?"新增": "修改"}}活动商品</div>
               <p><span>品 牌</span>
                 <Select  @on-change="getcommodityList" placeholder="请选择品牌" v-model="Modal[0]" style="width:250px;margin-left: 10px;">
+                        <Option value="" >不限</Option>
                         <Option v-for="(item,j) in generalattribute" :value="item.guid" :key="j">{{item.title}}</Option>
                 </Select>
               </p>
               <p><span>类 别</span>
                 <Select  placeholder="请选择类别" v-model="Modal[1]" style="width:250px;margin-left: 10px;"  @on-change="getCategory">
+                        <Option value="" >不限</Option>
                         <Option v-for="(item,j) in parentcategory" :value="item.guid" :key="j">{{item.title}}</Option>
                 </Select>
               </p>
               <p><span>单品名称</span>
                 <Select  placeholder="请选择单品名称"  @on-change="getcommodityList" v-model="Modal[2]" style="width:250px;margin-left: 10px;">
+                        <Option value="" >不限</Option>
                         <Option v-for="(item,j) in category" :value="item.guid" :key="j">{{item.title}}</Option>
                 </Select>
               </p>
               <p><span>商品名称</span>
                 <Select  placeholder="请选择商品名称" v-model="Modal[3]" style="width:250px;margin-left: 10px;">
+                        <Option value="" >不限</Option>
                         <Option v-for="(item,j) in commodity" :value="item.guid" :key="j">{{item.title}}</Option>
                 </Select>
               </p>
@@ -694,7 +698,7 @@ export default {
             }
           })
           .catch(() => {});
-      }else{this.$Message.warning("没有商品无法提交");} 
+      }else{this.$Message.warning("该栏目下没有商品无法提交");} 
     },
     editgoodsinit(){
         this.$axios
