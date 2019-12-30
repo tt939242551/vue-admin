@@ -329,7 +329,16 @@
     </Modal>
     <Modal transfer :value="modal2" @on-ok="ok2" @on-cancel="cancel2">
       <p class="modal_p">切换了之后, 之前选择的分类信息将被清空 !</p>
-    </Modal> 
+    </Modal>
+     <Modal footer-hide v-model="xModal4" width="360" :styles="{top: '200px'}">
+            <div style="text-align:center;font-size: 20px;margin: 20px 0 ;">
+                <p>热销置顶最多选择 10 个。</p>
+                <p>请关闭其它热销置顶再进行开启</p>
+            </div>
+            <div style="text-align:center;margin: 20px 0 ;">
+                <Button style="width:80px" type="primary" class="samintbtn" @click="getInit">确定</Button>
+            </div>
+        </Modal> 
   </div>
 </template>
 
@@ -389,6 +398,7 @@ export default {
       value2: "",
       value3: "",
       setdate: "",
+      xModal4:false,
       tindex: 0,
       smodels:[],
       bmodels:[],
@@ -445,6 +455,7 @@ export default {
       specialList: [],
       specialListItem: [],
       specialmodels: [],
+      isoverheadcount: 0,
       page: 1,
       pageSize: 10,
       total: 1,
@@ -487,6 +498,7 @@ export default {
         .catch(() => {});
     },
     getInit() {
+      this.xModal4 = false
       this.$axios
         .post(
           "commodity.ashx?action=selectlist",
@@ -495,6 +507,7 @@ export default {
         .then(res => {
           if (res.status >= 0) {
             this.data1 = res.item;
+            this.isoverheadcount = res.isoverheadcount
             this.data1.forEach(i=>{
              i.setdate = i.setdate.slice(0,10)
             })
@@ -759,6 +772,7 @@ export default {
       }
     },
     getDatalist(){
+       
       this.page = 1
       this.$axios
         .post(
@@ -884,18 +898,25 @@ export default {
       }
     },
     settop(i){
-       console.log(i)
-        this.$axios.post(
+       if (this.isoverheadcount>=10&&this.data1[i].isoverhead) {
+         this.xModal4 = true
+       }else{
+           this.$axios.post(
             "commodity.ashx?action=editisoverhead",
             this.$qs.stringify({ id:this.data1[i].id ,isoverhead: this.data1[i].isoverhead})
           )
           .then(res => {
             if (res.status >= 0) {
+               if (this.data1[i].isoverhead) {
+                 this.isoverheadcount++
+               }else{ this.isoverheadcount--}
             } else {
               that.$Message.warning(res.content);
             }
           })
           .catch(() => {});
+       }
+        
     },
     getgoods() {
       if (!this.content && !this.setdate && !this.imgLists.length && !this.mainList.length) {
