@@ -116,11 +116,11 @@
                  <section>
                    <p :class="{active:editindex===4}">导航栏<span v-show="!isedit" @click="editindexs(4)"  style="cursor: pointer;float: right;font-size: 14px;"><Icon class="icons" size="20" type="ios-create-outline" />修改</span></p>
                    <div v-if="editindex !== 4">
-                     <p><span>导航展示:</span><span class="switchurl" v-for="item in otherList.tipsLabel" :key="item.id">{{item.title}}</span></p>
+                     <p><span>导航展示:</span><span v-show="item.isdisplay" class="switchurl" v-for="item in otherList.parentcategory" :key="item.id">{{item.title}}</span></p>
                    </div>
                    <div v-else>
-                     <p><span>导航展示:</span><span class="switchurl" v-for="item in otherList.tipsLabel" :key="item.id">{{item.title}}</span></p>
-                     <p><span>选项:</span><!-- <Button :type="craterbrandlist.indexOf(item.guid)>=0?'default':'primary'" size="small"  @click="craterlist(item)" v-for="(item,i) in generalattribute[0].item" :key="i">{{item.title}}</Button> -->
+                     <p><span>导航展示:</span><span v-show="item.isdisplay" class="switchurl" v-for="item in otherList.parentcategory" :key="item.id">{{item.title}}</span></p>
+                     <p><span>选项:</span><Button :type="item.isdisplay ?'primary':'default'"  class="switchurls"  @click="item.isdisplay=!item.isdisplay" v-for="(item,i) in otherList.parentcategory" :key="i">{{item.title}}</Button>
                      </p>
                      <p><span style="margin-left: 60px;color:#a6a6a6;width:95px;">（最多选择6个）</span></p>
                       <Button type="primary" @click="getotheredit" style="width:80px;margin: 10px 0 15px 72px;">提交</Button>
@@ -366,11 +366,18 @@ export default {
       }else{this.$Message.warning("图片必须上传");} 
     },
     getotheredit(){
+      let arr =[]
+      this.otherList.parentcategory.forEach(item=>{
+        if (item.isdisplay) {
+         arr.push(item.guid) 
+        }
+      })
        if (this.otherList.welcomespeech&&this.otherList.VIPline&&this.otherList.Telephone&&this.otherList.email&&this.otherList.advertisement) {
           let url ="Other.ashx?action=edit"
           let prima = this.otherList
           prima.tipsLabel = JSON.stringify(prima.tipsLabel)
-
+           prima.parentcategory = null
+         prima.parentcategoryid = JSON.stringify(arr)
          this.$axios.post(url,this.$qs.stringify(prima))
           .then(res => {
             if (res.status >= 0) {
@@ -600,7 +607,8 @@ section>div{padding:  10px 3px;}
 section>div>p{margin: 10px 0;}
 section>div>p>span:first-child{width: 60px;display: inline-block;text-align: right;margin-right: 12px;}
 section>div .sinput{margin: 5px 20px 5px 0;}
-.switchurl{background: #f9f5f0;color:#c69c6d;display: inline-block;padding: 6px 20px;margin-right: 30px; border-radius: 4px}
+.switchurl{background: #f9f5f0;color:#c69c6d;display: inline-block;padding: 6px 30px;margin-right: 30px; border-radius: 4px;margin-bottom: 10px;}
+.switchurls{display: inline-block;padding: 4px 30px;margin-right: 30px; border-radius: 4px;margin-bottom: 10px;}
 .urlicon{margin-left: 6px;}
 .urlicons{border-radius: 50%;background: #c69c6d;color:#fff;padding: 3px;}
 </style>
