@@ -96,7 +96,7 @@
                     </div>
                 </section>
             </TabPane>
-            <TabPane label="已完成" >
+            <TabPane label="交易完成" >
                     <section class="content">
                     <p><span>会员ID</span><span>订单编号</span>
                       <span>商品信息</span><span>单价</span><span>数量</span><span>实付款</span><span>交易状态</span><span>操作</span> 

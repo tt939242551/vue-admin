@@ -75,12 +75,9 @@ export default {
         if (res.status >= 0) {
         this.isShowLoading = true;
         // 登陆成功 设置用户信息头像
-        localStorage.setItem(
-          "userImg",
-          "https://avatars3.githubusercontent.com/u/22117876?s=460&v=4"
-        );
+       
         localStorage.setItem("userName", this.account);
-         localStorage.setItem("token","token");
+         localStorage.setItem("token","token"); 
          this.$router.push({ path: this.redirect || "/statistics" });
        if (this.single) {
          localStorage.setItem("userPwd", this.pwd);

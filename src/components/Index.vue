@@ -59,10 +59,10 @@
                             <div :class="{newMsg: hasNewMsg}"></div>
                             <Icon type="ios-notifications-outline" />
                         </div>
-                        <!-- 用户头像 -->
+                      <!--    用户头像 
                         <div class="user-img-c">
                             <img :src="userImg">
-                        </div>
+                        </div> -->
                         <!-- 下拉菜单 -->
                         <Dropdown trigger="click" @on-click="userOperate" @on-visible-change="showArrow">
                             <div class="pointer">
@@ -70,10 +70,9 @@
                                 <Icon v-show="arrowDown" type="md-arrow-dropdown"/>
                                 <Icon v-show="arrowUp" type="md-arrow-dropup"/>
                             </div>
-                            <DropdownMenu slot="list">
+                            <DropdownMenu  slot="list">
                                 <!-- name标识符 -->
                                 <DropdownItem name="1">修改密码</DropdownItem>
-                                <DropdownItem name="2">基本资料</DropdownItem>
                                 <DropdownItem divided  name="3">退出登陆</DropdownItem>
                             </DropdownMenu>
                         </Dropdown>
@@ -171,7 +170,7 @@ export default {
 
         // 设置用户信息
         this.userName = localStorage.getItem('userName')
-        this.userImg = localStorage.getItem('userImg')
+        //this.userImg = localStorage.getItem('userImg')
 
         this.main = document.querySelector('.sec-right')
         this.asideArrowIcons = document.querySelectorAll('aside .ivu-icon-ios-arrow-down')
@@ -255,7 +254,18 @@ export default {
                 }
             }
         },
+        userout(){
+            this.$axios.post("user.ashx?action=exit",)
+          .then(res => {
+            if (res.status > 0) {
+            this.$router.replace({name: 'login'})
 
+            } else {
+              this.$Message.warning(res.content); 
+            }
+          })
+          .catch(() => {}); 
+        },
         monitorWindowSize() {
             let w = document.documentElement.clientWidth || document.body.clientWidth
             if (w < 1300) {
@@ -304,7 +314,8 @@ export default {
                     break
                 case '3':
                     resetTokenAndClearUser()
-                    this.$router.replace({name: 'login'})
+                    this.userout()
+                   
                     break
             }
         },
@@ -504,6 +515,7 @@ header .ivu-icon {
 .notice-c {
     cursor: pointer;
     position: relative;
+    margin-right: 30px;
 }
 .newMsg {
     position: absolute;
