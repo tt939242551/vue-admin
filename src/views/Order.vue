@@ -9,25 +9,26 @@
                     </p>
                     <div  v-show="isredin" class="active" v-for="(items,i) in orderList" :key="i">
                         <Checkbox style="vertical-align: top; margin-top: 26px;"  v-model="isCheck[i]"></Checkbox>
-                        <span class="idspan">{{items.vipid}}</span><span class="bspan">{{items.ordernumber}}</span>
+                        <span class="idspan">{{items.user_mid}}</span><span class="bspan">{{items.order_no}}</span>
                          <div class="goodslist">
-                            <div v-for="(item,j) in items.item" :key="j">
-                                <img :src="item.commoditypicture">
+                            <div v-for="(item,j) in items.list" :key="j">
+                                <img :src="item.photo">
                                 <div class="items item1">
                                     <p >{{item.commodityname}}</p>
-                                    <span>颜色：红色</span><br><span>尺码：{{item.size}}</span>
+                                    <span>分类：{{item.color}}</span><br><span>尺码：{{item.size}}</span>
                                 </div>
                                 <div class="items item2">
-                                    <p>{{item.Price}}</p>
+                                    <p>￥{{item.sprice}}</p>
+                                     <p v-show="item.mprice">￥{{item.mprice}}</p>
                                 </div>
-                                <span class="number">{{item.count}}</span>
+                                <span class="number">{{item.quantity}}</span>
                             </div>
                          </div>   
-                        <span class="mach">{{items.actuapayment}}</span>
-                        <div class="stutas">{{items.tradingstatus}}</div>
+                        <span class="mach">{{items.realamount}}</span>
+                        <div class="stutas">{{items.status_content}}</div>
                         <div class="operate">
-                           <p v-if="items.tradingstatus==='代发货'"><Button size="small" @click="show(i)" type="primary" class="btn4">确认发货</Button></p>
-                           <p v-else>发货中</p>
+                           <p v-show="items.status=='2'"><Button size="small" @click="show(i)" type="primary" class="btn4">确认发货</Button></p>
+                           <p v-show="items.status=='3'">发货中</p>
                             <a @click="getparticulars(i)">订单详情</a>
                         </div>  
                     </div>
@@ -41,25 +42,25 @@
                     </p>
                     <div  v-show="isredin" class="active" v-for="(items,i) in orderList" :key="i">
                         <Checkbox style="vertical-align: top;margin-top: 26px;"  v-model="isCheck[i]"></Checkbox>
-                        <span>{{items.vipid}}</span><span class="bspan">{{items.ordernumber}}</span>
-                         <div class="goodslist">
-                            <div v-for="(item,j) in items.item" :key="j">
-                                <img :src="item.commoditypicture">
+                          <span class="idspan">{{items.user_mid}}</span><span class="bspan">{{items.order_no}}</span>
+                        <div class="goodslist">
+                            <div v-for="(item,j) in items.list" :key="j">
+                                <img :src="item.photo">
                                 <div class="items item1">
                                     <p >{{item.commodityname}}</p>
-                                    <span>颜色：红色</span><br><span>尺码：{{item.size}}</span>
+                                    <span>分类：{{item.color}}</span><br><span>尺码：{{item.size}}</span>
                                 </div>
                                 <div class="items item2">
-                                    <p>{{item.Price}}</p>
+                                    <p>￥{{item.sprice}}</p>
+                                     <p v-show="item.mprice">￥{{item.mprice}}</p>
                                 </div>
-                                <span class="number">{{item.count}}</span>
+                                <span class="number">{{item.quantity}}</span>
                             </div>
                          </div>   
-                        <span class="mach">{{items.actuapayment}}</span>
-                        <div class="stutas">{{items.tradingstatus}}</div>
+                        <span class="mach">{{items.realamount}}</span>
+                        <div class="stutas">{{items.status_content}}</div>
                         <div class="operate">
-                           <p v-if="items.tradingstatus==='代发货'"><Button size="small" @click="xModal1=true" type="primary" class="btn4">确认发货</Button></p>
-                           <p v-else>发货中</p>
+                           <p><Button size="small" @click="show(i)" type="primary" class="btn4">确认发货</Button></p>
                             <a @click="getparticulars(i)">订单详情</a>
                         </div>  
                     </div>
@@ -73,22 +74,23 @@
                     </p>
                     <div  v-show="isredin" class="active" v-for="(items,i) in orderList" :key="i">
                         <Checkbox style="vertical-align: top;margin-top: 26px;"  v-model="isCheck[i]"></Checkbox>
-                        <span>{{items.vipid}}</span><span class="bspan">{{items.ordernumber}}</span>
+                          <span class="idspan">{{items.user_mid}}</span><span class="bspan">{{items.order_no}}</span>
                          <div class="goodslist">
-                            <div v-for="(item,j) in items.item" :key="j">
-                                <img :src="item.commoditypicture">
+                            <div v-for="(item,j) in items.list" :key="j">
+                                <img :src="item.photo">
                                 <div class="items item1">
                                     <p >{{item.commodityname}}</p>
-                                    <span>颜色：红色</span><br><span>尺码：{{item.size}}</span>
+                                    <span>分类：{{item.color}}</span><br><span>尺码：{{item.size}}</span>
                                 </div>
                                 <div class="items item2">
-                                    <p>{{item.Price}}</p>
+                                    <p>￥{{item.sprice}}</p>
+                                     <p v-show="item.mprice">￥{{item.mprice}}</p>
                                 </div>
-                                <span class="number">{{item.count}}</span>
+                                <span class="number">{{item.quantity}}</span>
                             </div>
                          </div>   
-                        <span class="mach">{{items.actuapayment}}</span>
-                        <div class="stutas">{{items.tradingstatus}}</div>
+                        <span class="mach">{{items.realamount}}</span>
+                        <div class="stutas">{{items.status_content}}</div>
                         <div class="operate">
                            <p>发货中</p>
                             <a @click="getparticulars(i)">订单详情</a>
@@ -103,22 +105,23 @@
                     </p>
                     <div  v-show="isredin" class="active" v-for="(items,i) in orderList" :key="i">
                         <Checkbox style="vertical-align: top;margin-top: 26px;"  v-model="isCheck[i]"></Checkbox>
-                        <span>{{items.vipid}}</span><span class="bspan">{{items.ordernumber}}</span>
-                         <div class="goodslist">
-                            <div v-for="(item,j) in items.item" :key="j">
-                                <img :src="item.commoditypicture">
+                        <span class="idspan">{{items.user_mid}}</span><span class="bspan">{{items.order_no}}</span>
+                        <div class="goodslist">
+                            <div v-for="(item,j) in items.list" :key="j">
+                                <img :src="item.photo">
                                 <div class="items item1">
                                     <p >{{item.commodityname}}</p>
-                                    <span>颜色：红色</span><br><span>尺码：{{item.size}}</span>
+                                    <span>分类：{{item.color}}</span><br><span>尺码：{{item.size}}</span>
                                 </div>
                                 <div class="items item2">
-                                    <p>{{item.Price}}</p>
+                                    <p>￥{{item.sprice}}</p>
+                                     <p v-show="item.mprice">￥{{item.mprice}}</p>
                                 </div>
-                                <span class="number">{{item.count}}</span>
+                                <span class="number">{{item.quantity}}</span>
                             </div>
                          </div>   
-                        <span class="mach">{{items.actuapayment}}</span>
-                        <div class="stutas">{{items.tradingstatus}}</div>
+                        <span class="mach">{{items.realamount}}</span>
+                        <div class="stutas">{{items.status_content}}</div>
                         <div class="operate">
             
                            <p>已完成</p>
@@ -130,14 +133,14 @@
         </Tabs>
         <div class="foot">
             <div>
-                <p style="color:#8c8c8c" @click="removelist"><Icon style="vertical-align: top;" size="18" type="ios-trash" />删除选中商品</p>
+                <p style="color:#8c8c8c" @click="removelist"><Icon style="vertical-align: top;" size="18" type="ios-trash" />删除选中订单</p>
             </div>
             <div ><Page :total="total" style="float: right;padding-top: 20px;" prev-text="上一页" next-text="下一页" @on-change="getlist" /></div>
         </div>
         <Modal width="380" footer-hide v-model="xModal1" :styles="{top: '200px'}">
             <p class="stitle">填写运单号</p>
-            <Input class="sinput" v-model="value" placeholder="请输入运单号" />
-            <Button type="primary" class="samintbtn" @click="isok1" style="width:80px;margin-left: 123px;margin-bottom: 30px;">提交</Button>
+            <Input style="width:250px;margin-left: 45px;"  v-model="value" placeholder="请输入运单号" />
+            <Button type="primary" class="samintbtn" @click="isok1" style="width:80px;margin-left: 130px;margin-bottom: 30px;">提交</Button>
         </Modal>
     </div>
     <div class="order2" v-else>
@@ -145,49 +148,48 @@
        <div class="content">
          <div class="msg">
            
-           <p>订单状态：<span style="color:#c69c6d;"> {{Orderlist[0].tradingstatus}}</span></p>
+           <p>订单状态：<span style="color:#c69c6d;"> {{orderList[tindex].status_content}}</span></p>
            <div>订单详情</div>
          </div>
          <main>
            <div style="font-size: 16px;">订单信息</div>
-           <p>会员ID:  {{Orderlist[0].vipid}}</p>
-           <p>订单编号:  {{Orderlist[0].ordernumber}}</p>
-           <p>支付宝交易号:  {{Orderlist[0].vipid}}</p>
-           <p>创建时间：{{Orderlist[0].adddate}}</p>
-           <p>付款时间：{{Orderlist[0].paymentdate}}</p>
-           <p>确认时间：{{Orderlist[0].confirmdate}}</p>
-           <div class="orderlist">
+           <p>会员ID:  {{orderList[tindex].user_mid}}</p>
+           <p>订单编号:  {{orderList[tindex].order_no}}</p>
+           <p>支付交易号:  {{orderList[tindex].paynumber}}</p>
+           <p>创建时间：{{orderList[tindex].newdate}}</p>
+           <p>付款时间：{{orderList[tindex].paymenttime}}</p>
+           <p>确认时间：{{orderList[tindex].confirmtime}}</p>
+           <div class="orderList">
                     <div class="title">
-                            <span>商品信息</span><span>单价</span><span>数量</span><span>金额小计</span><span>交易状态</span>
+                            <span>商品信息</span><span>单价</span><span>数量</span><span>金额小计</span>
                     </div>
-                    <div class="main2" v-for="(item,i) in Orderlist[0].item" :key="i">
-                        <div class="items"><img   style="margin: 26px 20px;width: 96px;height: 96px;" :src="item.commoditypicture" alt=""></div>
+                    <div class="main2" v-for="(item,i) in orderList[tindex].list" :key="i">
+                        <div class="items"><img   style="margin: 26px 20px;width: 96px;height: 96px;" :src="item.photo" alt=""></div>
                         <div class="items item1">
-                            <p  style="cursor: pointer;">{{item.commodityname}}</p>
-                            <span>颜色：红色</span><br><span>尺码：{{item.size}}</span>
+                            <p  style="cursor: pointer;">{{item.title}}</p>
+                            <span>分类：{{item.color}}</span><br><span>尺码：{{item.size}}</span>
                         </div>
                         <div class="items item2">
-                            <p>{{item.Price}}</p>
-                            <p>￥1,456.00</p>
+                             <p>￥{{item.sprice}}</p>
+                             <p v-show="item.mprice">￥{{item.mprice}}</p>
                         </div>
-                        <span class="items number">{{item.count}}</span>
-                        <div class="mach1">￥1,456.00</div>
-                        <div class="stutas1">交易成功 </div>
+                        <span class="items number">{{item.quantity}}</span>
+                        <div v-show="i==0" class="mach1">￥{{orderList[tindex].payableamount}}</div>
                     </div>
             </div>
              <div class="footer">
-                 <p class="point">返还{{Orderlist[0].integral}}积分</p>
-                 <p>优惠券：300元</p>
-                 <p>商品优惠：-￥2312</p>
-                 <p class="machnum">实付款：<span>￥</span><span>{{Orderlist[0].actuapayment}}</span> </p>
+                 <p class="point">返还{{orderList[tindex].point}}积分</p>
+                 <p v-show="orderList[tindex].coupon">优惠券：{{orderList[tindex].coupon}}元</p>
+                 <p>商品优惠：-￥{{orderList[tindex].discountamount}}</p>
+                 <p class="machnum">实付款：<span>￥</span><span>{{orderList[tindex].realamount}}</span> </p>
              </div>
         </main>
         <main>
            <div style="font-size: 16px;">物流信息</div>
-           <p>收件人：   {{logistics[0]}}</p>
-           <p>收货地址：{{logistics[1]}}</p>
-           <p>邮政编码：{{logistics[2]}}</p>
-           <p>运单号：{{logistics[3]}}</p>
+           <p>收件人：   {{logistics[1]}}</p>
+           <p>收货地址：{{logistics[0][0]}}{{logistics[0][1]}}{{logistics[0][2] }}{{ logistics[2]}}</p>
+           <p>邮政编码：{{logistics[3]}}</p>
+           <p>运单号：{{logistics[4]}}</p>
         </main>
         <Button  @click="xModal2=true"   class=" btn3" >修改</Button>
       </div>
@@ -197,19 +199,21 @@
               <div class="mtitle">物流信息</div>
               <p><span>收件人</span>
                  <i-input class="sinput" 
-                        type="text" v-model="logistics[0]"  clearable placeholder=""> </i-input>
-              </p>
-              <p><span>收货地址</span>
-                 <i-input class="sinput" 
                         type="text" v-model="logistics[1]"  clearable placeholder=""> </i-input>
               </p>
-              <p><span>邮政编码</span>
+              <p><span>地址信息</span> 
+               <Cascader class="sinput"  style="display: inline-block;z-index: 9;" placeholder="请选择省/市/区" v-model="logistics[0]" :data="addressdata" change-on-select></Cascader></p>
+              <p><span>详细地址</span>
                  <i-input class="sinput" 
                         type="text" v-model="logistics[2]"  clearable placeholder=""> </i-input>
               </p>
-                <p><span>运单号</span>
+              <p><span>邮政编码</span>
                  <i-input class="sinput" 
                         type="text" v-model="logistics[3]"  clearable placeholder=""> </i-input>
+              </p>
+                <p><span>运单号</span>
+                 <i-input class="sinput" 
+                        type="text" v-model="logistics[4]"  clearable placeholder=""> </i-input>
               </p>
               <Button size="small" @click="isok2" type="primary" class="btn2">保存</Button>
             </div>     
@@ -219,6 +223,7 @@
 </template>
 
 <script>
+ import addressData from '../address.json';
 export default {
     name: 'order',
     data(){
@@ -230,30 +235,40 @@ export default {
         orderList:[],
         stuta:[],
         page: 1,
-        pageSize:10, 
+        pageSize:10,
+        addressdata:addressData.list, 
         isredin: false,
         isCheck: [],
         xModal1:false,
         xModal2:false,
         islist:true,
-        Orderlist:["",{c:3}],
-        logistics:[],
+        logistics:[[]],
         total:0,
+        usmid : ''
         }
     },
     methods:{
-        getgoodslist(num){
+        getgoodslist(){
             let id 
             if (this.$route.query.id) {
                 id = this.$route.query.id
             }
-           let url = "order_management.ashx?action=selectlist"
-          let params={page:this.page,pageSize:this.pageSize,vipid:id,typeid:this.tvalue?this.tvalue:null,ordernumber:num}
+           let url = "http://sfstyling.bogole.com/common/order.ashx"
+          let params={pageindex:this.page,pageSize:this.pageSize,status:this.tvalue?this.tvalue+1:0,type:10,usmid:this.usmid}
           this.isredin = false
            this.$axios.post(url,this.$qs.stringify(params)).then(res=>{
-           if (res.status>=0) {
-            this.orderList = res.item
-            this.total = res.totalCount
+           if (res.status>0) {
+            this.orderList = res.list
+             this.orderList.forEach((items)=>{
+                        items.list.forEach((item)=>{
+                            if(item.photo){ 
+                            item.photo = item.photo.match(/https:\/\/oss.bogole.com\/project\/code\/public\/e19102801\/upfile\/20\d{6,30}\.jpg/)[0]  
+                                }
+                        })     
+                    })     
+           if (this.page===1) {
+              this.total = res.totalCount
+           } 
             setTimeout(()=>{
            this.isredin = true
             },200)
@@ -264,24 +279,17 @@ export default {
               
          } )
         },
-     selectionChange(a){
-      this.isCheck = []
-     a.forEach((item)=>{
-       if(this.isCheck.indexOf(item.id)<0){
-         this.isCheck.push(item.id)
-       }
-     })
-    },
     show(i){
        this.xModal1=true
        this.tindex = i
     },
     isok1(){
       if (this.value) {
-         this.$axios.post("order_management.ashx?action=FAH",this.$qs.stringify({id:this.orderList[this.tindex].id,express:this.value})).then(res=>{
+         this.$axios.post("http://sfstyling.bogole.com/common/order.ashx",this.$qs.stringify({mark:this.orderList[this.tindex].oguid,expressname:this.value,type:11})).then(res=>{
            if (res.status>0) {
             this.xModal1=false
             this.getgoodslist()
+
          }else{
            this.$Message.warning(res.content); 
            this.xModal1=false
@@ -296,10 +304,10 @@ export default {
             let arr = []
             this.isCheck.forEach((item,i)=>{
                 if (item) {
-                  arr.push(this.orderList[i].id)  
+                  arr.push(this.orderList[i].oguid)  
                 }
             })
-        this.$axios.post("order_management.ashx?action=delete",this.$qs.stringify({ids:JSON.stringify(arr)})).then(res=>{
+        this.$axios.post("http://sfstyling.bogole.com/common/order.ashx",this.$qs.stringify({mark:arr.join(","),type:15})).then(res=>{
            if (res.status>0) {
             this.getgoodslist()
           }else{
@@ -310,24 +318,20 @@ export default {
         }
     },
     getparticulars(i){
-        this.$axios.post("order_management.ashx?action=selectdetails",this.$qs.stringify({id:this.orderList[i].id})).then(res=>{
-           if (res.status>0) {
-            this.islist=false
-            this.Orderlist = res.item
-            this.logistics[0]=res.item[0].consignee
-            this.logistics[1]=res.item[0].receivingaddress
-            this.logistics[2]=res.item[0].postalcode
-            this.logistics[3]=res.item[0].express
-         }else{
-           this.$Message.warning(res.content); 
-         } 
-       }).catch(()=>{
-              
-         } ) 
+      this.islist = false
+      this.tindex = i
+        this.logistics[0][0]=this.orderList[i].province
+        this.logistics[0][1]=this.orderList[i].city
+        this.logistics[0][2]=this.orderList[i].area
+        this.logistics[1]=this.orderList[i].name
+         this.logistics[2]=this.orderList[i].address
+        this.logistics[3]=this.orderList[i].zcode
+         this.logistics[4]=this.orderList[i].expressname
     },
     isok2(){
-      if (this.logistics[0]&&this.logistics[1]&&this.logistics[2]&&this.logistics[3]) {
-         this.$axios.post("order_management.ashx?action=editinformation",this.$qs.stringify({id:this.orderList[this.tindex].id,consignee:this.logistics[0],receivingaddress:this.logistics[1],postalcode:this.logistics[2],express:this.logistics[3]})).then(res=>{
+      if (this.logistics[0]&&this.logistics[1]&&this.logistics[2]&&this.logistics[3]&&this.logistics[4]) {
+         this.$axios.post("http://sfstyling.bogole.com/common/order.ashx",this.$qs.stringify({mark:this.orderList[this.tindex].oguid,country:"中国大陆",province:this.logistics[0][0],city:this.logistics[0][1],area:this.logistics[0][2],
+         name:this.logistics[1],address:this.logistics[2],zcode:this.logistics[3],expressname:this.logistics[4],type:12})).then(res=>{
            if (res.status>0) {
             this.xModal2 = false
       
@@ -351,7 +355,19 @@ export default {
      })
     },
     mounted(){ 
-       this.getgoodslist()
+      // this.getgoodslist()
+      if (this.$route.query.id) {
+        this.usmid = this.$route.query.id
+      }
+       this.addressdata.forEach(i=>{
+         i.value = i.label
+         i.children.forEach(j=>{
+            j.value = j.label 
+             j.children.forEach(k=>{
+            k.value = k.label   
+         })
+         })
+     })
     },
     watch : {
       tvalue : function(){
@@ -429,7 +445,7 @@ export default {
 .order2 .msg>div{font-size: 18px;color: #191919;margin-top: 20px;}
 .order2 main{border-top: 1px solid #f0f0f0;padding: 15px 40px;}
 .order2 main>p{font-size: 12px;font-family: Microsoft YaHei;margin-top: 5px;}
-.order2 .orderlist{position: relative;overflow: hidden;border: 1px solid #f9f6f1;margin-top: 18px;width: 906px;}
+.order2 .orderList{position: relative;overflow: hidden;border: 1px solid #f9f6f1;margin-top: 18px;width: 778px;}
 .order2 .title{background: #f6f6f6;padding: 6px 30px;font-size: 12px;}
 .order2 .title>span{margin-left: 76px;}
 .order2 .title>span:first-child{margin-left: 100px;}
@@ -440,14 +456,14 @@ export default {
 .order2 .items.item1>span{font-size: 12px;color: #8d8d8d;}
 .order2 .items.item1>p{margin-bottom: 10px;}
 .order2 .items.item2{width: 119px; text-align: center;padding: 26px  0;border-right: 1px solid #f0f0f0;height: 100%;font-family: Microsoft YaHei}
-.order2 .items.item2>p:last-child{font-size: 12px;color: #8d8d8d;text-decoration: line-through;margin-top: 6px;font-family: Microsoft YaHei}
+ .items.item2>p:last-child{font-size: 12px;color: #8d8d8d;text-decoration: line-through;margin-top: 6px;font-family: Microsoft YaHei}
 .order2 .number{width:78px;text-align: center;display: inline-block;padding: 26px  0;border-right: 1px solid #f0f0f0;height: 100%;}
 .order2 .mach1{ position: absolute;top: 30px;left: 637px;width: 140px;text-align: center;padding: 26px  0;border-right: 1px solid #f0f0f0;height: 100%;font-family: Microsoft YaHei}
 .order2 .stutas1{position: absolute;top: 30px;left: 809px;padding: 26px  0;height: 100%;width:93px;}
 .order2 .btn4{width:80px;border-radius: 4;font-size: 14px;line-height: 22px;}
 .order2 .operate1 p a{color: #575552;margin-top: 5px;display: inline-block}
 .order2 .operate2 p:last-child{color: #8c8c8c;font-size: 12px;margin-top: 5px;display: inline-block}
-.order2 .footer{width: 906px;}
+.order2 .footer{width: 778px;}
 .order2 .footer p{text-align: right;font-size: 12px;font-family: Microsoft YaHei;color: #575552;}
 .order2 .footer .point{vertical-align: top;text-align: left;transform: translateY(12px)}
 .order2 .footer .point img{margin-left: 10px;transform: translateY(2px)}

@@ -117,12 +117,17 @@
                    <p :class="{active:editindex===4}">导航栏<span v-show="!isedit" @click="editindexs(4)"  style="cursor: pointer;float: right;font-size: 14px;"><Icon class="icons" size="20" type="ios-create-outline" />修改</span></p>
                    <div v-if="editindex !== 4">
                      <p><span>导航展示:</span><span v-show="item.isdisplay" class="switchurl" v-for="item in otherList.parentcategory" :key="item.id">{{item.title}}</span></p>
+                     <p class="oimgbox"><span>活动图片:</span><img src="../assets/imgs/h-4-bg.png" alt=""><img  class="navimg" v-show="otherList.activitycommodityurl" :src="otherList.activitycommodityurl" alt=""></p>
+                     <p class="oimgbox"><span>折扣图片:</span><img src="../assets/imgs/h-4-bg.png" alt=""><img  class="navimg" v-show="otherList.discouncommodityturl" :src="otherList.discouncommodityturl" alt=""></p>
                    </div>
                    <div v-else>
                      <p><span>导航展示:</span><span v-show="item.isdisplay" class="switchurl" v-for="item in otherList.parentcategory" :key="item.id">{{item.title}}</span></p>
+
                      <p><span>选项:</span><Button :type="item.isdisplay ?'primary':'default'"  class="switchurls"  @click="item.isdisplay=!item.isdisplay" v-for="(item,i) in otherList.parentcategory" :key="i">{{item.title}}</Button>
                      </p>
                      <p><span style="margin-left: 60px;color:#a6a6a6;width:95px;">（最多选择6个）</span></p>
+                      <p style="position: relative;" class="oimgbox"><span>活动图片:</span><img @click="addimg(1)" src="../assets/imgs/h-4-bg2.png" alt=""><img @click="addimg(1)" class="navimg" v-show="otherList.activitycommodityurl" :src="otherList.activitycommodityurl" alt=""></p>
+                     <p style="position: relative;" class="oimgbox"><span>折扣图片:</span><img @click="addimg(2)" src="../assets/imgs/h-4-bg2.png" alt=""><img @click="addimg(2)" class="navimg" v-show="otherList.discouncommodityturl" :src="otherList.discouncommodityturl" alt=""></p>
                       <Button type="primary" @click="getotheredit" style="width:80px;margin: 10px 0 15px 72px;">提交</Button>
                       <Button  @click="closeotheredit" style="width:80px;margin: 10px 0 15px 20px;border-color: #c69c6d;color: #c69c6d;">取消</Button>
                    </div>
@@ -219,6 +224,7 @@ export default {
          tabs:["Banner","商品分类","广告位","其他"],
          isedit:false,
          editindex: 0,
+         imgnumber: 0,
         }
     },
     mounted(){this.getbannerList()
@@ -398,7 +404,8 @@ export default {
       this.editindex = i
        this.isedit=true
     },
-    addimg() {
+    addimg(i) {
+      this.imgnumber = i
       this.$refs.uploadfiles.click();
     },
     fileChanges(event) {
@@ -414,7 +421,15 @@ export default {
           )
           .then(res => {
             if (res.status >= 0) {
-              this.imgmodels = res.data[0];
+              if (this.imgnumber === 0) {
+                 this.imgmodels = res.data[0];
+              }
+              if (this.imgnumber === 1) {
+                this.otherList.activitycommodityurl = res.data[0]
+              }
+              if (this.imgnumber === 2) {
+                this.otherList.discouncommodityturl = res.data[0]
+              }
             } else {
               this.$Message.warning("图片上传失败");
             }
@@ -481,6 +496,8 @@ export default {
           .then(res => {
             if (res.status >= 0) {
               this.otherList = res.item[0];
+              this.otherList.activitycommodityurl=this.otherList.activitycommodityurl.replace(/,/,"")
+              this.otherList.discouncommodityturl=this.otherList.discouncommodityturl.replace(/,/,"")
               this.isopen = Boolean(this.otherList.isbanner==="1")
                 this.isedit=false
               this.editindex= 0
@@ -517,13 +534,16 @@ export default {
     watch: {
     tvalue: function() {
      if (this.tvalue===0) {
+        this.imgnumber = 0
        this.getbannerList()
        this.isopen =  Boolean(this.otherList.isbanner==="1")
        console.log(this.isopen)
      }else if (this.tvalue===1) {
+        this.imgnumber = 0
        this.getgoodsList()
        this.isopen = Boolean(this.otherList.iscommoditytype==="1")
      }else if (this.tvalue===2) {
+       this.imgnumber = 0
        this.getadvertising()
        this.isopen = Boolean(this.otherList.isadvertisingposition==="1")
      }else if (this.tvalue===3) {
@@ -611,4 +631,7 @@ section>div .sinput{margin: 5px 20px 5px 0;}
 .switchurls{display: inline-block;padding: 4px 30px;margin-right: 30px; border-radius: 4px;margin-bottom: 10px;}
 .urlicon{margin-left: 6px;}
 .urlicons{border-radius: 50%;background: #c69c6d;color:#fff;padding: 3px;}
+.oimgbox{margin: 20px 0;}
+.oimgbox>span{vertical-align: top;display: inline-block;padding-top: 8px;}
+.navimg{position: absolute;width: 90px;height: 112px;top: 0;left: 70px;}
 </style>
