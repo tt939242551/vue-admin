@@ -76,7 +76,7 @@ export default {
         this.isShowLoading = true;
         // 登陆成功 设置用户信息头像
        
-        localStorage.setItem("userName", this.account);
+        localStorage.setItem("userName", res.username);
          localStorage.setItem("token","token"); 
          this.$router.push({ path: this.redirect || "/statistics" });
        if (this.single) {

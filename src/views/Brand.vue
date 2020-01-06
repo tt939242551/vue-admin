@@ -714,8 +714,7 @@ export default {
                         }
                   })
              if(itmes.commoditypictures1){ 
-                   console.log(itmes.commoditypictures1.split(","))
-                    itmes.commoditypictures1 = JSON.parse(itmes.commoditypictures1.split(",")[0].replace(/\[/g,"").replace(/\]/g,"")) 
+                  itmes.commoditypictures1 = itmes.commoditypictures1.match(/https:\/\/oss.bogole.com\/project\/code\/public\/e19102801\/upfile\/20\d{6,30}\.jpg/)[0] 
                  }
               })
             } else {

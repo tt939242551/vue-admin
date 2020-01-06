@@ -147,7 +147,7 @@ export default {
              this.tabs.forEach(i=>{
                 i.item.forEach((itmes)=>{ 
                 if(itmes.commoditypictures1){ 
-                    itmes.commoditypictures1 = JSON.parse(itmes.commoditypictures1.split(",")[0].replace(/\[/g,"").replace(/\]/g,"")) 
+                     itmes.commoditypictures1 = itmes.commoditypictures1.match(/https:\/\/oss.bogole.com\/project\/code\/public\/e19102801\/upfile\/20\d{6,20}\.jpg/g)[0]  
                  }
               })
              })
@@ -201,7 +201,7 @@ export default {
           let url =""
           let parem ={}
            url = "recommendationcommodity.ashx?action=edit"
-           parem =  { picture: this.imgmodels, id: this.tabs[this.tvalue].item[this.goodsindex].id,typeid:1 , }
+           parem =  { picture: this.imgmodels, id: this.tabs[this.tvalue].item[this.goodsindex].id,typeid:1,urllink:this.Modal[0] }
           
          this.$axios.post(url,this.$qs.stringify(parem))
           .then(res => {
@@ -238,17 +238,16 @@ export default {
       this.Modal[1] = -1
       this.Modal[2] = -1
       this.Modal[3] = -1
-      if (i===0&&this.tabs[this.tvalue].item.length===4) {
-           this.xModal3 = true
-         }else{
-         this.editgoodsinit()
-         this.xModal2 = true
-         }
+      this.editgoodsinit()
      
     },
       editgoodsinit(){
+        let typeid = 2
+       if (this.goodsindex==0&&this.tabs[this.tvalue].item.length==4) {
+             typeid = 1      
+                }
         this.$axios
-          .post("recommendationcommodity.ashx?action=editinit",this.$qs.stringify({ id: this.tabs[this.tvalue].item[this.goodsindex].id }))
+          .post("recommendationcommodity.ashx?action=editinit",this.$qs.stringify({ id: this.tabs[this.tvalue].item[this.goodsindex].id ,typeid:typeid }))
           .then(res => {
             if (res.status >= 0) {
               this.generalattribute = res.generalattribute[0].item
@@ -275,6 +274,14 @@ export default {
                   this.Modal[3] = item.guid
                 }
               })
+               if (this.goodsindex==0&&this.tabs[this.tvalue].item.length==4) {
+                    this.imgmodels = res.recommendationcommodity.picture
+                    this.Modal[0] = res.recommendationcommodity.urllink
+                    this.xModal3 = true
+                }else{
+                this.xModal2 = true
+                }
+     
             } else {
               this.$Message.warning(res.content);
             }

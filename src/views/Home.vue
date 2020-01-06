@@ -118,7 +118,7 @@
                    <div v-if="editindex !== 4">
                      <p><span>导航展示:</span><span v-show="item.isdisplay" class="switchurl" v-for="item in otherList.parentcategory" :key="item.id">{{item.title}}</span></p>
                      <p class="oimgbox"><span>活动图片:</span><img src="../assets/imgs/h-4-bg.png" alt=""><img  class="navimg" v-show="otherList.activitycommodityurl" :src="otherList.activitycommodityurl" alt=""></p>
-                     <p class="oimgbox"><span>折扣图片:</span><img src="../assets/imgs/h-4-bg.png" alt=""><img  class="navimg" v-show="otherList.discouncommodityturl" :src="otherList.discouncommodityturl" alt=""></p>
+                     <p  class="oimgbox"><span>折扣图片:</span><img src="../assets/imgs/h-4-bg.png" alt=""><img  class="navimg" v-show="otherList.discouncommodityturl" :src="otherList.discouncommodityturl" alt=""></p>
                    </div>
                    <div v-else>
                      <p><span>导航展示:</span><span v-show="item.isdisplay" class="switchurl" v-for="item in otherList.parentcategory" :key="item.id">{{item.title}}</span></p>
@@ -126,8 +126,8 @@
                      <p><span>选项:</span><Button :type="item.isdisplay ?'primary':'default'"  class="switchurls"  @click="item.isdisplay=!item.isdisplay" v-for="(item,i) in otherList.parentcategory" :key="i">{{item.title}}</Button>
                      </p>
                      <p><span style="margin-left: 60px;color:#a6a6a6;width:95px;">（最多选择6个）</span></p>
-                      <p style="position: relative;" class="oimgbox"><span>活动图片:</span><img @click="addimg(1)" src="../assets/imgs/h-4-bg2.png" alt=""><img @click="addimg(1)" class="navimg" v-show="otherList.activitycommodityurl" :src="otherList.activitycommodityurl" alt=""></p>
-                     <p style="position: relative;" class="oimgbox"><span>折扣图片:</span><img @click="addimg(2)" src="../assets/imgs/h-4-bg2.png" alt=""><img @click="addimg(2)" class="navimg" v-show="otherList.discouncommodityturl" :src="otherList.discouncommodityturl" alt=""></p>
+                      <p  class="oimgbox"><span>活动图片:</span><img @click="addimg(1)" src="../assets/imgs/h-4-bg2.png" alt=""><img @click="addimg(1)" class="navimg" v-show="otherList.activitycommodityurl" :src="otherList.activitycommodityurl" alt=""></p>
+                     <p  class="oimgbox"><span>折扣图片:</span><img @click="addimg(2)" src="../assets/imgs/h-4-bg2.png" alt=""><img @click="addimg(2)" class="navimg" v-show="otherList.discouncommodityturl" :src="otherList.discouncommodityturl" alt=""></p>
                       <Button type="primary" @click="getotheredit" style="width:80px;margin: 10px 0 15px 72px;">提交</Button>
                       <Button  @click="closeotheredit" style="width:80px;margin: 10px 0 15px 20px;border-color: #c69c6d;color: #c69c6d;">取消</Button>
                    </div>
@@ -631,7 +631,7 @@ section>div .sinput{margin: 5px 20px 5px 0;}
 .switchurls{display: inline-block;padding: 4px 30px;margin-right: 30px; border-radius: 4px;margin-bottom: 10px;}
 .urlicon{margin-left: 6px;}
 .urlicons{border-radius: 50%;background: #c69c6d;color:#fff;padding: 3px;}
-.oimgbox{margin: 20px 0;}
+.oimgbox{margin: 20px 0;position: relative;}
 .oimgbox>span{vertical-align: top;display: inline-block;padding-top: 8px;}
 .navimg{position: absolute;width: 90px;height: 112px;top: 0;left: 70px;}
 </style>

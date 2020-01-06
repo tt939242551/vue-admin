@@ -4,7 +4,7 @@
         <p class="title"><span></span>折扣商品</p>
         <div class="switch1">开启折扣商品 
          <template>
-              <i-switch style="transform: translateY(-2px);margin-left: 8px;" v-model="isopen" size="small"  />
+              <i-switch @on-change="switchdiscount" style="transform: translateY(-2px);margin-left: 8px;" v-model="isopen" size="small"  />
          </template>
          </div>
       </div>
@@ -202,6 +202,18 @@ export default {
                this.Modal[1]=this.categoryList[i].discounturl
             }
              this.xModal1 = true
+        },
+        switchdiscount(i){
+          this.$axios.post("discount.ashx?action=editisdiscount",this.$qs.stringify({isdiscount:i}))
+          .then(res => {
+            if (res.status > 0) {
+              let str = i?"已开启":"已关闭"
+              this.$Message.success(str+"折扣商品板块"); 
+            } else {
+              this.$Message.warning(res.content); 
+            }
+          })
+          .catch(() => {}); 
         },
         isok1(){
         if (this.Modal[0]) {

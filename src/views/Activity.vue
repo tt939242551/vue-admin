@@ -36,10 +36,6 @@
        <Modal v-model="xModal2" width="680"  footer-hide :styles="{top: '100px'}">
             <div class="modalmain">
               <div class="mtitle">编辑活动信息</div>
-              <p><span>URL链接</span>
-                 <i-input class="sinput" 
-                        type="text" v-model="Modal[0]"  clearable placeholder="请输入链接"> </i-input>
-              </p>
               <p><span>主  标  题</span>
                  <i-input class="sinput" 
                         type="text" v-model="Modal[1]"  clearable placeholder="请输入主标题"> </i-input>
@@ -761,7 +757,7 @@ export default {
                         }
                   })
                 if(itmes.commoditypictures1){ 
-                    itmes.commoditypictures1 = JSON.parse(itmes.commoditypictures1.split(",")[0].replace(/\[/g,"").replace(/\]/g,"")) 
+                   itmes.commoditypictures1 = itmes.commoditypictures1.match(/https:\/\/oss.bogole.com\/project\/code\/public\/e19102801\/upfile\/20\d{6,30}\.jpg/)[0] 
                  }
               })
             } else {

@@ -58,7 +58,7 @@
                             </div>
                          </div>   
                         <span class="mach">{{items.realamount}}</span>
-                        <div class="stutas">{{items.status_content}}</div>
+                        <div class="stutas">{{items.status_content}} <p v-show="items.remindshiptime">买家已提醒发货</p><p v-show="items.remindshiptime">{{items.remindshiptime}}</p>  </div>
                         <div class="operate">
                            <p><Button size="small" @click="show(i)" type="primary" class="btn4">确认发货</Button></p>
                             <a @click="getparticulars(i)">订单详情</a>
@@ -186,10 +186,10 @@
         </main>
         <main>
            <div style="font-size: 16px;">物流信息</div>
-           <p>收件人：   {{logistics[1]}}</p>
-           <p>收货地址：{{logistics[0][0]}}{{logistics[0][1]}}{{logistics[0][2] }}{{ logistics[2]}}</p>
-           <p>邮政编码：{{logistics[3]}}</p>
-           <p>运单号：{{logistics[4]}}</p>
+           <p>收件人：   {{orderList[tindex].name}}</p>
+           <p>收货地址：{{orderList[tindex].province}}{{orderList[tindex].city}}{{orderList[tindex].area}}{{orderList[tindex].address}}</p>
+           <p>邮政编码：{{orderList[tindex].zcode}}</p>
+           <p>运单号：{{orderList[tindex].expressname}}</p>
         </main>
         <Button  @click="xModal2=true"   class=" btn3" >修改</Button>
       </div>
@@ -280,6 +280,7 @@ export default {
          } )
         },
     show(i){
+      this.value = ''
        this.xModal1=true
        this.tindex = i
     },
@@ -334,7 +335,7 @@ export default {
          name:this.logistics[1],address:this.logistics[2],zcode:this.logistics[3],expressname:this.logistics[4],type:12})).then(res=>{
            if (res.status>0) {
             this.xModal2 = false
-      
+             this.getgoodslist()
          }else{
            this.$Message.warning(res.content); 
            this.xModal2 = false
@@ -408,6 +409,7 @@ export default {
 .number{width: 70px;text-align: center;display: inline-block;padding: 26px  0;vertical-align: top;height: 100%;}
 .mach{ position: absolute;top: 0;left: 920px;width: 130px;text-align: center;padding: 26px  0;padding-right: 5px; border-right: 1px solid #f0f0f0;height: 100%;color: #c69c6d;font-family: Microsoft YaHei}
 .stutas{position: absolute;top: 0;left: 1052px;padding: 26px  0;border-right: 1px solid #f0f0f0;height: 100%;width: 80px;}
+.stutas p{font-size: 12px;color: #c69c6d;text-align: center;}
 .operate{position: absolute;top: 0;left:  1140px;text-align: center;width:116px;padding: 26px  0;}
 .operate a{margin-top: 5px;display: inline-block;color: #c69c6d;text-decoration: underline}
 .operate2 p:last-child{color: #8c8c8c;font-size: 12px;margin-top: 5px;display: inline-block}

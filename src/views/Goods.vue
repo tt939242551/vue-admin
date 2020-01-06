@@ -553,9 +553,8 @@ export default {
             this.models[2] = res.item[0].title
             this.models[9] = res.item[0].number
             this.content = decodeURIComponent(res.item[0].commoditydetails);
-            this.imgLists = JSON.parse(
-              res.item[0].commoditypictures1.replace(/\\/g, "")
-            );
+            this.imgLists =  res.item[0].commoditypictures1.match(/https:\/\/oss.bogole.com\/project\/code\/public\/e19102801\/upfile\/20\d{6,30}\.jpg/g)
+            
             this.mainList = res.parentcategory;
             this.$nextTick(()=>{
                 this.movecolor()
