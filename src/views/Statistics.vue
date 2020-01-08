@@ -40,8 +40,9 @@
             </div>
         </header>
         <div class="echarts">
-            <p><img src="../assets/imgs/st-5.png" alt="">
-                 <Select  @on-change="getdays" size="small" placeholder="请选择天数" v-model="days" style="float: right;width:200px;margin-right: 58px;">
+            <p class="echarthead"><!-- <img src="../assets/imgs/st-5.png" alt=""> --><span @click="changeline(0)" :class="{'diabs': navstatus0,}"><span style="background:#c69c6d"></span>总的利益</span><span @click="changeline(1)" :class="{'diabs': navstatus1,}"><span  style="background:#36a3f7"></span>访问量</span>
+            <span @click="changeline(2)" :class="{'diabs': navstatus2}"><span  style="background:#f4516c"></span>新订单</span><span @click="changeline(3)" :class="{'diabs': navstatus3,}"><span  style="background:#34bfa3"></span>新用户</span>
+                 <Select  @on-change="getdays" size="small" placeholder="请选择天数" v-model="days" style="float: right;width:140px;margin-right: 58px;">
                     <Option  :value="7">最近7天</Option>
                     <Option  :value="30">最近30天</Option>
                     <Option  :value="91">最近3个月</Option>
@@ -74,6 +75,10 @@ export default {
            days:7,
            tvalue:0,
            date:[],
+           navstatus0:false,
+           navstatus1:false,
+           navstatus2:false,
+           navstatus3:false,
            sdata:[
             {
                 name:'总的利润',
@@ -99,11 +104,13 @@ export default {
                 color:"#34bfa3",
                 data:[]
             },
-        ]
+        ],
+            msg:{},
         }
     },
     mounted(){this.init()
-     this.getdays();},
+     this.getdays();
+    },
     methods:{
         init(){
          this.$axios
@@ -116,7 +123,11 @@ export default {
               this.data1 = res.item[0];
               
             } else {
-              this.$Message.warning(res.content);
+              if (res.status==-1008) {
+                  localStorage.setItem("userName", '');
+                 localStorage.setItem("token",""); 
+                  this.$router.push({ path: this.redirect || "/statistics" });
+              }
             }
           })
           .catch(() => {});
@@ -182,12 +193,10 @@ export default {
     getLine(index) {
       let that = this;
       let myChart = echarts.init(this.$refs.myEchartLine);
-    
-      
         if (index) {
            sdata.slice(index,index+1) 
         }
-      myChart.setOption({
+        this.msg = {
         title: {
             text: '数据统计折线图'
         },
@@ -223,8 +232,25 @@ export default {
             type: 'value'
         },
         series: this.sdata
-        });
+        }
+      myChart.setOption(this.msg);
     },
+    changeline(i){
+      let   t= "navstatus" + i
+      this[t]=!this[t]
+      let arr0 = this.navstatus0? '': this.sdata[0] 
+       let arr1 = this.navstatus1? '': this.sdata[1] 
+       let arr2 = this.navstatus1? "": this.sdata[2] 
+       let arr3 = this.navstatus1? "": this.sdata[3] 
+       let data = []
+       data.push(arr0)
+       data.push(arr1)
+       data.push(arr2)
+       data.push(arr3)
+       this.msg.series = date
+        let myChart = echarts.init(this.$refs.myEchartLine);
+         myChart.setOption(this.msg);
+    }
     }
 }
 </script>
@@ -240,4 +266,8 @@ export default {
   .headitem>.bgbox{transform: translateY(-8px)}
   .echarts{background: #fff;margin: 10px ;padding: 40px 30px;}
   .echarts p{text-align: center;}
+  .echarthead>span{font-size: 14px;font-weight: 600;margin-right: 20px;cursor: pointer;display: inline-block}
+  .echarthead>span>span{display: inline-block;height: 10px;width: 20px;margin-right: 10px;border-radius: 4px}
+ .echarthead > .diabs{color: #8c8c8c;font-weight: 500;}
+ .echarthead>span.diabs>span{opacity: 0.4;}
 </style>

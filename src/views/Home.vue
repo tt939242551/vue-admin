@@ -56,6 +56,9 @@
                   <div class="imgbox3" v-if="advertising">
                     <img style="width:960px;height: 90px;" :src="advertising.picture" alt="">
                   </div>
+                  <div class="imgbox3" v-else>
+                    <img style="width:960px;height: 90px;" src="../assets/imgs/a1-bg.png" alt="">
+                  </div>
                   <p class="footp"><span @click="showModal3" style="cursor: pointer;"><Icon class="icons" size="18" type="ios-create-outline" />编辑</span></p>
                 </div>
             </TabPane>
@@ -147,8 +150,8 @@
                         type="text" v-model="xmodel[0]"  clearable placeholder="请输入链接"> </i-input>
               </p>
               <p style="position: relative;"><span style="vertical-align: top;">图        片</span>
-                 <img @click="addimg()" class="bannerbgimg" src="../assets/imgs/b-2.png" alt="">
-                 <img @click="addimg()" class="bannerimg" v-show="imgmodels" :src="imgmodels" alt="">
+                 <img @click="addimg(0)" class="bannerbgimg" src="../assets/imgs/b-2.png" alt="">
+                 <img @click="addimg(0)" class="bannerimg" v-show="imgmodels" :src="imgmodels" alt="">
               </p>
               <Button size="small" @click="isok1" type="primary" class="btn2">提交</Button>
             </div>     
@@ -169,12 +172,12 @@
                         type="text" v-model="xmodel[2]"  clearable placeholder="请输入副标题"> </i-input>
               </p>
               <p v-if="goodsindex===0" style="position: relative;margin-top: 20px;"><span style="vertical-align: top;">分类图片</span>
-                 <img @click="addimg()" class="bannerbgimg" src="../assets/imgs/b-5.png" alt="">
-                 <img @click="addimg()" class="bannerimg2" v-show="imgmodels" :src="imgmodels" alt="">
+                 <img @click="addimg(0)" class="bannerbgimg" src="../assets/imgs/b-5.png" alt="">
+                 <img @click="addimg(0)" class="bannerimg2" v-show="imgmodels" :src="imgmodels" alt="">
               </p>
               <p v-else style="position: relative;margin-top: 20px;"><span style="vertical-align: top;">分类图片</span>
-                 <img @click="addimg()" class="bannerbgimg" src="../assets/imgs/b-5-1.png" alt="">
-                 <img @click="addimg()" class="bannerimg3" v-show="imgmodels" :src="imgmodels" alt="">
+                 <img @click="addimg(0)" class="bannerbgimg" src="../assets/imgs/b-5-1.png" alt="">
+                 <img @click="addimg(0)" class="bannerimg3" v-show="imgmodels" :src="imgmodels" alt="">
               </p>
               <Button size="small" @click="isok2" type="primary" class="btn2">提交</Button>
               <img class="mslimg" src="../assets/imgs/b-4.png" alt="">
@@ -188,8 +191,8 @@
                         type="text" v-model="xmodel[0]"  clearable placeholder="请输入链接"> </i-input>
               </p>
               <p style="position: relative;"><span style="vertical-align: top;">图        片</span>
-                 <img @click="addimg()" class="bannerbgimg" src="../assets/imgs/b-6.png" alt="">
-                 <img @click="addimg()" class="bannerimg4" v-show="imgmodels" :src="imgmodels" alt="">
+                 <img @click="addimg(0)" class="bannerbgimg" src="../assets/imgs/b-6.png" alt="">
+                 <img @click="addimg(0)" class="bannerimg4" v-show="imgmodels" :src="imgmodels" alt="">
               </p>
               <Button size="small" @click="isok3" type="primary" class="btn2">提交</Button>
             </div>     
@@ -272,7 +275,11 @@ export default {
                   })
               })
             } else {
-              this.$Message.warning(res.content);
+              if (res.status==-1008) {
+                  localStorage.setItem("userName", '');
+                 localStorage.setItem("token",""); 
+                  this.$router.push({ path: this.redirect || "/statistics" });
+              }
             }
           })
           .catch(() => {});
@@ -378,7 +385,6 @@ export default {
          arr.push(item.guid) 
         }
       })
-       if (this.otherList.welcomespeech&&this.otherList.VIPline&&this.otherList.Telephone&&this.otherList.email&&this.otherList.advertisement) {
           let url ="Other.ashx?action=edit"
           let prima = this.otherList
           prima.tipsLabel = JSON.stringify(prima.tipsLabel)
@@ -387,14 +393,12 @@ export default {
          this.$axios.post(url,this.$qs.stringify(prima))
           .then(res => {
             if (res.status >= 0) {
-              
               this.getother()
             } else {
               this.$Message.warning(res.content);
             }
           })
           .catch(() => {});
-      }else{this.$Message.warning("数据不能为空");} 
     },
     closeotheredit(){
         this.isedit=false
@@ -421,7 +425,7 @@ export default {
           )
           .then(res => {
             if (res.status >= 0) {
-              if (this.imgnumber === 0) {
+              if (this.imgnumber == 0) {
                  this.imgmodels = res.data[0];
               }
               if (this.imgnumber === 1) {
@@ -435,7 +439,7 @@ export default {
             }
           })
           .catch(() => {this.$Message.warning("图片上传失败");});
-      }, 100);
+      },200);
     },
         // 单张上传
     fileAdd(file) {
@@ -473,7 +477,11 @@ export default {
                 this.$set(this.goodsList,i,item)
               })
             } else {
-              this.$Message.warning(res.content);
+              if (res.status==-1008) {
+                  localStorage.setItem("userName", '');
+                 localStorage.setItem("token",""); 
+                  this.$router.push({ path: this.redirect || "/statistics" });
+              }
             }
           })
           .catch(() => {});
@@ -482,7 +490,7 @@ export default {
         this.$axios
           .post("advertisingposition.ashx?action=selectlist")
           .then(res => {
-            if (res.status >= 0) {
+            if (res.status > 0) {
               this.advertising = res.item[0];
             } else {
               this.$Message.warning(res.content);
@@ -607,8 +615,8 @@ export default {
 .s2imgbox2{width: 690px;display: inline-block;vertical-align: top;margin-top: 20px;}
 .s2imgbox2>div{display: inline-block;border: 1px solid #f0f0f0;margin-right: 30px;width: 314px;margin-bottom: 30px;}
 .bgbox2{background:#f6f6f6 ;height: 530px;width: 2200px;position: absolute;top: 270px;left: -500px;z-index: -1;position: relative;}
-.imgbox1{background: no-repeat url(../assets/imgs/b-4-1.png);background-size: cover;width: 352px;height: 559px;position: relative;}
-.imgbox2{background-image: url(../assets/imgs/b-bg2.png);background-size: cover;width: 312px;height: 240px;position: relative;}
+.imgbox1{background: #f2f3f8;width: 352px;height: 559px;position: relative;}
+.imgbox2{background-image: url(../assets/imgs/b-bg2_.png);background-size: cover;width: 312px;height: 240px;position: relative;}
 
 .s3imgbox1{width:962px;margin-top: 20px;margin-right: 10px;border: 1px solid #f0f0f0}
 .main2 img{width: 100%;height: 100%;}

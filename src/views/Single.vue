@@ -187,6 +187,11 @@ export default {
            this.tabs = res.item
            this.getSingleList()
          }else{
+            if (res.status==-1008) {
+                  localStorage.setItem("userName", '');
+                 localStorage.setItem("token",""); 
+                  this.$router.push({ path: this.redirect || "/statistics" });
+              }
            this.$Message.warning(res.content); 
          }
        }).catch(()=>{
@@ -198,7 +203,7 @@ export default {
          if (res.status>=0) {
              this.data1 = res.item
              this.data1.forEach(i=>{
-             i.setdate = i.setdate.slice(0,10)
+           i.setdate =  i.setdate.match(/20\d{2}\/\d{1,2}\/\d{1,2}/)[0]
             })
              this.total = res.totalCount
          }else{
@@ -260,6 +265,7 @@ export default {
       this.timeval = t
     },
     handleTabsAdd() {
+      this.value = ""
       this.xModal2 = true;
     },
     addList() {

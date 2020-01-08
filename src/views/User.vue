@@ -122,6 +122,11 @@ export default {
             this.total = res.totalCount
  
          }else{
+            if (res.status==-1008) {
+                  localStorage.setItem("userName", '');
+                 localStorage.setItem("token",""); 
+                  this.$router.push({ path: this.redirect || "/statistics" });
+              }
            this.$Message.warning(res.content); 
          }
         

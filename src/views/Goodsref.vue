@@ -153,6 +153,11 @@ export default {
              })
              
             } else {
+               if (res.status==-1008) {
+                  localStorage.setItem("userName", '');
+                 localStorage.setItem("token",""); 
+                  this.$router.push({ path: this.redirect || "/statistics" });
+              }
               this.$Message.warning(res.content);
             }
           })
@@ -249,8 +254,13 @@ export default {
         this.$axios
           .post("recommendationcommodity.ashx?action=editinit",this.$qs.stringify({ id: this.tabs[this.tvalue].item[this.goodsindex].id ,typeid:typeid }))
           .then(res => {
-            if (res.status >= 0) {
-              this.generalattribute = res.generalattribute[0].item
+            if (res.status > 0) {
+              if (typeid == 1) {
+                  this.imgmodels = res.recommendationcommodity[0].picture
+                    this.Modal[0] = res.recommendationcommodity[0].urllink
+                    this.xModal3 = true
+              }else{
+                  this.generalattribute = res.generalattribute[0].item
               this.generalattribute.forEach(i=>{
                 if (i.isselect) {
                   this.Modal[0] = i.guid
@@ -274,13 +284,10 @@ export default {
                   this.Modal[3] = item.guid
                 }
               })
-               if (this.goodsindex==0&&this.tabs[this.tvalue].item.length==4) {
-                    this.imgmodels = res.recommendationcommodity.picture
-                    this.Modal[0] = res.recommendationcommodity.urllink
-                    this.xModal3 = true
-                }else{
                 this.xModal2 = true
-                }
+              
+              }
+            
      
             } else {
               this.$Message.warning(res.content);

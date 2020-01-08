@@ -8,9 +8,9 @@
           </template>
        </div>
       </div>
-      <div class="tabbar">
-        <span v-show="tabs.length===0" class="tabspan">暂无数据</span>
-        <span @click="getactivityls(i)" :class="{tabspan: true,active:tvalue1===i}" v-for="(itme,i) in tabs" :key="i">{{itme.activityname}}</span>
+      <div class="tabbar" >
+        <span v-if="tabs.length==0" class="tabspan">暂无数据</span>
+        <span style="display: inline-block;" v-else><span  @click="getactivityls(i)" :class="{tabspan: true,active:tvalue1===i}" v-for="(itme,i) in tabs" :key="i">{{itme.activityname}}</span></span>
         <span @click="xModal=true"  style="cursor: pointer;float: right;color: #c69c6d;font-size: 14px;margin-top: 16px;"><Icon class="icons" size="18" type="ios-trash-outline" />删除</span>  
         <span @click="addactiv" style="cursor: pointer;float: right;color: #c69c6d;font-size: 14px;margin-top: 16px;"><Icon class="icons" size="18" type="md-add" />新增</span>
       </div>
@@ -20,7 +20,7 @@
           </template>
       </div>
       <Modal footer-hide v-model="xModal" width="360" :styles="{top: '200px'}">
-        <div style="text-align:center;font-size: 20px;margin: 20px 0 ;">
+        <div  v-if="tabs.length" style="text-align:center;font-size: 20px;margin: 20px 0 ;">
             <p>请确认是否删除{{tabs[tvalue1].activityname}}？</p>
             <p>删除后数据将不可恢复</p>
         </div>
@@ -166,7 +166,7 @@
             </div>     
         </Modal>
          <input type="file" ref="uploadfiles" style="display:none" @input="fileChanges"  multiple="multiple" />
-      <div class="tabbox">
+      <div  v-if="tabs.length" class="tabbox">
         <Tabs v-model="tvalue2" >
             <TabPane  label="活动信息" icon="md-radio-button-on">
                 <div class="main1">
@@ -348,7 +348,8 @@ export default {
               url = "activity.ashx?action=editisactivity"
                parme.isactivity = i
             }else if (this.tvalue2===4) {
-              url = ""
+              url = "activity.ashx?action=editisdiscount"
+             parme.isdiscount = i
             }else if (this.tvalue2===5) {
               url = "activity.ashx?action=editisadvertisement1"
                parme.isadvertisement1 = i
@@ -390,6 +391,11 @@ export default {
               this.isopens = res.isactivity
               
             } else {
+               if (res.status==-1008) {
+                  localStorage.setItem("userName", '');
+                 localStorage.setItem("token",""); 
+                  this.$router.push({ path: this.redirect || "/statistics" });
+              }
               this.$Message.warning(res.content); 
             }
           })
@@ -414,7 +420,7 @@ export default {
           }else{this.$Message.warning("活动名不能为空");}
       },
      isok2(){
-        if (this.Modal[0]&&this.Modal[1]&&this.Modal[2]) {
+        if (this.Modal[1]&&this.Modal[2]) {
         this.$axios.post("activity.ashx?action=addinformation",this.$qs.stringify({ activitytitle: this.Modal[1],activityinformation: this.Modal[2],activityurl: this.Modal[0],activitypicture: this.imgmodels,id: this.tabs[this.tvalue1].id}))
           .then(res => {
             if (res.status > 0) {
@@ -449,6 +455,7 @@ export default {
           this.Modal[0] = this.tabs[this.tvalue1].activityurl
           this.Modal[1] = this.tabs[this.tvalue1].activitytitle
           this.Modal[2] = this.tabs[this.tvalue1].activityinformation
+          this.imgmodels = this.tabs[this.tvalue1].activitypicture
       },
       getactivityls(i){this.tvalue1=i
        this.tvalue2 = 0

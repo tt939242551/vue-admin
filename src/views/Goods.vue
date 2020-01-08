@@ -509,10 +509,15 @@ export default {
             this.data1 = res.item;
             this.isoverheadcount = res.isoverheadcount
             this.data1.forEach(i=>{
-             i.setdate = i.setdate.slice(0,10)
+             i.setdate = i.setdate.match(/20\d{2}\/\d{1,2}\/\d{1,2}/)[0]
             })
             this.total = res.totalCount;
           } else {
+             if (res.status==-1008) {
+                  localStorage.setItem("userName", '');
+                 localStorage.setItem("token",""); 
+                  this.$router.push({ path: this.redirect || "/statistics" });
+              }
             this.$Message.warning(res.content);
           }
         })
@@ -683,6 +688,7 @@ export default {
       this.colorarr=[]
       this.tindex = this.data1.length;
       this.isadds = false;
+      this.content = ''
       this.$axios
         .post("commodity.ashx?action=InitializationAdd")
         .then(res => {
@@ -782,7 +788,7 @@ export default {
           if (res.status >= 0) {
             this.data1 = res.item;
             this.data1.forEach(i=>{
-             i.setdate = i.setdate.slice(0,10)
+             i.setdate = i.setdate.match(/20\d{2}\/\d{1,2}\/\d{1,2}/)[0]
             })
             this.total = res.totalCount;
           } else {

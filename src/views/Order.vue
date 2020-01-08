@@ -110,7 +110,7 @@
                             <div v-for="(item,j) in items.list" :key="j">
                                 <img :src="item.photo">
                                 <div class="items item1">
-                                    <p >{{item.commodityname}}</p>
+                                    <p >{{item.title}}</p>
                                     <span>分类：{{item.color}}</span><br><span>尺码：{{item.size}}</span>
                                 </div>
                                 <div class="items item2">
@@ -191,7 +191,7 @@
            <p>邮政编码：{{orderList[tindex].zcode}}</p>
            <p>运单号：{{orderList[tindex].expressname}}</p>
         </main>
-        <Button  @click="xModal2=true"   class=" btn3" >修改</Button>
+        <Button  @click="editorder"   class=" btn3" >修改</Button>
       </div>
       <p><Button type="primary"  @click="islist=true"   class=" btn5" >返回</Button></p>
         <Modal v-model="xModal2" width="422"  footer-hide :styles="{top: '200px'}">
@@ -273,6 +273,11 @@ export default {
            this.isredin = true
             },200)
          }else{
+            if (res.status==-1008) {
+                  localStorage.setItem("userName", '');
+                 localStorage.setItem("token",""); 
+                  this.$router.push({ path: this.redirect || "/statistics" });
+              }
            this.$Message.warning(res.content); 
          } 
        }).catch(()=>{
@@ -321,13 +326,17 @@ export default {
     getparticulars(i){
       this.islist = false
       this.tindex = i
-        this.logistics[0][0]=this.orderList[i].province
+       
+    },
+    editorder(){
+       this.logistics[0][0]=this.orderList[i].province
         this.logistics[0][1]=this.orderList[i].city
         this.logistics[0][2]=this.orderList[i].area
         this.logistics[1]=this.orderList[i].name
          this.logistics[2]=this.orderList[i].address
         this.logistics[3]=this.orderList[i].zcode
          this.logistics[4]=this.orderList[i].expressname
+      this.xModal2=true
     },
     isok2(){
       if (this.logistics[0]&&this.logistics[1]&&this.logistics[2]&&this.logistics[3]&&this.logistics[4]) {

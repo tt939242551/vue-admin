@@ -175,6 +175,7 @@ export default {
           .then(res => {
             if (res.status > 0) {
               this.categoryList = res.discounts
+              this.isopen = res.isdiscount
               if (this.categoryList.length) {
                   this.categoryList.forEach(item=>{
                   item.item.forEach((itmes)=>{ 
@@ -187,6 +188,11 @@ export default {
              
               
             } else {
+               if (res.status==-1008) {
+                  localStorage.setItem("userName", '');
+                 localStorage.setItem("token",""); 
+                  this.$router.push({ path: this.redirect || "/statistics" });
+              }
               this.$Message.warning(res.content); 
             }
           })
