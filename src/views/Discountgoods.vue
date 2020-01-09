@@ -129,7 +129,7 @@
          <Modal footer-hide v-model="xModal6" width="360" :styles="{top: '200px'}">
             <div style="text-align:center;font-size: 20px;margin: 20px 0 ;">
                 <p>首页展示位商品已满。</p>
-                <p>请关闭其中展示位再进行开启</p>
+                <p>请关闭其它展示位再进行开启</p>
             </div>
             <div style="text-align:center;margin: 20px 0 ;">
                 <Button style="width:80px" type="primary" class="samintbtn" @click="xModal6=false">确定</Button>
@@ -180,7 +180,7 @@ export default {
                   this.categoryList.forEach(item=>{
                   item.item.forEach((itmes)=>{ 
                    if(itmes.commoditypictures1){ 
-                    itmes.commoditypictures1 = itmes.commoditypictures1.match(/https:\/\/oss.bogole.com\/project\/code\/public\/e19102801\/upfile\/20\d{6,30}\.jpg/)[0] 
+                    itmes.commoditypictures1 = itmes.commoditypictures1.match(/https:\/\/oss.bogole.com\/project\/code\/public\/e19102801\/upfile\/20\d{6,30}\.[a-z]{3,4}/)[0] 
                  }
               })
                })
@@ -412,7 +412,7 @@ export default {
     getcommodityList(){
         if (this.xModal2) {
             this.Modal[3] = "";
-            if (this.Modal[0]) {
+            if (this.Modal[4]) {
                 this.$axios
                 .post(
                     "commodity.ashx?action=selectbyid",

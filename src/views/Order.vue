@@ -14,7 +14,7 @@
                             <div v-for="(item,j) in items.list" :key="j">
                                 <img :src="item.photo">
                                 <div class="items item1">
-                                    <p >{{item.commodityname}}</p>
+                                    <p >{{item.title}}</p>
                                     <span>分类：{{item.color}}</span><br><span>尺码：{{item.size}}</span>
                                 </div>
                                 <div class="items item2">
@@ -47,7 +47,7 @@
                             <div v-for="(item,j) in items.list" :key="j">
                                 <img :src="item.photo">
                                 <div class="items item1">
-                                    <p >{{item.commodityname}}</p>
+                                    <p >{{item.title}}</p>
                                     <span>分类：{{item.color}}</span><br><span>尺码：{{item.size}}</span>
                                 </div>
                                 <div class="items item2">
@@ -79,7 +79,7 @@
                             <div v-for="(item,j) in items.list" :key="j">
                                 <img :src="item.photo">
                                 <div class="items item1">
-                                    <p >{{item.commodityname}}</p>
+                                    <p >{{item.title}}</p>
                                     <span>分类：{{item.color}}</span><br><span>尺码：{{item.size}}</span>
                                 </div>
                                 <div class="items item2">
@@ -262,7 +262,7 @@ export default {
              this.orderList.forEach((items)=>{
                         items.list.forEach((item)=>{
                             if(item.photo){ 
-                            item.photo = item.photo.match(/https:\/\/oss.bogole.com\/project\/code\/public\/e19102801\/upfile\/20\d{6,30}\.jpg/)[0]  
+                            item.photo = item.photo.match(/https:\/\/oss.bogole.com\/project\/code\/public\/e19102801\/upfile\/20\d{6,30}\.[a-z]{3,4}/)[0]  
                                 }
                         })     
                     })     

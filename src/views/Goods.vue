@@ -110,7 +110,7 @@
                 size="small"
                 style="width:200px;margin-right: 30px"
                 placeholder="请选择"
-              >
+              > <Option value="" >不限</Option>
                 <Option v-for="(item,index) in items.item" :value="item.guid" :key="index">{{ item.title }}</Option>
               </Select>
              </div>
@@ -129,6 +129,7 @@
             style="width:200px;margin-right: 2px;"
             :placeholder="'请选择'+ i.ms "
           >
+             <Option value="" >不限</Option>
             <Option v-for="(items,j) in i.item" :value="items.guid" :key="j">{{ items.ls }}</Option>
           </Select>
         </div>
@@ -558,7 +559,7 @@ export default {
             this.models[2] = res.item[0].title
             this.models[9] = res.item[0].number
             this.content = decodeURIComponent(res.item[0].commoditydetails);
-            this.imgLists =  res.item[0].commoditypictures1.match(/https:\/\/oss.bogole.com\/project\/code\/public\/e19102801\/upfile\/20\d{6,30}\.jpg/g)
+            this.imgLists =  res.item[0].commoditypictures1.match(/https:\/\/oss.bogole.com\/project\/code\/public\/e19102801\/upfile\/20\d{6,30}\.[a-z]{3,4}/g)
             
             this.mainList = res.parentcategory;
             this.$nextTick(()=>{
@@ -689,6 +690,9 @@ export default {
       this.tindex = this.data1.length;
       this.isadds = false;
       this.content = ''
+      this.disabledGroup1 = [],
+      this.disabledGroup2 = [],
+      this.disabledGroup3 = [],
       this.$axios
         .post("commodity.ashx?action=InitializationAdd")
         .then(res => {
@@ -833,10 +837,11 @@ export default {
           let obj = { color: "", remark: "", colorpictures: "" };
           this.colorList.push(obj);
         }
-      }else{
+      }else if (this.colorarr.indexOf(this.colorList[i].color) !== i) {
          this.colorList[i].color = ""
          this.$Message.warning("该颜色已经存在");
       }
+   
       }
      
  
@@ -868,6 +873,7 @@ export default {
             obj.number = 0;
             obj.merchantcode = "";
             obj.merchantbarcode = "";
+            obj.id = "";
             obj.colorpictures = i.colorpictures;
             this.mainList.push(obj);
           });
@@ -1016,6 +1022,7 @@ export default {
           if (res.status >= 0) {
             this.isadds = true;
             this.getInit();
+            this.getBasicslist()
           } else {
             this.$Message.warning(res.content);
           }
@@ -1034,6 +1041,7 @@ export default {
       this.disabledGroup1 = [];
       this.disabledGroup2 = [];
       this.disabledGroup3 = [];
+      this.getBasicslist()
     },
     addimg(index) {
       this.colorindex = index;
@@ -1068,20 +1076,23 @@ export default {
     fileChange(event) {
       if (!event.target.files[0].size) return;
       let files = event.target.files;
+
       // 批量上传
-      this.imgList = [];
+       let formData = new FormData()
       for (let i = 0; i < files.length; i++) {
         // 单张上传
-        this.fileAdd(files[i]);
-      }
-      setTimeout(() => {
+        formData.append("file"+i,files[i])
+      } 
         this.$axios
-          .post(
-            "upload_ajax.ashx?action=UpLoadFile",
-            this.$qs.stringify({ imglist: JSON.stringify(this.imgList) })
-          )
+          ({
+           url: "upload_ajax.ashx?action=UpLoadFiles",
+           data: formData, method: 'post',
+           headers: { 
+          'Content-Type': 'multipart/form-data'
+         }})
+          
           .then(res => {
-            if (res.status >= 0) {
+            if (res.status > 0) {
               res.data.forEach(i=>{
                this.imgLists.push(i) 
               })
@@ -1090,7 +1101,7 @@ export default {
             }
           })
           .catch(() => {});
-      }, 100);
+  
     },
     // 单张上传
     fileAdd(file) {
@@ -1129,7 +1140,6 @@ export default {
     },
     // 删除
     fileDel(index) {
-      this.imgList.splice(index, 1);
       this.imgLists.splice(index, 1);
       this.img = require("../assets/imgs/bg04.jpg");
     },
@@ -1299,17 +1309,18 @@ p.titl1,div.titl1{background: #fff;margin-left: 10px;margin-bottom: 20px;}
 }
 .imgbox {
   width: 150px;
-  height: 200px;
+  height: 150px;
   display: inline-block;
   position: relative;
   margin-top: 30px;
   margin-right: 20px;
   text-align: center;
   vertical-align: top;
+  border: 1px solid #f6f6f6;
 }
 .imgbox img {
-  height: 200px;
-  width: 150px;
+  max-height: 150px;
+  max-width: 150px;
 }
 .imgbox .removei {
   width: 150px;

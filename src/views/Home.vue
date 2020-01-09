@@ -506,7 +506,14 @@ export default {
               this.otherList = res.item[0];
               this.otherList.activitycommodityurl=this.otherList.activitycommodityurl.replace(/,/,"")
               this.otherList.discouncommodityturl=this.otherList.discouncommodityturl.replace(/,/,"")
-              this.isopen = Boolean(this.otherList.isbanner==="1")
+              if (this.tvalue==0) {
+                 this.isopen = Boolean(this.otherList.isbanner==="1")
+              }else if (this.tvalue==1) {
+                 this.isopen = Boolean(this.otherList.iscommoditytype==="1")
+              }else{
+                 this.isopen = Boolean(this.otherList.isadvertisingposition==="1")
+              }
+              
                 this.isedit=false
               this.editindex= 0
             } else {
@@ -545,7 +552,7 @@ export default {
         this.imgnumber = 0
        this.getbannerList()
        this.isopen =  Boolean(this.otherList.isbanner==="1")
-       console.log(this.isopen)
+   
      }else if (this.tvalue===1) {
         this.imgnumber = 0
        this.getgoodsList()

@@ -128,6 +128,15 @@
               <Button size="small" @click="isok6" type="primary" class="btn2">提交</Button>
             </div>     
         </Modal>
+          <Modal footer-hide v-model="xModal9" width="360" :styles="{top: '200px'}">
+            <div style="text-align:center;font-size: 20px;margin: 20px 0 ;">
+                <p>首页品牌展示位已满。</p>
+                <p>请关闭其它展示位再进行开启</p>
+            </div>
+            <div style="text-align:center;margin: 20px 0 ;">
+                <Button style="width:80px" type="primary" class="samintbtn" @click="activityinit">确定</Button>
+            </div>
+        </Modal>
          <input type="file" ref="uploadfiles" style="display:none" @input="fileChanges"  multiple="multiple" />
       <div class="tabbox">
         <Tabs v-model="tvalue2" >
@@ -257,6 +266,7 @@ export default {
            xModal6:false,
            xModal7:false,
            xModal8:false,
+           xModal9:false,
            isall:false,
            brand:{},
            bannerindex: 0,
@@ -278,11 +288,16 @@ export default {
            imgmodels:"",
            tabs2:["首页展示","Banner","品牌上新","广告位","品牌系列","其他品牌"],
            imgData: {accept: "image/gif, image/jpeg, image/png, image/jpg"},
+           ishomecount: 0,
         }
     },
     mounted(){this.activityinit()},
     methods:{
         switchsth(i){
+          if (this.tvalue2===0&&this.ishomecount>9&&i) {
+            this.xModal9 = true
+            return false
+          }
             let url = ""
             let parme = {}
             parme.id =  this.brand.id
@@ -349,11 +364,13 @@ export default {
           .catch(() => {}); 
       },
       getbrandinit(){
+         this.xModal9=false
           this.$axios.post("brandrecommendation.ashx?action=selectlist",this.$qs.stringify({ brandid: this.tabs[this.tvalue1].guid }))
           .then(res => {
             if (res.status > 0) {
              this.brand = res.item[0]
              this.isopens = res.isbrandrecommendation
+             this.ishomecount = res.ishomecount
              if (this.tvalue2===0) {
                 this.isopen =  this.brand.ishome
              }
@@ -719,7 +736,7 @@ export default {
                         }
                   })
              if(itmes.commoditypictures1){ 
-                  itmes.commoditypictures1 = itmes.commoditypictures1.match(/https:\/\/oss.bogole.com\/project\/code\/public\/e19102801\/upfile\/20\d{6,30}\.jpg/)[0] 
+                  itmes.commoditypictures1 = itmes.commoditypictures1.match(/https:\/\/oss.bogole.com\/project\/code\/public\/e19102801\/upfile\/20\d{6,30}\.[a-z]{3,4}/)[0] 
                  }
               })
             } else {

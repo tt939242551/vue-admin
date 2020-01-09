@@ -147,7 +147,7 @@ export default {
              this.tabs.forEach(i=>{
                 i.item.forEach((itmes)=>{ 
                 if(itmes.commoditypictures1){ 
-                     itmes.commoditypictures1 = itmes.commoditypictures1.match(/https:\/\/oss.bogole.com\/project\/code\/public\/e19102801\/upfile\/20\d{6,20}\.jpg/g)[0]  
+                     itmes.commoditypictures1 = itmes.commoditypictures1.match(/https:\/\/oss.bogole.com\/project\/code\/public\/e19102801\/upfile\/20\d{6,20}\.[a-z]{3,4}/g)[0]  
                  }
               })
              })
@@ -240,9 +240,9 @@ export default {
     showModal(i){
       this.goodsindex = i
       this.Modal[0] = ""
-      this.Modal[1] = -1
-      this.Modal[2] = -1
-      this.Modal[3] = -1
+      this.Modal[1] = ''
+      this.Modal[2] = ''
+      this.Modal[3] = ''
       this.editgoodsinit()
      
     },
@@ -324,7 +324,7 @@ export default {
     getcommodityList(){
       if (this.goodsindex!==0 || this.tabs[this.tvalue].item.length!==4) {
           this.Modal[3] = "";
-         if (this.Modal[0]&&this.xModal2) {
+         if (this.xModal2) {
         this.$axios
           .post(
             "commodity.ashx?action=selectbyid",

@@ -28,19 +28,19 @@ export default {
        this.editor.txt.html(this.content) 
     },1000)
     this.editor.customConfig.customUploadImg = function (files, insert) {
-       let reader = new FileReader();
+   
        let imgUrl = ""
         let imglist = []
-      // 调用reader.readAsDataURL()方法，把图片转成base64
-      reader.readAsDataURL(files[0]);
-      // 监听reader对象的onload事件，当图片加载完成时，把base64编码賦值给预览图片
-      reader.onload = function() {
-        imglist.push(this.result);
+  
+       let formData = new FormData()
+        formData.append("file1",files[0])
         _tant.$axios
-          .post(
-            "upload_ajax.ashx?action=UpLoadFile",
-            _tant.$qs.stringify({ imglist: JSON.stringify(imglist) })
-          )
+           ({
+           url: "upload_ajax.ashx?action=UpLoadFiles",
+           data: formData, method: 'post',
+           headers: { 
+          'Content-Type': 'multipart/form-data'
+         }})
           .then(res => {
             if (res.status >= 0) {
               imgUrl = res.data[0];
@@ -52,8 +52,8 @@ export default {
           .catch(() => {_tant.$Message.warning("图片上传失败");});
         // console.log(this); 这里的this是FileReader对象
         // 再把file对象添加到imgList数组
-         console.log(imgUrl)
-      };
+     
+      
     // files 是 input 中选中的文件列表
     // insert 是获取图片 url 后，插入到编辑器的方法
     // 上传代码返回结果之后，将图片插入到编辑器中
