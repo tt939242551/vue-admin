@@ -212,10 +212,10 @@
                         type="text" v-model="logistics[3]"  clearable placeholder=""> </i-input>
               </p>
                 <p><span>运单号</span>
-                 <i-input class="sinput" 
+                 <i-input class="sinput" :disabled="orderList[tindex].status==2"
                         type="text" v-model="logistics[4]"  clearable placeholder=""> </i-input>
               </p>
-              <Button size="small" @click="isok2" type="primary" class="btn2">保存</Button>
+              <Button size="small" @click="isok2" type="primary" class="btn2">保存</Button><Button  style="width:80px;margin-left: 30px;display: inline-block;" class="btn2"  @click="xModal2=false">取消</Button>
             </div>     
         </Modal>
     </div>
@@ -329,17 +329,19 @@ export default {
        
     },
     editorder(){
-       this.logistics[0][0]=this.orderList[i].province
-        this.logistics[0][1]=this.orderList[i].city
-        this.logistics[0][2]=this.orderList[i].area
-        this.logistics[1]=this.orderList[i].name
-         this.logistics[2]=this.orderList[i].address
-        this.logistics[3]=this.orderList[i].zcode
-         this.logistics[4]=this.orderList[i].expressname
+       this.logistics[0] = []
+        this.$set(this.logistics[0],0,this.orderList[this.tindex].province)
+       this.$set(this.logistics[0],1,this.orderList[this.tindex].city)
+       this.$set(this.logistics[0],2,this.orderList[this.tindex].area)
+  
+        this.logistics[1]=this.orderList[this.tindex].name
+         this.logistics[2]=this.orderList[this.tindex].address
+        this.logistics[3]=this.orderList[this.tindex].zcode
+         this.logistics[4]=this.orderList[this.tindex].expressname
       this.xModal2=true
     },
     isok2(){
-      if (this.logistics[0]&&this.logistics[1]&&this.logistics[2]&&this.logistics[3]&&this.logistics[4]) {
+      if (this.logistics[0]&&this.logistics[1]&&this.logistics[2]&&this.logistics[3]) {
          this.$axios.post("http://sfstyling.bogole.com/common/order.ashx",this.$qs.stringify({mark:this.orderList[this.tindex].oguid,country:"中国大陆",province:this.logistics[0][0],city:this.logistics[0][1],area:this.logistics[0][2],
          name:this.logistics[1],address:this.logistics[2],zcode:this.logistics[3],expressname:this.logistics[4],type:12})).then(res=>{
            if (res.status>0) {
@@ -361,14 +363,15 @@ export default {
     },
     beforeRouteEnter (to, from, next) {
       next(vm => {
+      if (vm.$route.query.id) {
+        vm.usmid = vm.$route.query.id
+      }
        vm.getgoodslist()
      })
     },
     mounted(){ 
       // this.getgoodslist()
-      if (this.$route.query.id) {
-        this.usmid = this.$route.query.id
-      }
+     
        this.addressdata.forEach(i=>{
          i.value = i.label
          i.children.forEach(j=>{
@@ -398,6 +401,7 @@ export default {
     background-color: #fff;
     margin: 15px 10px;
     padding: 10px 15px 100px;
+    min-width: 1300px;
 }
 .content{border: 1px solid #f0f0f0;width: 1270px;margin-left: 10px}
 .content>div{padding: 0 16px;border-bottom: 1px solid #f0f0f0}

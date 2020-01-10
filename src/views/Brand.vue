@@ -32,8 +32,8 @@
                      disabled   type="text" v-model="Modal[0]"  clearable> </i-input>
               </p>
               <p><span style="vertical-align: top;transform: translateY(15px)">品牌介绍</span>
-                 <i-input class="sinput" 
-                     :rows="3"   type="textarea" v-model="Modal[1]"  clearable placeholder="70个字以内"> </i-input>
+                 <i-input class="sinput" :maxlength="80"
+                     :rows="3"   type="textarea" v-model="Modal[1]"  clearable placeholder="80个字以内"> </i-input>
               </p>
               <Button size="small" @click="isok2" type="primary" class="btn2">提交</Button>
             </div>     
@@ -961,6 +961,7 @@ export default {
  .imglistbox1 .ivu-select-small.ivu-select-single .ivu-select-selection{border-radius: 18px;border-color: #c69c6d;color: #c69c6d;height: 20px;}
  #brand .ivu-select-arrow{color: #c69c6d}
  #brand .ivu-select-small.ivu-select-single .ivu-select-selection .ivu-select-placeholder, .ivu-select-small.ivu-select-single .ivu-select-selection .ivu-select-selected-value{line-height: 18px;}
+ #brand .ivu-tabs .ivu-tabs-tabpane{padding-bottom: 100px;}
 </style>
 <style scoped>
 .switch1{color: #c69c6d;vertical-align: middle;line-height: 32px;position: absolute;top: 12px;right: 20px;}
@@ -978,7 +979,7 @@ export default {
 .showall{position: absolute;top: 12px;right: 10px;color: #c69c6d;cursor: pointer;}
 .tabbar2 .tabspan{font-size: 16px;margin-right: 20px;padding:10px 20px 10px 0 ;display: inline-block;vertical-align: middle;cursor: pointer;}
 .tabbar2 .tabspan.active{color: #c69c6d;vertical-align: middle;text-decoration: underline}
-.tabbox {background: #fff;padding: 15px;padding-bottom: 80px;padding-top: 10px;margin-top: 10px;}
+.tabbox {background: #fff;padding: 15px;padding-top: 10px;margin-top: 10px;}
 .stitle {font-size: 18px;text-align: center; margin: 25px 0;}
  .sinput {width: 240px; margin: 10px 0 40px 58px;}
   /* 活动推荐 */

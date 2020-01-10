@@ -117,7 +117,7 @@ export default {
          if (res.status>=0) {
             this.data1 = res.item
             this.data1.forEach(i=>{
-             i.newdate = i.newdate.slice(0,10)
+              i.newdate = i.newdate.match(/20\d{2}\/\d{1,2}\/\d{1,2}/)[0]
             })
             this.total = res.totalCount
  

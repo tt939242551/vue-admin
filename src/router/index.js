@@ -9,7 +9,7 @@ const commonRoutes = [
         name: 'login',
         component: () => import('../components/Login.vue')
     },
-    {path: '/', redirect: '/home'},
+    {path: '/', redirect: '/statistics'},
  
 ] 
 

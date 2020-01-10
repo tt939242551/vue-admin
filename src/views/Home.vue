@@ -57,7 +57,7 @@
                     <img style="width:960px;height: 90px;" :src="advertising.picture" alt="">
                   </div>
                   <div class="imgbox3" v-else>
-                    <img style="width:960px;height: 90px;" src="../assets/imgs/a1-bg.png" alt="">
+                    <img style="width:960px;height: 90px;" src="../assets/imgs/a1-bgc.png" alt="">
                   </div>
                   <p class="footp"><span @click="showModal3" style="cursor: pointer;"><Icon class="icons" size="18" type="ios-create-outline" />编辑</span></p>
                 </div>
@@ -126,7 +126,7 @@
                    <div v-else>
                      <p><span>导航展示:</span><span v-show="item.isdisplay" class="switchurl" v-for="item in otherList.parentcategory" :key="item.id">{{item.title}}</span></p>
 
-                     <p><span>选项:</span><Button :type="item.isdisplay ?'primary':'default'"  class="switchurls"  @click="item.isdisplay=!item.isdisplay" v-for="(item,i) in otherList.parentcategory" :key="i">{{item.title}}</Button>
+                     <p><span style="vertical-align: top;">选项:</span><span class="btnbox"> <Button :type="item.isdisplay ?'primary':'default'"  class="switchurls"  @click="changedisplay(i)" v-for="(item,i) in otherList.parentcategory" :key="i">{{item.title}}</Button></span>
                      </p>
                      <p><span style="margin-left: 60px;color:#a6a6a6;width:95px;">（最多选择6个）</span></p>
                       <p  class="oimgbox"><span>活动图片:</span><img @click="addimg(1)" src="../assets/imgs/h-4-bg2.png" alt=""><img @click="addimg(1)" class="navimg" v-show="otherList.activitycommodityurl" :src="otherList.activitycommodityurl" alt=""></p>
@@ -408,6 +408,19 @@ export default {
       this.editindex = i
        this.isedit=true
     },
+    changedisplay(i){
+      let num = 0
+      this.otherList.parentcategory.forEach(item=>{
+        if(item.isdisplay){
+          num++
+        }
+      })
+      if(num>=6&&!this.otherList.parentcategory[i].isdisplay){
+        return false
+      }else{
+        this.otherList.parentcategory[i].isdisplay = !this.otherList.parentcategory[i].isdisplay
+      }
+    },
     addimg(i) {
       this.imgnumber = i
       this.$refs.uploadfiles.click();
@@ -649,4 +662,5 @@ section>div .sinput{margin: 5px 20px 5px 0;}
 .oimgbox{margin: 20px 0;position: relative;}
 .oimgbox>span{vertical-align: top;display: inline-block;padding-top: 8px;}
 .navimg{position: absolute;width: 90px;height: 112px;top: 0;left: 70px;}
+.btnbox{display: inline-block;width: 700px;}
 </style>

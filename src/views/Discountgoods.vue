@@ -267,7 +267,10 @@ export default {
                this.Modal[2]=""
                this.Modal[3]=""
                this.Modal[4]=""
+               this.commodity = []
+                this.category=[]
                this.getaddgoods()
+              
             }else{
               this.editgoodsinit()
             }
@@ -412,7 +415,6 @@ export default {
     getcommodityList(){
         if (this.xModal2) {
             this.Modal[3] = "";
-            if (this.Modal[4]) {
                 this.$axios
                 .post(
                     "commodity.ashx?action=selectbyid",
@@ -425,8 +427,7 @@ export default {
                     this.$Message.warning(res.content);
                     }
                 })
-                .catch(() => {});
-            } 
+                .catch(() => {});  
         }
       
     },
