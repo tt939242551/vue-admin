@@ -172,7 +172,7 @@
                <div class="imglistbox1 imglistbox2">
                  <div class="imgbox1" v-for="(items,i) in goodsList" :key="i">
                    <div class="itembox itembox1">
-                    <img v-if="items.commoditypictures1" style="width: 220px;height: 264px;border:none;" :src="items.commoditypictures1" alt="">  <span v-else class="bgtext">暂无图片</span>
+                     <span style="width: 220px;height: 220px;display:inline-block;vertical-align: top;text-align: center;"><img v-if="items.commoditypictures1" style="max-width: 220px;max-height: 220px;border:none;" :src="items.commoditypictures1" alt="">  <span v-else class="bgtext">暂无图片</span></span>
                     <p v-if="items.commodityname">{{items.commodityname}}</p><p v-else>商品名称</p>
                     <span  v-if="items.Price" class="itemnum">￥{{items.Price}}</span> <span v-else class="itemnum">  价格</span>
                     <span class="itemtab" >活动商品</span>
@@ -206,7 +206,7 @@
                <div class="imglistbox1 imglistbox2">
                  <div class="imgbox1" v-for="(items,i) in goodsList" :key="i">
                     <div class="itembox itembox1">
-                      <img v-if="items.commoditypictures1" style="width: 220px;height: 264px;border:none;" :src="items.commoditypictures1" alt="">  <span v-else class="bgtext">暂无图片</span>
+                       <span style="width: 220px;height: 220px;display:inline-block;vertical-align: top;text-align: center;"><img v-if="items.commoditypictures1" style="max-width: 220px;max-height: 220px;border:none;" :src="items.commoditypictures1" alt="">  <span v-else class="bgtext">暂无图片</span></span>
                       <p v-if="items.commodityname">{{items.commodityname}}</p><p v-else>商品名称</p>
                       <span  v-if="items.Price" class="itemnum">￥{{items.Price}}</span> <span v-else class="itemnum">  价格</span>
                       <span class="itemtab" >活动商品</span>
@@ -302,22 +302,22 @@ export default {
             let parme = {}
             parme.id =  this.brand.id
             if (this.tvalue2===0) {
-               url = "brandrecommendation.ashx?action=editishome" 
+               url = "/admin/common/brandrecommendation.ashx?action=editishome" 
                parme.ishome = i
             }else if (this.tvalue2===1) {
-              url = "brandrecommendation.ashx?action=editisbanner"
+              url = "/admin/common/brandrecommendation.ashx?action=editisbanner"
                parme.isbanner = i
             }else if (this.tvalue2===2) {
-              url = "brandrecommendation.ashx?action=editisbrandup"
+              url = "/admin/common/brandrecommendation.ashx?action=editisbrandup"
                parme.isbrandup = i
             }else if (this.tvalue2===3) {
-              url = "brandrecommendation.ashx?action=editisadvertisingposition"
+              url = "/admin/common/brandrecommendation.ashx?action=editisadvertisingposition"
                parme.isadvertisingposition = i
             }else if (this.tvalue2===4) {
-              url = "brandrecommendation.ashx?action=editisbrandseries"
+              url = "/admin/common/brandrecommendation.ashx?action=editisbrandseries"
                parme.isbrandseries = i
             }else if (this.tvalue2===5) {
-              url = "brandrecommendation.ashx?action=editisotherbrand"
+              url = "/admin/common/brandrecommendation.ashx?action=editisotherbrand"
                parme.isotherbrand = i
             }
         this.$axios.post(url,this.$qs.stringify(parme))
@@ -333,7 +333,7 @@ export default {
           .catch(() => {}); 
         },
       switchsthactivity(i){
-         let url = "brandrecommendation.ashx?action=editisbrandrecommendation"
+         let url = "/admin/common/brandrecommendation.ashx?action=editisbrandrecommendation"
         this.$axios.post(url,this.$qs.stringify({isbrandrecommendation:i}))
           .then(res => {
             if (res.status > 0) {
@@ -347,7 +347,7 @@ export default {
         },
       activityinit(){
            this.navValue = -1
-           this.$axios.post("brandrecommendation.ashx?action=generalattributeselectlist",this.$qs.stringify({ ishome: false }))
+           this.$axios.post("/admin/common/brandrecommendation.ashx?action=generalattributeselectlist",this.$qs.stringify({ ishome: false }))
           .then(res => {
             if (res.status >= 0) {
               this.tabs = res.item
@@ -365,7 +365,7 @@ export default {
       },
       getbrandinit(){
          this.xModal9=false
-          this.$axios.post("brandrecommendation.ashx?action=selectlist",this.$qs.stringify({ brandid: this.tabs[this.tvalue1].guid }))
+          this.$axios.post("/admin/common/brandrecommendation.ashx?action=selectlist",this.$qs.stringify({ brandid: this.tabs[this.tvalue1].guid }))
           .then(res => {
             if (res.status > 0) {
              this.brand = res.item[0]
@@ -382,7 +382,7 @@ export default {
           .catch(() => {}); 
       },
       getnavlist(){
-          this.$axios.post("brandrecommendation.ashx?action=generalattributeselectlist",this.$qs.stringify({ ishome:  this.navValue===0,Letter: this.navValue===0?"":this.navlist[ this.navValue],title:this.searchvalue }))
+          this.$axios.post("/admin/common/brandrecommendation.ashx?action=generalattributeselectlist",this.$qs.stringify({ ishome:  this.navValue===0,Letter: this.navValue===0?"":this.navlist[ this.navValue],title:this.searchvalue }))
           .then(res => {
             if (res.status >= 0) {
               if ( res.item.length>0) {
@@ -406,7 +406,7 @@ export default {
       },
      isok2(){
         if (this.Modal[1]) {
-        this.$axios.post("brandrecommendation.ashx?action=edit",this.$qs.stringify({ brandintroduction: this.Modal[1],id: this.brand.id}))
+        this.$axios.post("/admin/common/brandrecommendation.ashx?action=edit",this.$qs.stringify({ brandintroduction: this.Modal[1],id: this.brand.id}))
           .then(res => {
             if (res.status > 0) {
               this.xModal2 = false
@@ -450,9 +450,9 @@ export default {
           let url =""
           let parem ={}
           if (this.bannerindex === this.bannerList.length) {
-            url = "banner.ashx?action=add"
+            url = "/admin/common/banner.ashx?action=add"
             parem = { bannerpicture: this.imgmodels,urllink:this.Modal[0],typeguid: this.brand.guid }
-          }else{url = "banner.ashx?action=edit"
+          }else{url = "/admin/common/banner.ashx?action=edit"
            parem =  { bannerpicture: this.imgmodels,urllink:this.Modal[0],id: this.bannerList[this.bannerindex].id }
           }
          this.$axios.post(url,this.$qs.stringify(parem))
@@ -469,7 +469,7 @@ export default {
     },
     getbannerList(){
          this.$axios
-          .post("banner.ashx?action=selectlist",this.$qs.stringify({ typeguid: this.brand.guid }))
+          .post("/admin/common/banner.ashx?action=selectlist",this.$qs.stringify({ typeguid: this.brand.guid }))
           .then(res => {
             if (res.status >= 0) {
               this.bannerList = res.item;
@@ -488,7 +488,7 @@ export default {
           .catch(() => {});
       },
     removebanner(i){
-        this.$axios.post("banner.ashx?action=delete",this.$qs.stringify({ id: this.bannerList[i].id ,typeguid: this.brand.guid}))
+        this.$axios.post("/admin/common/banner.ashx?action=delete",this.$qs.stringify({ id: this.bannerList[i].id ,typeguid: this.brand.guid}))
           .then(res => {
             if (res.status >= 0) {
               this.getbannerList()
@@ -501,7 +501,7 @@ export default {
     }, 
     setsort(i){
       if (this.tvalue2===1) {
-        this.$axios.post("banner.ashx?action=editsort",this.$qs.stringify({ id: this.bannerList[i].id,xgid:this.xmodel[i] }))
+        this.$axios.post("/admin/common/banner.ashx?action=editsort",this.$qs.stringify({ id: this.bannerList[i].id,xgid:this.xmodel[i] }))
           .then(res => {
             if (res.status >= 0) {
               this.getbannerList()
@@ -532,9 +532,9 @@ export default {
           let url =""
           let parem ={}
           if (this.brandindex === this.brandList.length) {
-            url = "activity.ashx?action=addbrandrecommend"
+            url = "/admin/common/activity.ashx?action=addbrandrecommend"
             parem = { generalattributeid: this.Modal[0],brandurl:this.Modal[1],typeguid: this.brand.guid }
-          }else{url = "activity.ashx?action=editbrandrecommend"
+          }else{url = "/admin/common/activity.ashx?action=editbrandrecommend"
            parem =  { generalattributeid: this.Modal[0],brandurl:this.Modal[1],id: this.brandList[this.brandindex].id }
           }
          this.$axios.post(url,this.$qs.stringify(parem))
@@ -551,7 +551,7 @@ export default {
     },
     editbrandinit(){
         this.$axios
-          .post("activity.ashx?action=editbrandrecommendinit",this.$qs.stringify({ id: this.brandList[this.brandindex].id }))
+          .post("/admin/common/activity.ashx?action=editbrandrecommendinit",this.$qs.stringify({ id: this.brandList[this.brandindex].id }))
           .then(res => {
             if (res.status >= 0) {
               this.brandallList = res.item[0].item[0].item;
@@ -569,7 +569,7 @@ export default {
     },
     getbrandListall(){
          this.$axios
-          .post("activity.ashx?action=addbrandrecommendinit")
+          .post("/admin/common/activity.ashx?action=addbrandrecommendinit")
           .then(res => {
             if (res.status >= 0) {
               this.brandallList = res.item[0].item;
@@ -581,7 +581,7 @@ export default {
       },
     getbrandList(){
          this.$axios
-          .post("activity.ashx?action=selectlistbrandrecommend",this.$qs.stringify({ typeguid: this.brand.guid }))
+          .post("/admin/common/activity.ashx?action=selectlistbrandrecommend",this.$qs.stringify({ typeguid: this.brand.guid }))
           .then(res => {
             if (res.status >= 0) {
               this.brandList = res.item;
@@ -600,7 +600,7 @@ export default {
           .catch(() => {});
       },
     removebrand(i){
-        this.$axios.post("activity.ashx?action=deletebrandrecommend",this.$qs.stringify({ id: this.brandList[i].id ,typeguid: this.brand.guid}))
+        this.$axios.post("/admin/common/activity.ashx?action=deletebrandrecommend",this.$qs.stringify({ id: this.brandList[i].id ,typeguid: this.brand.guid}))
           .then(res => {
             if (res.status >= 0) {
               this.getbrandList()
@@ -611,7 +611,7 @@ export default {
           .catch(() => {}); 
     },
      removebrandall(){
-        this.$axios.post("activity.ashx?action=deletebrandrecommend",this.$qs.stringify({ emptys: "清空" ,typeguid: this.brand.guid}))
+        this.$axios.post("/admin/common/activity.ashx?action=deletebrandrecommend",this.$qs.stringify({ emptys: "清空" ,typeguid: this.brand.guid}))
           .then(res => {
             if (res.status >= 0) {
               this.getbrandList()
@@ -625,7 +625,7 @@ export default {
     }, 
     setsort1(i){
       if (this.tvalue2===5) {
-         this.$axios.post("activity.ashx?action=editsortbrandrecommend",this.$qs.stringify({ id: this.brandList[i].id,xgid:this.xmodel[i] }))
+         this.$axios.post("/admin/common/activity.ashx?action=editsortbrandrecommend",this.$qs.stringify({ id: this.brandList[i].id,xgid:this.xmodel[i] }))
           .then(res => {
             if (res.status >= 0) {
               this.getbrandList()
@@ -658,9 +658,9 @@ export default {
           let url =""
           let parem ={}
           if (this.goodsindex === this.goodsList.length) {
-            url = "brandrecommendation.ashx?action=addbrandrecommendcommodity"
+            url = "/admin/common/brandrecommendation.ashx?action=addbrandrecommendcommodity"
             parem = {generalattributeid:this.tabs[this.tvalue1].guid, parentcategoryid: this.Modal[1],categoryid:this.Modal[2],typeguid: this.brand.guid ,commodityguid:this.Modal[3],typeid:this.typeid}
-          }else{url = "brandrecommendation.ashx?action=editbrandrecommendcommodity"
+          }else{url = "/admin/common/brandrecommendation.ashx?action=editbrandrecommendcommodity"
            parem =  { commodityguid: this.Modal[3],id:this.brand.id}
           }
          this.$axios.post(url,this.$qs.stringify(parem))
@@ -678,7 +678,7 @@ export default {
     },
     editgoodsinit(){
         this.$axios
-          .post("brandrecommendation.ashx?action=editbrandrecommendcommodityinit",this.$qs.stringify({ id: this.goodsList[this.goodsindex].id }))
+          .post("/admin/common/brandrecommendation.ashx?action=editbrandrecommendcommodityinit",this.$qs.stringify({ id: this.goodsList[this.goodsindex].id }))
           .then(res => {
             if (res.status >= 0) {
               this.generalattribute = res.generalattribute[0].item
@@ -709,7 +709,7 @@ export default {
     },
     getgoodsListall(){
          this.$axios
-          .post("brandrecommendation.ashx?action=addactivecommoditiesinit",this.$qs.stringify({ brandid: this.tabs[this.tvalue1].guid}))
+          .post("/admin/common/brandrecommendation.ashx?action=addactivecommoditiesinit",this.$qs.stringify({ brandid: this.tabs[this.tvalue1].guid}))
           .then(res => {
             if (res.status >= 0) {
              this.generalattribute = res.generalattribute[0].item
@@ -724,7 +724,7 @@ export default {
          this.goodsList=[]
          this.xmodel=[]
          this.$axios
-          .post("brandrecommendation.ashx?action=selectlistbrandrecommendcommodity",this.$qs.stringify({ typeguid: this.brand.guid ,typeid:this.typeid}))
+          .post("/admin/common/brandrecommendation.ashx?action=selectlistbrandrecommendcommodity",this.$qs.stringify({ typeguid: this.brand.guid ,typeid:this.typeid}))
           .then(res => {
             if (res.status >= 0) {
               this.goodsList = res.item;
@@ -746,7 +746,7 @@ export default {
           .catch(() => {});
       },
     removegoods(i){
-        this.$axios.post("brandrecommendation.ashx?action=deletebrandrecommendcommodity",this.$qs.stringify({ id: this.goodsList[i].id ,typeguid: this.brand.guid,typeid:this.typeid}))
+        this.$axios.post("/admin/common/brandrecommendation.ashx?action=deletebrandrecommendcommodity",this.$qs.stringify({ id: this.goodsList[i].id ,typeguid: this.brand.guid,typeid:this.typeid}))
           .then(res => {
             if (res.status >= 0) {
               this.getgoodsList()
@@ -757,7 +757,7 @@ export default {
           .catch(() => {}); 
     },
      removegoodsall(){
-        this.$axios.post("brandrecommendation.ashx?action=deletebrandrecommendcommodity",this.$qs.stringify({ id: "清空" ,typeguid: this.brand.guid,typeid:this.typeid}))
+        this.$axios.post("/admin/common/brandrecommendation.ashx?action=deletebrandrecommendcommodity",this.$qs.stringify({ id: "清空" ,typeguid: this.brand.guid,typeid:this.typeid}))
           .then(res => {
             if (res.status >= 0) {
               this.getgoodsList()
@@ -771,7 +771,7 @@ export default {
     }, 
     setsort2(i){
       if (this.tvalue2===2||this.tvalue2===4) {
-        this.$axios.post("brandrecommendation.ashx?action=editsortbrandrecommendcommodity",this.$qs.stringify({ id: this.goodsList[i].id,xgid:this.xmodel[i] }))
+        this.$axios.post("/admin/common/brandrecommendation.ashx?action=editsortbrandrecommendcommodity",this.$qs.stringify({ id: this.goodsList[i].id,xgid:this.xmodel[i] }))
           .then(res => {
             if (res.status >= 0) {
               this.getgoodsList()
@@ -795,7 +795,7 @@ export default {
          })
         this.$axios
           .post(
-            "category.ashx?action=selectby_parentid",
+            "/admin/common/category.ashx?action=selectby_parentid",
             this.$qs.stringify({ parentid: id })
           )
           .then(res => {
@@ -813,7 +813,7 @@ export default {
        this.Modal[3] = "";
         this.$axios
           .post(
-            "commodity.ashx?action=selectbyid",
+            "/admin/common/commodity.ashx?action=selectbyid",
             this.$qs.stringify({ generalattributeid: this.Modal[0],parentcategoryid:this.Modal[1],categoryid:this.Modal[2]})
           )
           .then(res => {
@@ -838,7 +838,7 @@ export default {
     },
     getadvertising(){
          this.$axios
-          .post("brandrecommendation.ashx?action=selectlistadvertisingposition",this.$qs.stringify({ typeguid: this.brand.guid }))
+          .post("/admin/common/brandrecommendation.ashx?action=selectlistadvertisingposition",this.$qs.stringify({ typeguid: this.brand.guid }))
           .then(res => {
             if (res.status >= 0) {
              this.advertising = res.item[0]
@@ -852,7 +852,7 @@ export default {
       if (this.imgmodels) {
           let url =""
           let parem ={}
-           url = "activity.ashx?action=editadvertisingposition"
+           url = "/admin/common/activity.ashx?action=editadvertisingposition"
            parem =  { picture: this.imgmodels,urllink:this.Modal[0],id: this.advertising.id }
           
          this.$axios.post(url,this.$qs.stringify(parem))
@@ -881,7 +881,7 @@ export default {
       setTimeout(() => {
         this.$axios
           .post(
-            "upload_ajax.ashx?action=UpLoadFile",
+            "/admin/common/upload_ajax.ashx?action=UpLoadFile",
             this.$qs.stringify({ imglist: JSON.stringify(this.imgmodel) })
           )
           .then(res => {

@@ -107,7 +107,7 @@ export default {
     created(){this.getselectlist()},
     methods:{
      getselectlist(){
-       let url = "tb_user.ashx?action=selectlist"
+       let url = "/admin/common/tb_user.ashx?action=selectlist"
        let arr = [];
        if (this.models[1]) {
            arr = this.models[1]
@@ -149,7 +149,7 @@ export default {
     },
      tableToExcel(){
       //要导出的json数据
-      let url = "tb_user.ashx?action=export"
+      let url = "/admin/common/tb_user.ashx?action=export"
        let arr = [];
        let jsonData = []
        if (this.models[1]) {

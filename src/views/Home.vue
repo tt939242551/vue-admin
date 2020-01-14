@@ -53,7 +53,7 @@
             <TabPane label="广告位" >
                 <img style="float: right;margin: 20px 10px 20px 0" src="../assets/imgs/b-6-1.png" alt="">
                 <div class="s3imgbox1">
-                  <div class="imgbox3" v-if="advertising">
+                  <div class="imgbox3" v-if="advertising.picture">
                     <img style="width:960px;height: 90px;" :src="advertising.picture" alt="">
                   </div>
                   <div class="imgbox3" v-else>
@@ -240,13 +240,13 @@ export default {
             let parme = {}
             parme.id =  this.otherList.id
             if (this.tvalue===0) {
-               url = "Other.ashx?action=editisbanner" 
+               url = "/admin/common/Other.ashx?action=editisbanner" 
                parme.isbanner = i
             }else if (this.tvalue===1) {
-              url = "Other.ashx?action=editiscommoditytype"
+              url = "/admin/common/Other.ashx?action=editiscommoditytype"
                parme.iscommoditytype = i
             }else if (this.tvalue===2) {
-              url = "Other.ashx?action=editisadvertisingposition"
+              url = "/admin/common/Other.ashx?action=editisadvertisingposition"
                parme.isadvertisingposition = i
             }
         this.$axios.post(url,this.$qs.stringify(parme))
@@ -263,7 +263,7 @@ export default {
         },
       getbannerList(){
          this.$axios
-          .post("banner.ashx?action=selectlist")
+          .post("/admin/common/banner.ashx?action=selectlist")
           .then(res => {
             if (res.status >= 0) {
               this.bannerList = res.item;
@@ -301,7 +301,7 @@ export default {
       this.xModal1 = true
     },
     removebanner(i){
-        this.$axios.post("banner.ashx?action=delete",this.$qs.stringify({ id: this.bannerList[i].id }))
+        this.$axios.post("/admin/common/banner.ashx?action=delete",this.$qs.stringify({ id: this.bannerList[i].id }))
           .then(res => {
             if (res.status >= 0) {
               this.getbannerList()
@@ -313,7 +313,7 @@ export default {
           .catch(() => {}); 
     },
     setsort(i){
-      this.$axios.post("banner.ashx?action=editsort",this.$qs.stringify({ id: this.bannerList[i].id,xgid:this.model[i] }))
+      this.$axios.post("/admin/common/banner.ashx?action=editsort",this.$qs.stringify({ id: this.bannerList[i].id,xgid:this.model[i] }))
           .then(res => {
             if (res.status >= 0) {
               this.getbannerList()
@@ -328,9 +328,9 @@ export default {
           let url =""
           let parse 
           if (this.bannerindex === this.bannerList.length) {
-            url = "banner.ashx?action=add"
+            url = "/admin/common/banner.ashx?action=add"
             parse = { bannerpicture: this.imgmodels,urllink:this.xmodel[0],id: "", }
-          }else{url = "banner.ashx?action=edit"
+          }else{url = "/admin/common/banner.ashx?action=edit"
            parse = { bannerpicture: this.imgmodels,urllink:this.xmodel[0],id: this.bannerList[this.bannerindex].id, }
           }
          this.$axios.post(url,this.$qs.stringify(parse))
@@ -348,7 +348,7 @@ export default {
     },
     isok2(){
       if (this.imgmodels&&this.xmodel[0]&&this.xmodel[1]&&this.xmodel[2]) {
-          let url ="commoditytype.ashx?action=edit"
+          let url ="/admin/common/commoditytype.ashx?action=edit"
          this.$axios.post(url,this.$qs.stringify({maintitle:this.xmodel[1],vicetitle:this.xmodel[2], Picture: this.imgmodels,urllink:this.xmodel[0],id: this.goodsList[this.goodsindex].id, }))
           .then(res => {
             if (res.status >= 0) {
@@ -364,7 +364,7 @@ export default {
     },
     isok3(){
       if (this.imgmodels) {
-          let url ="advertisingposition.ashx?action=edit"
+          let url ="/admin/common/advertisingposition.ashx?action=edit"
          this.$axios.post(url,this.$qs.stringify({ picture: this.imgmodels,urllink:this.xmodel[0],id: this.advertising.id, }))
           .then(res => {
             if (res.status >= 0) {
@@ -385,7 +385,7 @@ export default {
          arr.push(item.guid) 
         }
       })
-          let url ="Other.ashx?action=edit"
+          let url ="/admin/common/Other.ashx?action=edit"
           let prima = this.otherList
           prima.tipsLabel = JSON.stringify(prima.tipsLabel)
            prima.parentcategory = null
@@ -433,7 +433,7 @@ export default {
       setTimeout(() => {
         this.$axios
           .post(
-            "upload_ajax.ashx?action=UpLoadFile",
+            "/admin/common/upload_ajax.ashx?action=UpLoadFile",
             this.$qs.stringify({ imglist: JSON.stringify(this.imgmodel) })
           )
           .then(res => {
@@ -483,7 +483,7 @@ export default {
     },
     getgoodsList(){
         this.$axios
-          .post("commoditytype.ashx?action=selectlist")
+          .post("/admin/common/commoditytype.ashx?action=selectlist")
           .then(res => {
             if (res.status >= 0) {
               res.item.forEach((item,i)=>{
@@ -501,7 +501,7 @@ export default {
     },
     getadvertising(){
         this.$axios
-          .post("advertisingposition.ashx?action=selectlist")
+          .post("/admin/common/advertisingposition.ashx?action=selectlist")
           .then(res => {
             if (res.status > 0) {
               this.advertising = res.item[0];
@@ -513,7 +513,7 @@ export default {
     },
     getother(){
         this.$axios
-          .post("Other.ashx?action=selectlist")
+          .post("/admin/common/Other.ashx?action=selectlist")
           .then(res => {
             if (res.status >= 0) {
               this.otherList = res.item[0];
@@ -540,7 +540,7 @@ export default {
       this.xModal2 = true
       this.imgmodels = ""
       this.xmodel = []
-       this.$axios.post("commoditytype.ashx?action=selectdetails",this.$qs.stringify({ id: this.goodsList[i].id }))
+       this.$axios.post("/admin/common/commoditytype.ashx?action=selectdetails",this.$qs.stringify({ id: this.goodsList[i].id }))
           .then(res => {
             if (res.status >= 0) {
               this.xmodel[0]  = res.item[0].urllink

@@ -215,7 +215,7 @@
                  <i-input class="sinput" :disabled="orderList[tindex].status==2"
                         type="text" v-model="logistics[4]"  clearable placeholder=""> </i-input>
               </p>
-              <Button size="small" @click="isok2" type="primary" class="btn2">保存</Button><Button  style="width:80px;margin-left: 30px;display: inline-block;" class="btn2"  @click="xModal2=false">取消</Button>
+              <Button size="small" @click="isok2" type="primary" class="btn2">保存</Button><Button  style="width:80px;margin-left: 30px;display: inline-block;" class="btn2" size="small"  @click="xModal2=false">取消</Button>
             </div>     
         </Modal>
     </div>
@@ -253,7 +253,7 @@ export default {
             if (this.$route.query.id) {
                 id = this.$route.query.id
             }
-           let url = "http://sfstyling.bogole.com/common/order.ashx"
+           let url = "/common/order.ashx"
           let params={pageindex:this.page,pageSize:this.pageSize,status:this.tvalue?this.tvalue+1:0,type:10,usmid:this.usmid}
           this.isredin = false
            this.$axios.post(url,this.$qs.stringify(params)).then(res=>{
@@ -291,7 +291,7 @@ export default {
     },
     isok1(){
       if (this.value) {
-         this.$axios.post("http://sfstyling.bogole.com/common/order.ashx",this.$qs.stringify({mark:this.orderList[this.tindex].oguid,expressname:this.value,type:11})).then(res=>{
+         this.$axios.post("/common/order.ashx",this.$qs.stringify({mark:this.orderList[this.tindex].oguid,expressname:this.value,type:11})).then(res=>{
            if (res.status>0) {
             this.xModal1=false
             this.getgoodslist()
@@ -313,7 +313,7 @@ export default {
                   arr.push(this.orderList[i].oguid)  
                 }
             })
-        this.$axios.post("http://sfstyling.bogole.com/common/order.ashx",this.$qs.stringify({mark:arr.join(","),type:15})).then(res=>{
+        this.$axios.post("/common/order.ashx",this.$qs.stringify({mark:arr.join(","),type:15})).then(res=>{
            if (res.status>0) {
             this.getgoodslist()
           }else{
@@ -342,7 +342,7 @@ export default {
     },
     isok2(){
       if (this.logistics[0]&&this.logistics[1]&&this.logistics[2]&&this.logistics[3]) {
-         this.$axios.post("http://sfstyling.bogole.com/common/order.ashx",this.$qs.stringify({mark:this.orderList[this.tindex].oguid,country:"中国大陆",province:this.logistics[0][0],city:this.logistics[0][1],area:this.logistics[0][2],
+         this.$axios.post("/common/order.ashx",this.$qs.stringify({mark:this.orderList[this.tindex].oguid,country:"中国大陆",province:this.logistics[0][0],city:this.logistics[0][1],area:this.logistics[0][2],
          name:this.logistics[1],address:this.logistics[2],zcode:this.logistics[3],expressname:this.logistics[4],type:12})).then(res=>{
            if (res.status>0) {
             this.xModal2 = false
@@ -408,7 +408,7 @@ export default {
 .content .foot{border-bottom: none}
 .content>p{background: #f6f6f6;font-size: 14px;line-height: 16px;padding: 20px 46px 20px 26px;}
 .content>div>span{vertical-align: top;}
-.content>div .mach{width: 100px;text-align: center;display: inline-block;margin-right: 87px;}
+.content>div .mach{width: 90px;text-align: center;display: inline-block;margin-right: 87px;}
 .allnum{font-size: 28px;color: #191919;margin-right: 20px;font-family:  Microsoft YaHei;vertical-align: bottom;}
 .foot>div{width: 1270px;margin: 10px;}
 .foot>div p {display: inline-block;cursor: pointer;}
@@ -420,10 +420,10 @@ export default {
 .content>p>span:nth-child(6){margin-right: 57px;}
 .content>p>span:nth-child(7){margin-right: 80px;}
 .number{width: 70px;text-align: center;display: inline-block;padding: 26px  0;vertical-align: top;height: 100%;}
-.mach{ position: absolute;top: 0;left: 920px;width: 130px;text-align: center;padding: 26px  0;padding-right: 5px; border-right: 1px solid #f0f0f0;height: 100%;color: #c69c6d;font-family: Microsoft YaHei}
-.stutas{position: absolute;top: 0;left: 1052px;padding: 26px  0;border-right: 1px solid #f0f0f0;height: 100%;width: 80px;}
-.stutas p{font-size: 12px;color: #c69c6d;text-align: center;}
-.operate{position: absolute;top: 0;left:  1140px;text-align: center;width:116px;padding: 26px  0;}
+.mach{ position: absolute;top: 0;left: 927px;width: 130px;text-align: center;padding: 26px  0;padding-right: 5px; border-right: 1px solid #f0f0f0;height: 100%;color: #c69c6d;font-family: Microsoft YaHei}
+.stutas{position: absolute;top: 0;left: 1056px;padding: 26px  0;border-right: 1px solid #f0f0f0;height: 100%;width: 82px;}
+.stutas p{font-size: 12px;color: #c69c6d;text-align: center;margin-left: -41px;}
+.operate{position: absolute;top: 0;left:  1142px;text-align: center;width:116px;padding: 26px  0;}
 .operate a{margin-top: 5px;display: inline-block;color: #c69c6d;text-decoration: underline}
 .operate2 p:last-child{color: #8c8c8c;font-size: 12px;margin-top: 5px;display: inline-block}
 .items{display: inline-block;vertical-align: top;}

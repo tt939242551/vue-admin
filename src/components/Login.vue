@@ -71,7 +71,7 @@ export default {
       }
     },
     submit() {
-      this.$axios.post('login.ashx',this.$qs.stringify({userName:this.account,userPwd:this.pwd})).then(res=>{
+      this.$axios.post('/admin/common/login.ashx',this.$qs.stringify({userName:this.account,userPwd:this.pwd})).then(res=>{
         if (res.status >= 0) {
         this.isShowLoading = true;
         // 登陆成功 设置用户信息头像

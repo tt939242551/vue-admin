@@ -130,7 +130,7 @@ export default {
   },
   methods: {
     gettlist(){
-       let url = "generalattribute.ashx?action=selectlist"
+       let url = "/admin/common/generalattribute.ashx?action=selectlist"
        let params={page:'0',pageSize:'0',parentid:"0",}
        this.$axios.post(url,this.$qs.stringify(params)).then(res=>{
          if (res.status>=0) {
@@ -156,7 +156,7 @@ export default {
          } )
     },
     getselectlist(){
-       let url = "generalattribute.ashx?action=selectlist"
+       let url = "/admin/common/generalattribute.ashx?action=selectlist"
        let params={page:this.page,pageSize:this.pageSize,parentid:this.tabs[this.tvalue].id}
        this.$axios.post(url,this.$qs.stringify(params)).then(res=>{
          if (res.status>=0) {
@@ -179,7 +179,7 @@ export default {
      removeTabs(){
       let arr = []
       arr.push(this.tabs[this.tvalue].id)
-       this.$axios.post("generalattribute.ashx?action=delete",this.$qs.stringify({ids: JSON.stringify(arr)})).then(res=>{
+       this.$axios.post("/admin/common/generalattribute.ashx?action=delete",this.$qs.stringify({ids: JSON.stringify(arr)})).then(res=>{
          if (res.status>=0) {
            this.xModal3 = false
             this.gettlist()
@@ -195,7 +195,7 @@ export default {
       this.xModal2 = true;
     },
     removelist(){
-      let url = "generalattribute.ashx?action=delete"
+      let url = "/admin/common/generalattribute.ashx?action=delete"
        this.$axios.post(url,this.$qs.stringify({ids: JSON.stringify(this.isCheck)})).then(res=>{
          if (res.status>=0) {
             this.getselectlist()
@@ -206,7 +206,7 @@ export default {
          } )
     },
     movelist(i){
-      let url = "generalattribute.ashx?action=delete"
+      let url = "/admin/common/generalattribute.ashx?action=delete"
       let arr = [this.data1[i].id]
        this.$axios.post(url,this.$qs.stringify({ids: JSON.stringify(arr)})).then(res=>{
          if (res.status>=0) {
@@ -224,7 +224,7 @@ export default {
       this.text1 = this.titles[i]
       this.xModal = true
       if(index!==this.data1.length){
-      this.$axios.post("generalattribute.ashx?action=selectdetails",this.$qs.stringify({id:this.data1[index].id})).then(res=>{
+      this.$axios.post("/admin/common/generalattribute.ashx?action=selectdetails",this.$qs.stringify({id:this.data1[index].id})).then(res=>{
          if (res.status>=0) {
             this.imgval1 = res.item[0].picture.replace(/,$/,"")
             this.imgval2 = res.item[0].logo.replace(/,$/,"")
@@ -260,10 +260,10 @@ export default {
         let url = ""
         let pamel ={}
         if ( this.tindex === this.data1.length) {
-            url = "generalattribute.ashx?action=add"
+            url = "/admin/common/generalattribute.ashx?action=add"
             pamel = {title:this.value1,parentid:this.tabs[this.tvalue].id,setdate:this.value2,picture:this.imgval1,logo:this.imgval2}
         }else {
-            url = "generalattribute.ashx?action=edit"
+            url = "/admin/common/generalattribute.ashx?action=edit"
             pamel = {id:this.data1[this.tindex].id,title:this.value1,setdate:this.value2,picture:this.imgval1,logo:this.imgval2}
         }
         if(this.value1 && this.value2){
@@ -282,7 +282,7 @@ export default {
     },
     isok2() {
       if (this.value) {
-        this.$axios.post("generalattribute.ashx?action=add",this.$qs.stringify({title:this.value, parentid:0,setdate:"",
+        this.$axios.post("/admin/common/generalattribute.ashx?action=add",this.$qs.stringify({title:this.value, parentid:0,setdate:"",
         })).then(res=>{
          if (res.status>=0) {
          this.gettlist()
@@ -311,7 +311,7 @@ export default {
       // 监听reader对象的onload事件，当图片加载完成时，把base64编码賦值给预览图片
         reader.onload = function() {
           let imgarr =  [this.result]
-         that.$axios.post("upload_ajax.ashx?action=UpLoadFile",that.$qs.stringify({imglist: JSON.stringify(imgarr)})).then(res=>{
+         that.$axios.post("/admin/common/upload_ajax.ashx?action=UpLoadFile",that.$qs.stringify({imglist: JSON.stringify(imgarr)})).then(res=>{
          if (res.status>=0) {
            that.imgval1 = res.data[0]
          }else{
@@ -335,7 +335,7 @@ export default {
       // 监听reader对象的onload事件，当图片加载完成时，把base64编码賦值给预览图片
          reader.onload = function() {
         let imgarr =  [this.result]
-         that.$axios.post("upload_ajax.ashx?action=UpLoadFile",that.$qs.stringify({imglist: JSON.stringify(imgarr)})).then(res=>{
+         that.$axios.post("/admin/common/upload_ajax.ashx?action=UpLoadFile",that.$qs.stringify({imglist: JSON.stringify(imgarr)})).then(res=>{
          if (res.status>=0) {
            that.imgval2 = res.data[0]
          }else{

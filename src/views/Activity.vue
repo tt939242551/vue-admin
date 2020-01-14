@@ -218,7 +218,7 @@
                <div class="imglistbox1 imglistbox2">
                  <div class="imgbox1" v-for="(items,i) in goodsList" :key="i">
                    <div class="itembox itembox1">
-                    <img v-if="items.commoditypictures1" style="width: 220px;height: 264px;border:none;" :src="items.commoditypictures1" alt="">  <span v-else class="bgtext">暂无图片</span>
+                    <span style="width: 220px;height: 220px;display:inline-block;vertical-align: top;text-align: center;"><img v-if="items.commoditypictures1" style="max-width: 220px;max-height: 220px;border:none;" :src="items.commoditypictures1" alt="">  <span v-else class="bgtext">暂无图片</span></span>
                     <p v-if="items.commodityname">{{items.commodityname}}</p><p v-else>商品名称</p>
                     <span  v-if="items.Price" class="itemnum">￥{{items.Price}}</span> <span v-else class="itemnum">  价格</span>
                     <span class="itemtab" >活动商品</span>
@@ -339,22 +339,22 @@ export default {
             let parme = {}
             parme.id =  this.tabs[this.tvalue1].id
              if (this.tvalue2===1) {
-              url = "activity.ashx?action=editisopenbanner"
+              url = "/admin/common/activity.ashx?action=editisopenbanner"
                parme.isopenbanner = i
             }else if (this.tvalue2===2) {
-              url = "activity.ashx?action=editisbrand"
+              url = "/admin/common/activity.ashx?action=editisbrand"
                parme.isbrand = i
             }else if (this.tvalue2===3) {
-              url = "activity.ashx?action=editisactivity"
+              url = "/admin/common/activity.ashx?action=editisactivity"
                parme.isactivity = i
             }else if (this.tvalue2===4) {
-              url = "activity.ashx?action=editisdiscount"
+              url = "/admin/common/activity.ashx?action=editisdiscount"
              parme.isdiscount = i
             }else if (this.tvalue2===5) {
-              url = "activity.ashx?action=editisadvertisement1"
+              url = "/admin/common/activity.ashx?action=editisadvertisement1"
                parme.isadvertisement1 = i
             }else if (this.tvalue2===6) {
-              url = "activity.ashx?action=editisadvertisement2"
+              url = "/admin/common/activity.ashx?action=editisadvertisement2"
                parme.isadvertisement2 = i
             }
         this.$axios.post(url,this.$qs.stringify(parme))
@@ -371,7 +371,7 @@ export default {
           .catch(() => {}); 
         },
         switchsthactivity(i){
-         let url = "activity.ashx?action=editisactivitys"
+         let url = "/admin/common/activity.ashx?action=editisactivitys"
         this.$axios.post(url,this.$qs.stringify({isactivitys:i}))
           .then(res => {
             if (res.status > 0) {
@@ -384,7 +384,7 @@ export default {
           .catch(() => {})
         },
       activityinit(){
-           this.$axios.post("activity.ashx?action=selectlist")
+           this.$axios.post("/admin/common/activity.ashx?action=selectlist")
           .then(res => {
             if (res.status >= 0) {
               this.tabs = res.item
@@ -407,7 +407,7 @@ export default {
       },
       isok1(){
           if (this.Modal[0]) {
-        this.$axios.post("activity.ashx?action=add",this.$qs.stringify({ activityname: this.Modal[0] }))
+        this.$axios.post("/admin/common/activity.ashx?action=add",this.$qs.stringify({ activityname: this.Modal[0] }))
           .then(res => {
             if (res.status > 0) {
               this.xModal1 = false
@@ -421,7 +421,7 @@ export default {
       },
      isok2(){
         if (this.Modal[1]&&this.Modal[2]) {
-        this.$axios.post("activity.ashx?action=addinformation",this.$qs.stringify({ activitytitle: this.Modal[1],activityinformation: this.Modal[2],activityurl: this.Modal[0],activitypicture: this.imgmodels,id: this.tabs[this.tvalue1].id}))
+        this.$axios.post("/admin/common/activity.ashx?action=addinformation",this.$qs.stringify({ activitytitle: this.Modal[1],activityinformation: this.Modal[2],activityurl: this.Modal[0],activitypicture: this.imgmodels,id: this.tabs[this.tvalue1].id}))
           .then(res => {
             if (res.status > 0) {
               this.xModal2 = false
@@ -438,7 +438,7 @@ export default {
          let arr = []
             arr.push(this.tabs[this.tvalue1].id)
          this.$axios
-          .post("activity.ashx?action=delete",this.$qs.stringify({ids: JSON.stringify(arr)}))
+          .post("/admin/common/activity.ashx?action=delete",this.$qs.stringify({ids: JSON.stringify(arr)}))
           .then(res => {
             if (res.status >= 0) {
               this.activityinit()
@@ -478,9 +478,9 @@ export default {
           let url =""
           let parem ={}
           if (this.bannerindex === this.bannerList.length) {
-            url = "banner.ashx?action=add"
+            url = "/admin/common/banner.ashx?action=add"
             parem = { bannerpicture: this.imgmodels,urllink:this.Modal[0],typeguid: this.tabs[this.tvalue1].guid }
-          }else{url = "banner.ashx?action=edit"
+          }else{url = "/admin/common/banner.ashx?action=edit"
            parem =  { bannerpicture: this.imgmodels,urllink:this.Modal[0],id: this.bannerList[this.bannerindex].id }
           }
          this.$axios.post(url,this.$qs.stringify(parem))
@@ -497,7 +497,7 @@ export default {
     },
     getbannerList(){
          this.$axios
-          .post("banner.ashx?action=selectlist",this.$qs.stringify({ typeguid: this.tabs[this.tvalue1].guid }))
+          .post("/admin/common/banner.ashx?action=selectlist",this.$qs.stringify({ typeguid: this.tabs[this.tvalue1].guid }))
           .then(res => {
             if (res.status >= 0) {
               this.bannerList = res.item;
@@ -516,7 +516,7 @@ export default {
           .catch(() => {});
       },
     removebanner(i){
-        this.$axios.post("banner.ashx?action=delete",this.$qs.stringify({ id: this.bannerList[i].id ,typeguid: this.tabs[this.tvalue1].guid}))
+        this.$axios.post("/admin/common/banner.ashx?action=delete",this.$qs.stringify({ id: this.bannerList[i].id ,typeguid: this.tabs[this.tvalue1].guid}))
           .then(res => {
             if (res.status >= 0) {
               this.getbannerList()
@@ -529,7 +529,7 @@ export default {
     }, 
     setsort(i){
       if (this.tvalue2===1) {
-         this.$axios.post("banner.ashx?action=editsort",this.$qs.stringify({ id: this.bannerList[i].id,xgid:this.xmodel[i] }))
+         this.$axios.post("/admin/common/banner.ashx?action=editsort",this.$qs.stringify({ id: this.bannerList[i].id,xgid:this.xmodel[i] }))
           .then(res => {
             if (res.status >= 0) {
               this.getbannerList()
@@ -560,9 +560,9 @@ export default {
           let url =""
           let parem ={}
           if (this.brandindex === this.brandList.length) {
-            url = "activity.ashx?action=addbrandrecommend"
+            url = "/admin/common/activity.ashx?action=addbrandrecommend"
             parem = { generalattributeid: this.Modal[0],brandurl:this.Modal[1],typeguid: this.tabs[this.tvalue1].guid }
-          }else{url = "activity.ashx?action=editbrandrecommend"
+          }else{url = "/admin/common/activity.ashx?action=editbrandrecommend"
            parem =  { generalattributeid: this.Modal[0],brandurl:this.Modal[1],id: this.brandList[this.brandindex].id }
           }
          this.$axios.post(url,this.$qs.stringify(parem))
@@ -579,7 +579,7 @@ export default {
     },
     editbrandinit(){
         this.$axios
-          .post("activity.ashx?action=editbrandrecommendinit",this.$qs.stringify({ id: this.brandList[this.brandindex].id }))
+          .post("/admin/common/activity.ashx?action=editbrandrecommendinit",this.$qs.stringify({ id: this.brandList[this.brandindex].id }))
           .then(res => {
             if (res.status >= 0) {
               this.brandallList = res.item[0].item[0].item;
@@ -597,7 +597,7 @@ export default {
     },
     getbrandListall(){
          this.$axios
-          .post("activity.ashx?action=addbrandrecommendinit")
+          .post("/admin/common/activity.ashx?action=addbrandrecommendinit")
           .then(res => {
             if (res.status >= 0) {
               this.brandallList = res.item[0].item;
@@ -609,7 +609,7 @@ export default {
       },
     getbrandList(){
          this.$axios
-          .post("activity.ashx?action=selectlistbrandrecommend",this.$qs.stringify({ typeguid: this.tabs[this.tvalue1].guid }))
+          .post("/admin/common/activity.ashx?action=selectlistbrandrecommend",this.$qs.stringify({ typeguid: this.tabs[this.tvalue1].guid }))
           .then(res => {
             if (res.status >= 0) {
               this.brandList = res.item;
@@ -628,7 +628,7 @@ export default {
           .catch(() => {});
       },
     removebrand(i){
-        this.$axios.post("activity.ashx?action=deletebrandrecommend",this.$qs.stringify({ id: this.brandList[i].id ,typeguid: this.tabs[this.tvalue1].guid}))
+        this.$axios.post("/admin/common/activity.ashx?action=deletebrandrecommend",this.$qs.stringify({ id: this.brandList[i].id ,typeguid: this.tabs[this.tvalue1].guid}))
           .then(res => {
             if (res.status >= 0) {
               this.getbrandList()
@@ -639,7 +639,7 @@ export default {
           .catch(() => {}); 
     },
      removebrandall(){
-        this.$axios.post("activity.ashx?action=deletebrandrecommend",this.$qs.stringify({ emptys: "清空" ,typeguid: this.tabs[this.tvalue1].guid}))
+        this.$axios.post("/admin/common/activity.ashx?action=deletebrandrecommend",this.$qs.stringify({ emptys: "清空" ,typeguid: this.tabs[this.tvalue1].guid}))
           .then(res => {
             if (res.status >= 0) {
               this.getbrandList()
@@ -653,7 +653,7 @@ export default {
     }, 
     setsort1(i){
       if (this.tvalue2===2) {
-         this.$axios.post("activity.ashx?action=editsortbrandrecommend",this.$qs.stringify({ id: this.brandList[i].id,xgid:this.xmodel[i] }))
+         this.$axios.post("/admin/common/activity.ashx?action=editsortbrandrecommend",this.$qs.stringify({ id: this.brandList[i].id,xgid:this.xmodel[i] }))
           .then(res => {
             if (res.status >= 0) {
               this.getbrandList()
@@ -686,9 +686,9 @@ export default {
           let url =""
           let parem ={}
           if (this.goodsindex === this.goodsList.length) {
-            url = "activity.ashx?action=addactivecommodities"
+            url = "/admin/common/activity.ashx?action=addactivecommodities"
             parem = {generalattributeid:this.Modal[0], parentcategoryid: this.Modal[1],categoryid:this.Modal[2],typeguid: this.tabs[this.tvalue1].guid ,commodityguid:this.Modal[3]}
-          }else{url = "activity.ashx?action=editactivecommodities"
+          }else{url = "/admin/common/activity.ashx?action=editactivecommodities"
            parem =  { commodityguid: this.Modal[3],id:this.goodsList[this.goodsindex].id}
           }
          this.$axios.post(url,this.$qs.stringify(parem))
@@ -705,7 +705,7 @@ export default {
     },
     editgoodsinit(){
         this.$axios
-          .post("activity.ashx?action=editactivecommoditiesinit",this.$qs.stringify({ id: this.goodsList[this.goodsindex].id }))
+          .post("/admin/common/activity.ashx?action=editactivecommoditiesinit",this.$qs.stringify({ id: this.goodsList[this.goodsindex].id }))
           .then(res => {
             if (res.status >= 0) {
               this.generalattribute = res.generalattribute[0].item
@@ -740,7 +740,7 @@ export default {
     },
     getgoodsListall(){
          this.$axios
-          .post("activity.ashx?action=addactivecommoditiesinit")
+          .post("/admin/common/activity.ashx?action=addactivecommoditiesinit")
           .then(res => {
             if (res.status >= 0) {
              this.generalattribute = res.generalattribute[0].item
@@ -753,7 +753,7 @@ export default {
       },
     getgoodsList(){
          this.$axios
-          .post("activity.ashx?action=selectlistactivecommodities",this.$qs.stringify({ typeguid: this.tabs[this.tvalue1].guid }))
+          .post("/admin/common/activity.ashx?action=selectlistactivecommodities",this.$qs.stringify({ typeguid: this.tabs[this.tvalue1].guid }))
           .then(res => {
             if (res.status >= 0) {
               this.goodsList = res.item;
@@ -774,7 +774,7 @@ export default {
           .catch(() => {});
       },
     removegoods(i){
-        this.$axios.post("activity.ashx?action=deleteactivecommodities",this.$qs.stringify({ id: this.goodsList[i].id ,typeguid: this.tabs[this.tvalue1].guid}))
+        this.$axios.post("/admin/common/activity.ashx?action=deleteactivecommodities",this.$qs.stringify({ id: this.goodsList[i].id ,typeguid: this.tabs[this.tvalue1].guid}))
           .then(res => {
             if (res.status >= 0) {
               this.getgoodsList()
@@ -785,7 +785,7 @@ export default {
           .catch(() => {}); 
     },
      removegoodsall(){
-        this.$axios.post("activity.ashx?action=deleteactivecommodities",this.$qs.stringify({ id: "清空" ,typeguid: this.tabs[this.tvalue1].guid}))
+        this.$axios.post("/admin/common/activity.ashx?action=deleteactivecommodities",this.$qs.stringify({ id: "清空" ,typeguid: this.tabs[this.tvalue1].guid}))
           .then(res => {
             if (res.status >= 0) {
               this.getgoodsList()
@@ -799,7 +799,7 @@ export default {
     }, 
     setsort2(i){
       if (this.tvalue2===3) {
-         this.$axios.post("activity.ashx?action=editsortactivecommodities",this.$qs.stringify({ id: this.goodsList[i].id,xgid:this.xmodel[i] }))
+         this.$axios.post("/admin/common/activity.ashx?action=editsortactivecommodities",this.$qs.stringify({ id: this.goodsList[i].id,xgid:this.xmodel[i] }))
           .then(res => {
             if (res.status >= 0) {
               this.getgoodsList()
@@ -823,7 +823,7 @@ export default {
          })
         this.$axios
           .post(
-            "category.ashx?action=selectby_parentid",
+            "/admin/common/category.ashx?action=selectby_parentid",
             this.$qs.stringify({ parentid: id })
           )
           .then(res => {
@@ -842,7 +842,7 @@ export default {
          this.Modal[3] = "";
         this.$axios
           .post(
-            "commodity.ashx?action=selectbyid",
+            "/admin/common/commodity.ashx?action=selectbyid",
             this.$qs.stringify({ generalattributeid: this.Modal[0],parentcategoryid:this.Modal[1],categoryid:this.Modal[2]})
           )
           .then(res => {
@@ -866,7 +866,7 @@ export default {
     },
     getadvertisingList1(){
          this.$axios
-          .post("activity.ashx?action=selectlistadvertisingposition",this.$qs.stringify({ typeguid: this.tabs[this.tvalue1].guid ,position: 1}))
+          .post("/admin/common/activity.ashx?action=selectlistadvertisingposition",this.$qs.stringify({ typeguid: this.tabs[this.tvalue1].guid ,position: 1}))
           .then(res => {
             if (res.status >= 0) {
              this.advertisingList1 = res.item
@@ -880,7 +880,7 @@ export default {
       if (this.imgmodels) {
           let url =""
           let parem ={}
-           url = "activity.ashx?action=editadvertisingposition"
+           url = "/admin/common/activity.ashx?action=editadvertisingposition"
            parem =  { picture: this.imgmodels,urllink:this.Modal[0],id: this.advertisingList1[this.advertisingindex1].id }
           
          this.$axios.post(url,this.$qs.stringify(parem))
@@ -914,7 +914,7 @@ export default {
     },
     getadvertisingList2(){
          this.$axios
-          .post("activity.ashx?action=selectlistadvertisingposition",this.$qs.stringify({ typeguid: this.tabs[this.tvalue1].guid ,position: 2}))
+          .post("/admin/common/activity.ashx?action=selectlistadvertisingposition",this.$qs.stringify({ typeguid: this.tabs[this.tvalue1].guid ,position: 2}))
           .then(res => {
             if (res.status >= 0) {
              this.advertisingList2 = res.item
@@ -932,7 +932,7 @@ export default {
           if (this.advertisingList2[this.advertisingindex2]) {
             id = this.advertisingList2[this.advertisingindex2].id
           }
-           url = "activity.ashx?action=editadvertisingposition"
+           url = "/admin/common/activity.ashx?action=editadvertisingposition"
            parem =  { picture: this.imgmodels,urllink:this.Modal[0],id,maintitle:this.Modal[1],vicetitle:this.Modal[2], }
           
          this.$axios.post(url,this.$qs.stringify(parem))
@@ -962,7 +962,7 @@ export default {
       setTimeout(() => {
         this.$axios
           .post(
-            "upload_ajax.ashx?action=UpLoadFile",
+            "/admin/common/upload_ajax.ashx?action=UpLoadFile",
             this.$qs.stringify({ imglist: JSON.stringify(this.imgmodel) })
           )
           .then(res => {

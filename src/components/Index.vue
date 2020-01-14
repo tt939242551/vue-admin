@@ -255,7 +255,7 @@ export default {
             }
         },
         userout(){
-            this.$axios.post("user.ashx?action=exit",)
+            this.$axios.post("/admin/common/user.ashx?action=exit",)
           .then(res => {
             if (res.status > 0) {
             this.$router.replace({name: 'login'})

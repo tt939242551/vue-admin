@@ -14,7 +14,7 @@ Vue.config.productionTip = false
 Vue.use(iView)
 
 // 设置基础URL
-axios.defaults.baseURL = 'http://sfstyling.bogole.com/admin/common/'
+axios.defaults.baseURL = 'http://sfstyling.bogole.com'
 // 设置请求超时时间
 axios.defaults.timeout = 5000
 

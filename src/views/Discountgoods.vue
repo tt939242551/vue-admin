@@ -24,7 +24,7 @@
                     <div class="imglistbox1 imglistbox2" >
                         <div class="imgbox1" v-for="(item,i) in categoryList[categoryvalue].item" :key="i">
                             <div class="itembox itembox1">
-                                 <img v-if="item.commoditypictures1" style="width: 220px;height: 264px;border:none;" :src="item.commoditypictures1" alt="">  <span v-else class="bgtext">暂无图片</span>
+                                 <span style="width: 220px;height: 220px;display:inline-block;vertical-align: top;text-align: center;"><img v-if="item.commoditypictures1" style="max-width: 220px;max-height: 220px;border:none;" :src="item.commoditypictures1" alt="">  <span v-else class="bgtext">暂无图片</span></span>
                                  <p v-if="item.commodityname">{{item.commodityname}}</p><p v-else>商品名称</p>
                                  <span  v-if="item.Price" class="itemnum">￥{{Math.round(item.Price*item.discount*100)/100}}</span> <span v-else class="itemnum"> 价格</span><span class="lastnum">￥{{item.Price}}</span>
                                 <span class="itemtab" >折扣商品</span>
@@ -171,7 +171,7 @@ export default {
     },
     methods:{
         getinit(){
-           this.$axios.post("discount.ashx?action=selectlist")
+           this.$axios.post("/admin/common/discount.ashx?action=selectlist")
           .then(res => {
             if (res.status > 0) {
               this.categoryList = res.discounts
@@ -210,7 +210,7 @@ export default {
              this.xModal1 = true
         },
         switchdiscount(i){
-          this.$axios.post("discount.ashx?action=editisdiscount",this.$qs.stringify({isdiscount:i}))
+          this.$axios.post("/admin/common/discount.ashx?action=editisdiscount",this.$qs.stringify({isdiscount:i}))
           .then(res => {
             if (res.status > 0) {
               let str = i?"已开启":"已关闭"
@@ -226,9 +226,9 @@ export default {
           let url =""
           let parem ={}
           if (this.categoryindex === "add") {
-            url = "discount.ashx?action=add"
+            url = "/admin/common/discount.ashx?action=add"
             parem = {title: this.Modal[0],typeid:1,parentid:0}
-          }else{url = "discount.ashx?action=edit"
+          }else{url = "/admin/common/discount.ashx?action=edit"
            parem =  { title: this.Modal[0],id:this.categoryList[this.categoryindex].id,}
           }
          this.$axios.post(url,this.$qs.stringify(parem))
@@ -248,7 +248,7 @@ export default {
            let arr = []
             arr.push(this.categoryList[i].id)
           this.$axios
-          .post("discount.ashx?action=delete",this.$qs.stringify({ids: JSON.stringify(arr)}))
+          .post("/admin/common/discount.ashx?action=delete",this.$qs.stringify({ids: JSON.stringify(arr)}))
           .then(res => {
             if (res.status >= 0) {
              this.getinit()
@@ -278,7 +278,7 @@ export default {
         },
         getaddgoods(){
          this.$axios
-          .post("discount.ashx?action=addinit")
+          .post("/admin/common/discount.ashx?action=addinit")
           .then(res => {
             if (res.status >= 0) {
              this.discountsettings = res.discountsettings
@@ -292,7 +292,7 @@ export default {
         },
         editgoodsinit(){
         this.$axios
-          .post("discount.ashx?action=editinit",this.$qs.stringify({ id: this.categoryList[this.categoryvalue].item[this.goodsindex].id }))
+          .post("/admin/common/discount.ashx?action=editinit",this.$qs.stringify({ id: this.categoryList[this.categoryvalue].item[this.goodsindex].id }))
           .then(res => {
             if (res.status >= 0) {
               this.generalattribute = res.generalattribute[0].item
@@ -337,9 +337,9 @@ export default {
             let url =""
           let parem ={}
           if (this.goodsindex === "add") {
-            url = "discount.ashx?action=add"
+            url = "/admin/common/discount.ashx?action=add"
             parem = { generalattributeid: this.Modal[0],parentcategoryid:this.Modal[1],categoryid:this.Modal[2],typeid: 2 ,commodityid:this.Modal[3],dsid:this.Modal[4],title:this.categoryList[this.categoryvalue].title,parentid:this.categoryList[this.categoryvalue].id}
-          }else{url = "discount.ashx?action=edit"
+          }else{url = "/admin/common/discount.ashx?action=edit"
            parem =  { commodityid: this.Modal[3],dsguid:this.Modal[4],id:this.categoryList[this.categoryvalue].item[this.goodsindex].id,title:this.categoryList[this.categoryvalue].title,parentid:this.categoryList[this.categoryvalue].id}
           }
          this.$axios.post(url,this.$qs.stringify(parem))
@@ -360,7 +360,7 @@ export default {
            let arr = []
             arr.push(this.categoryList[this.categoryvalue].item[i].id)
           this.$axios
-          .post("discount.ashx?action=delete",this.$qs.stringify({ids: JSON.stringify(arr),parentid:this.categoryList[this.categoryvalue].id}))
+          .post("/admin/common/discount.ashx?action=delete",this.$qs.stringify({ids: JSON.stringify(arr),parentid:this.categoryList[this.categoryvalue].id}))
           .then(res => {
             if (res.status >= 0) {
              this.getinit()
@@ -373,7 +373,7 @@ export default {
         removegoodslist(){
          this.$axios
           .post(
-            "discount.ashx?action=delete",
+            "/admin/common/discount.ashx?action=delete",
             this.$qs.stringify({ emptys: "清空" ,parentid:this.categoryList[this.categoryvalue].id})
           )
           .then(res => {
@@ -399,7 +399,7 @@ export default {
          })
         this.$axios
           .post(
-            "category.ashx?action=selectby_parentid",
+            "/admin/common/category.ashx?action=selectby_parentid",
             this.$qs.stringify({ parentid: id })
           )
           .then(res => {
@@ -417,7 +417,7 @@ export default {
             this.Modal[3] = "";
                 this.$axios
                 .post(
-                    "commodity.ashx?action=selectbyid",
+                    "/admin/common/commodity.ashx?action=selectbyid",
                     this.$qs.stringify({ generalattributeid: this.Modal[0],parentcategoryid:this.Modal[1],categoryid:this.Modal[2]})
                 )
                 .then(res => {
@@ -446,7 +446,7 @@ export default {
               let parme = {}
               parme.id =  goodsList[i].id
               parme.isselect = goodsList[i].isselect
-            this.$axios.post("discount.ashx?action=editisselect",this.$qs.stringify(parme))
+            this.$axios.post("/admin/common/discount.ashx?action=editisselect",this.$qs.stringify(parme))
               .then(res => {
                 if (res.status > 0) {
                 } else {
@@ -460,7 +460,7 @@ export default {
     //折扣设置
     getdiscountlist(){
          this.$axios
-          .post("discount.ashx?action=selectlistseting")
+          .post("/admin/common/discount.ashx?action=selectlistseting")
           .then(res => {
             if (res.status >= 0) {
              this.discountlist = res.discountsettings
@@ -484,9 +484,9 @@ export default {
           let url =""
           let parem ={}
           if (this.discountindex === "add") {
-            url = "discount.ashx?action=addseting"
+            url = "/admin/common/discount.ashx?action=addseting"
             parem = {discount: this.Modal[0]}
-          }else{url = "discount.ashx?action=editseting"
+          }else{url = "/admin/common/discount.ashx?action=editseting"
            parem =  { discount: this.Modal[0], id:this.discountlist[this.discountindex].id}
           }
          this.$axios.post(url,this.$qs.stringify(parem))
@@ -506,7 +506,7 @@ export default {
            let arr = []
             arr.push(this.discountlist[i].id)
           this.$axios
-          .post("discount.ashx?action=deleteseting",this.$qs.stringify({ids: JSON.stringify(arr)}))
+          .post("/admin/common/discount.ashx?action=deleteseting",this.$qs.stringify({ids: JSON.stringify(arr)}))
           .then(res => {
             if (res.status >= 0) {
              this.getdiscountlist()
@@ -518,7 +518,7 @@ export default {
         },
      removediscountall(){
           this.$axios
-          .post("discount.ashx?action=deleteseting",this.$qs.stringify({emptys: "清空"}))
+          .post("/admin/common/discount.ashx?action=deleteseting",this.$qs.stringify({emptys: "清空"}))
           .then(res => {
             if (res.status >= 0) {
              this.xModal5=false

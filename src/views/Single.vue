@@ -182,7 +182,7 @@ export default {
   created(){this.getInit()},
   methods: {
     getInit(){
-      this.$axios.post("category.ashx?action=selectlist",this.$qs.stringify({page:0,pageSize:0,parentid:0})).then(res=>{
+      this.$axios.post("/admin/common/category.ashx?action=selectlist",this.$qs.stringify({page:0,pageSize:0,parentid:0})).then(res=>{
          if (res.status>=0) {
            this.tabs = res.item
            this.getSingleList()
@@ -199,7 +199,7 @@ export default {
          })
     },
     getSingleList(){
-      this.$axios.post("category.ashx?action=selectlist",this.$qs.stringify({page:this.page,pageSize:this.pageSize,parentid:this.tabs[this.tvalue].id})).then(res=>{
+      this.$axios.post("/admin/common/category.ashx?action=selectlist",this.$qs.stringify({page:this.page,pageSize:this.pageSize,parentid:this.tabs[this.tvalue].id})).then(res=>{
          if (res.status>=0) {
              this.data1 = res.item
              this.data1.forEach(i=>{
@@ -217,7 +217,7 @@ export default {
     removeTabs(){
       let arr = []
       arr.push(this.tabs[this.tvalue].id)
-       this.$axios.post("category.ashx?action=delete",this.$qs.stringify({ids: JSON.stringify(arr)})).then(res=>{
+       this.$axios.post("/admin/common/category.ashx?action=delete",this.$qs.stringify({ids: JSON.stringify(arr)})).then(res=>{
          if (res.status>=0) {
            this.xModal3 = false
       
@@ -236,7 +236,7 @@ export default {
       this.mtitle = this.data1[index].title
       let id = this.data1[index].id
       this.timeval = this.data1[index].setdate
-       this.$axios.post("category.ashx?action=selectdetails",this.$qs.stringify({id:id})).then(res=>{
+       this.$axios.post("/admin/common/category.ashx?action=selectdetails",this.$qs.stringify({id:id})).then(res=>{
          if (res.status>=0) {
              this.generalattribute = res.item[0].generalattribute
              this.specialList = res.specialattributes   
@@ -273,7 +273,7 @@ export default {
       this.isadds = false
       this.specialList = []
        this.mtitle = ""
-       this.$axios.post("category.ashx?action=InitializationAdd").then(res=>{
+       this.$axios.post("/admin/common/category.ashx?action=InitializationAdd").then(res=>{
          if (res.status>=0) {
              this.generalattribute = res.generalattribute
          }else{
@@ -284,7 +284,7 @@ export default {
          } )
     },
     removeList() {
-       this.$axios.post("category.ashx?action=delete",this.$qs.stringify({ids: JSON.stringify(this.isCheck)})).then(res=>{
+       this.$axios.post("/admin/common/category.ashx?action=delete",this.$qs.stringify({ids: JSON.stringify(this.isCheck)})).then(res=>{
          if (res.status>=0) {
             this.xModal5 = false
             this.getSingleList()
@@ -301,7 +301,7 @@ export default {
           this.xModal4 = true
     },
     movelist(){
-      let url = "category.ashx?action=delete"
+      let url = "/admin/common/category.ashx?action=delete"
       let arr = [this.data1[this.tindex].id]
        this.$axios.post(url,this.$qs.stringify({ids: JSON.stringify(arr)})).then(res=>{
          if (res.status>=0) {
@@ -316,7 +316,7 @@ export default {
     },
     isok() {
       if (this.value) {
-        this.$axios.post("category.ashx?action=add",this.$qs.stringify({title:this.value, parentId:0,brandname:"",brandid:"",Seasonname:"",Seasonid:"",
+        this.$axios.post("/admin/common/category.ashx?action=add",this.$qs.stringify({title:this.value, parentId:0,brandname:"",brandid:"",Seasonname:"",Seasonid:"",
         stylename:"",styleid:"",specialattributes:"",setdate:"",})).then(res=>{
          if (res.status>=0) {
          this.getInit()
@@ -382,11 +382,11 @@ export default {
 
      })
     if (this.tindex === this.data1.length) {
-       url = "category.ashx?action=add"
+       url = "/admin/common/category.ashx?action=add"
        pamls = {title:this.mtitle, parentId:this.tabs[this.tvalue].id,generalattributename:brandname.join(","),generalattributeid:brandid.join(","),
         specialattributes: JSON.stringify(this.specialList),setdate:this.timeval}
      }else{
-        url = "category.ashx?action=edit"
+        url = "/admin/common/category.ashx?action=edit"
         let  id = this.data1[this.tindex].id
         pamls = {title:this.mtitle,generalattributename:brandname.join(","),generalattributeid:brandid.join(","),
         specialattributes: JSON.stringify(this.specialList),setdate:this.timeval,parentId:0,id:id}

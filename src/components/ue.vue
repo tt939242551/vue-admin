@@ -36,7 +36,7 @@ export default {
         formData.append("file1",files[0])
         _tant.$axios
            ({
-           url: "upload_ajax.ashx?action=UpLoadFiles",
+           url: "/admin/common/upload_ajax.ashx?action=UpLoadFiles",
            data: formData, method: 'post',
            headers: { 
           'Content-Type': 'multipart/form-data'

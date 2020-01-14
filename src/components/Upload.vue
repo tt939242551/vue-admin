@@ -70,7 +70,7 @@ export default {
           let name=key.split('?')[0];
           this.formData.append('multipartFiles',this.imgs[key],name);
         }
-        this.$http.post('/opinion/feedback', this.formData,{
+        this.$http.post('/admin/common/opinion/feedback', this.formData,{
           headers: {'Content-Type': 'multipart/form-data'}
         }).then(res => {
           this.alertShow=true;

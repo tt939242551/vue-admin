@@ -11,7 +11,8 @@
                 <div class="imglistbox1" v-if="items.item.length===5">
                  <div class="imgbox1" v-for="(item,j) in items.item" :key="j">
                    <div class="itembox">
-                     <img v-if="item.commoditypictures1" :src="item.commoditypictures1"  alt=""><img v-else  src="../assets/imgs/g2-bg.png" alt="">
+                      <span style="width: 220px;height: 220px;display:inline-block;vertical-align: top;text-align: center;"><img v-if="item.commoditypictures1" style="max-width: 220px;max-height: 220px;border:none;" :src="item.commoditypictures1" alt=""> <img v-else  src="../assets/imgs/g2-bg.png" alt=""></span>
+        
                       <p v-if="item.commodityname">{{item.commodityname}}</p><p v-else>商品名称</p>
                      <span  v-if="item.Price" class="itemnum">￥{{item.Price}}</span> <span v-else class="itemnum">  价格</span>
                   </div>
@@ -24,6 +25,7 @@
                  <div :class="{imgbox1:true,farstimg:j===0}" v-for="(item,j) in items.item" :key="j">
                    <div class="itembox itembox2">
                      <img v-if="item.picture" :src="item.picture" alt="">
+                      <span style="width: 260px;height: 260px;display:inline-block;vertical-align: top;text-align: center;"><img v-if="item.commoditypictures1" style="max-width: 260px;max-height: 260px;border:none;" :src="item.commoditypictures1" alt=""></span>
                      <img v-if="item.commoditypictures1" :src="item.commoditypictures1" alt="">
                      <img v-if="!item.picture&&!item.commoditypictures1&&j>0"  src="../assets/imgs/g2-bg.png" alt="">
                      <img v-if="!item.picture&&!item.commoditypictures1&&j===0"  src="../assets/imgs/g-bg.png" alt="">
@@ -140,7 +142,7 @@ export default {
     methods:{
         getgoodsinit(){
           this.$axios
-          .post("recommendationcommodity.ashx?action=selectlist")
+          .post("/admin/common/recommendationcommodity.ashx?action=selectlist")
           .then(res => {
             if (res.status >= 0) {
              this.tabs = res.recommendationcommodity
@@ -170,7 +172,7 @@ export default {
             }else{arr = [{},{},{},{},{}]}
            if (this.Modal[0]) {
             this.$axios
-            .post("recommendationcommodity.ashx?action=add",this.$qs.stringify({ title: this.Modal[0] ,item: JSON.stringify(arr)}))
+            .post("/admin/common/recommendationcommodity.ashx?action=add",this.$qs.stringify({ title: this.Modal[0] ,item: JSON.stringify(arr)}))
             .then(res => {
                 if (res.status > 0) {
                  this.xModal1 = false
@@ -187,7 +189,7 @@ export default {
         },
       isok2(){
       if (this.Modal[3]) {
-          let  url = "recommendationcommodity.ashx?action=edit"
+          let  url = "/admin/common/recommendationcommodity.ashx?action=edit"
           let parem ={ id: this.tabs[this.tvalue].item[this.goodsindex].id,typeid:2 ,commodityguid:this.Modal[3]}
          this.$axios.post(url,this.$qs.stringify(parem))
           .then(res => {
@@ -205,7 +207,7 @@ export default {
       if (this.imgmodels) {
           let url =""
           let parem ={}
-           url = "recommendationcommodity.ashx?action=edit"
+           url = "/admin/common/recommendationcommodity.ashx?action=edit"
            parem =  { picture: this.imgmodels, id: this.tabs[this.tvalue].item[this.goodsindex].id,typeid:1,urllink:this.Modal[0] }
           
          this.$axios.post(url,this.$qs.stringify(parem))
@@ -224,7 +226,7 @@ export default {
             let arr = []
             arr.push(this.tabs[this.tvalue].id)
           this.$axios
-          .post("recommendationcommodity.ashx?action=delete",this.$qs.stringify({ids: JSON.stringify(arr)}))
+          .post("/admin/common/recommendationcommodity.ashx?action=delete",this.$qs.stringify({ids: JSON.stringify(arr)}))
           .then(res => {
             if (res.status >= 0) {
             this.tvalue = 0
@@ -252,7 +254,7 @@ export default {
              typeid = 1      
                 }
         this.$axios
-          .post("recommendationcommodity.ashx?action=editinit",this.$qs.stringify({ id: this.tabs[this.tvalue].item[this.goodsindex].id ,typeid:typeid }))
+          .post("/admin/common/recommendationcommodity.ashx?action=editinit",this.$qs.stringify({ id: this.tabs[this.tvalue].item[this.goodsindex].id ,typeid:typeid }))
           .then(res => {
             if (res.status > 0) {
               if (typeid == 1) {
@@ -307,7 +309,7 @@ export default {
          })
         this.$axios
           .post(
-            "category.ashx?action=selectby_parentid",
+            "/admin/common/category.ashx?action=selectby_parentid",
             this.$qs.stringify({ parentid: id })
           )
           .then(res => {
@@ -327,7 +329,7 @@ export default {
          if (this.xModal2) {
         this.$axios
           .post(
-            "commodity.ashx?action=selectbyid",
+            "/admin/common/commodity.ashx?action=selectbyid",
             this.$qs.stringify({ generalattributeid: this.Modal[0],parentcategoryid:this.Modal[1],categoryid:this.Modal[2]})
           )
           .then(res => {
@@ -358,7 +360,7 @@ export default {
       setTimeout(() => {
         this.$axios
           .post(
-            "upload_ajax.ashx?action=UpLoadFile",
+            "/admin/common/upload_ajax.ashx?action=UpLoadFile",
             this.$qs.stringify({ imglist: JSON.stringify(this.imgmodel) })
           )
           .then(res => {
@@ -427,12 +429,11 @@ export default {
 .imgbox1>.footer{padding: 10px 10px;border-top: 1px solid #f0f0f0;}
 .imgbox1 p .icons{transform: translateY(-2px);margin-left: 18px;margin-right: 2px;}
 .itembox{width: 220px;}
-.itembox>img{width: 220px;height: 230px;border:none;}
 .itembox>p{height: 42px;overflow: hidden;padding: 0 10px;}
 .farstimg .itembox.itembox2>img{width: 260px;height: 420px;border:none;margin-bottom: -146px;position: relative;z-index: 9}
 .itemnum{border-top: 1px solid #c69c6d;padding-top: 4px;margin: 10px 10px;display: inline-block;padding-right: 5px;}
 .itembox.itembox2{text-align: center;width: 260px;height: 420px;}
-.itembox.itembox2>img{width: 260px;height: 274px;border:none;}
+.itembox.itembox2>img{max-width: 260px;max-height: 260px;border:none;}
 .itembox2 .logop{text-align: center;color: #c69c6d;padding: 10px  0 2px;margin: 0 5px;border-top: 1px solid #c69c6d;}
 .itembox2>p:nth-child(3){padding-top: 0;height: 100px;}
 .modalmain{padding: 20px 30px;}

@@ -486,7 +486,7 @@ export default {
     getBasicslist(){
       this.$axios
         .post(
-          "commodity.ashx?action=selectBasicslist",
+          "/admin/common/commodity.ashx?action=selectBasicslist",
          )
         .then(res => {
           if (res.status >= 0) {
@@ -551,7 +551,7 @@ export default {
 
       this.$axios
         .post(
-          "commodity.ashx?action=selectdetails",
+          "/admin/common/commodity.ashx?action=selectdetails",
           this.$qs.stringify({ id: id })
         )
         .then(res => {
@@ -694,7 +694,7 @@ export default {
       this.disabledGroup2 = [],
       this.disabledGroup3 = [],
       this.$axios
-        .post("commodity.ashx?action=InitializationAdd")
+        .post("/admin/common/commodity.ashx?action=InitializationAdd")
         .then(res => {
           if (res.status >= 0) {
             this.tabs = res.style;
@@ -714,7 +714,7 @@ export default {
        if (id) {
         this.$axios
           .post(
-            "category.ashx?action=selectby_parentid",
+            "/admin/common/category.ashx?action=selectby_parentid",
             this.$qs.stringify({ parentid: id })
           )
           .then(res => {
@@ -740,7 +740,7 @@ export default {
          })
         this.$axios
           .post(
-            "category.ashx?action=selectby_parentid",
+            "/admin/common/category.ashx?action=selectby_parentid",
             this.$qs.stringify({ parentid: id })
           )
           .then(res => {
@@ -757,7 +757,7 @@ export default {
       if (id) {
         this.$axios
           .post(
-            "category.ashx?action=categorybyid",
+            "/admin/common/category.ashx?action=categorybyid",
             this.$qs.stringify({ categoryid: id })
           )
           .then(res => {
@@ -785,7 +785,7 @@ export default {
       this.page = 1
       this.$axios
         .post(
-          "commodity.ashx?action=selectlist",
+          "/admin/common/commodity.ashx?action=selectlist",
           this.$qs.stringify({ page: this.page, pageSize: this.pageSize ,where:this.smodels[3],categoryname:this.smodels[2],parentcategoryname:this.smodels[1],generalattributename:this.smodels[0]})
         )
         .then(res => {
@@ -804,7 +804,7 @@ export default {
     removeList() {
       this.$axios
         .post(
-          "commodity.ashx?action=delete",
+          "/admin/common/commodity.ashx?action=delete",
           this.$qs.stringify({ ids: JSON.stringify(this.isCheck) })
         )
         .then(res => {
@@ -817,7 +817,7 @@ export default {
         .catch(() => {});
     },
     movelist(i){
-      let url = "commodity.ashx?action=delete"
+      let url = "/admin/common/commodity.ashx?action=delete"
       let arr = [this.data1[i].id]
        this.$axios.post(url,this.$qs.stringify({ids: JSON.stringify(arr)})).then(res=>{
          if (res.status>=0) {
@@ -913,7 +913,7 @@ export default {
          this.xModal4 = true
        }else{
            this.$axios.post(
-            "commodity.ashx?action=editisoverhead",
+            "/admin/common/commodity.ashx?action=editisoverhead",
             this.$qs.stringify({ id:this.data1[i].id ,isoverhead: this.data1[i].isoverhead})
           )
           .then(res => {
@@ -1059,7 +1059,7 @@ export default {
       setTimeout(() => {
         this.$axios
           .post(
-            "upload_ajax.ashx?action=UpLoadFile",
+            "/admin/common/upload_ajax.ashx?action=UpLoadFile",
             this.$qs.stringify({ imglist: JSON.stringify(this.imgList) })
           )
           .then(res => {
@@ -1085,7 +1085,7 @@ export default {
       } 
         this.$axios
           ({
-           url: "upload_ajax.ashx?action=UpLoadFiles",
+           url: "/admin/common/upload_ajax.ashx?action=UpLoadFiles",
            data: formData, method: 'post',
            headers: { 
           'Content-Type': 'multipart/form-data'
