@@ -60,7 +60,7 @@
       </Table>
        <span class="acbtn2" @click="removeList" ><Icon  style="transform: translateY(-2px)" size="16" type="ios-trash" />删除选中单品</span>
       <div class="foot">
-        <Page :total="total" prev-text="上一页" next-text="下一页" @on-change="getlist" />
+        <Page :total="total" :current="page" prev-text="上一页" next-text="下一页" @on-change="getlist" />
       </div>
     </div>
     <div id="goodsfrom" class="goodsfrom" v-else>
@@ -71,7 +71,7 @@
             <Input
               v-model="models[2]"
               placeholder="请输入宝贝名称"
-              style="width: 300px;margin-left: 20px;"
+              style="min-width: 300px;margin-left: 20px;"
             /></p>
           <div class="titl1">
             <p>分类</p>
@@ -136,7 +136,7 @@
       </div>
       <p>基本信息</p>
       <div class="sction">
-        <span>颜色分类</span>
+        <span>分类</span>
         <div class="colorbox">
           <div class="colorsction" v-for="(item,i) in colorList" :key="i">
             <Button
@@ -151,7 +151,7 @@
               v-model="item.color"
               size="small"
               @on-blur="createList(i)"
-              placeholder="请输入颜色"
+              placeholder="请输入分类"
               style="width: 200px;margin-right: 2px;"
             />
             <span>备注</span>
@@ -252,7 +252,7 @@
         <table class="colorbox" style="margin-top: -20px">
           <thead>
             <tr>
-              <th style="margin-left: 0px;border: 1px solid #ccc;">分类</th>
+              <th class="feasttd" style="margin-left: 0px;border: 1px solid #ccc;">分类</th>
               <th>尺码</th>
               <th>价格 (元)</th>
               <th>数量 (件)</th>
@@ -262,13 +262,13 @@
           </thead>
           <tbody>
             <tr v-for="(item,i) in mainList" :key="i">
-              <td :ref="'color'+i" style="margin-left: 0px;border-left: 1px solid #ccc;">{{item.colors}}</td>
+              <td :ref="'color'+i" class="feasttd" >{{item.colors}}</td>
               <td>{{item.size}}</td>
               <td style="padding: 0;">
-                <Input class="tabinput" @on-blur="getTotal" v-model="item.Price" />
+                <Input class="tabinput" @on-blur="getTotal(i)" v-model="item.Price" />
               </td>
               <td style="padding: 0;">
-                <Input class="tabinput" @on-blur="getTotal" v-model="item.number" />
+                <Input class="tabinput" @on-blur="getTotal(i)" v-model="item.number" />
               </td>
               <td style="padding: 0;">
                 <Input class="tabinput" v-model="item.merchantcode" />
@@ -499,10 +499,11 @@ export default {
         .catch(() => {});
     },
     getInit() {
+      this.smodels=[]
       this.xModal4 = false
       this.$axios
         .post(
-          "commodity.ashx?action=selectlist",
+          "/admin/common/commodity.ashx?action=selectlist",
           this.$qs.stringify({ page: this.page, pageSize: this.pageSize })
         )
         .then(res => {
@@ -534,10 +535,10 @@ export default {
         let t1 = 'color' + i
         let t2 = 'color' + (i+1)
          this.$refs[t1][0].style["border-bottom"] = "1px solid #ccc"
-         if (this.$refs[t2]) {
+         if (this.$refs[t2]&&this.$refs[t2][0]) {
            this.$refs[t2][0].style.color = "#000"
          } 
-        if (this.$refs[t2]&&this.$refs[t1][0].innerText===this.$refs[t2][0].innerText) {
+        if (this.$refs[t2]&&this.$refs[t2][0]&&this.$refs[t1][0].innerText===this.$refs[t2][0].innerText) {
              this.$refs[t2][0].style.color = "#fff"
              this.$refs[t1][0].style["border-bottom"] = "none"
         }
@@ -559,7 +560,10 @@ export default {
             this.models[2] = res.item[0].title
             this.models[9] = res.item[0].number
             this.content = decodeURIComponent(res.item[0].commoditydetails);
-            this.imgLists =  res.item[0].commoditypictures1.match(/https:\/\/oss.bogole.com\/project\/code\/public\/e19102801\/upfile\/20\d{6,30}\.[a-z]{3,4}/g)
+            if (res.item[0].commoditypictures1) {
+              this.imgLists =  res.item[0].commoditypictures1.match(/https:\/\/oss.bogole.com\/project\/code\/public\/e19102801\/upfile\/20\d{6,30}\.[a-z]{3,4}/g)
+            }
+            
             
             this.mainList = res.parentcategory;
             this.$nextTick(()=>{
@@ -639,7 +643,7 @@ export default {
                 }
               }
             });
-            this.getTotal();
+            this.getgoodsTotal();
             this.models[8] = res.item[0].Price;
           } else {
             this.$Message.warning(res.content);
@@ -648,9 +652,13 @@ export default {
     },
     getlist(index) {
       this.page = index;
-      this.getInit();
+      if (this.smodels[0]||this.smodels[1]||this.smodels[2]||this.smodels[3]) {
+        this.getDatalistindex()
+      }else{this.getInit();}
+    
     },
     initsmodels(){
+      this.page = 1
       this.smodels =[]
       this.SingleList =[]
     },
@@ -781,8 +789,26 @@ export default {
       }
     },
     getDatalist(){
-       
       this.page = 1
+      this.$axios
+        .post(
+          "/admin/common/commodity.ashx?action=selectlist",
+          this.$qs.stringify({ page: this.page, pageSize: this.pageSize ,where:this.smodels[3],categoryname:this.smodels[2],parentcategoryname:this.smodels[1],generalattributename:this.smodels[0]})
+        )
+        .then(res => {
+          if (res.status >= 0) {
+            this.data1 = res.item;
+            this.data1.forEach(i=>{
+             i.setdate = i.setdate.match(/20\d{2}\/\d{1,2}\/\d{1,2}/)[0]
+            })
+            this.total = res.totalCount;
+          } else {
+            this.$Message.warning(res.content);
+          }
+        })
+        .catch(() => {});
+    },
+      getDatalistindex(){
       this.$axios
         .post(
           "/admin/common/commodity.ashx?action=selectlist",
@@ -851,10 +877,11 @@ export default {
        let index = this.colorarr.indexOf(this.colorList[i].color)
         this.colorList.splice(i, 1);
         this.colorarr.splice(index, 1);
+          this.creatmainList();
       }
     },
     creatmainList() {
-      this.mainList = [];
+      let copymainList = [];
       let t = "disabledGroup" + (this.tvalue2 + 1);
       let arr = this[t];
       if (this.tvalue2 === 0) {
@@ -875,31 +902,51 @@ export default {
             obj.merchantbarcode = "";
             obj.id = "";
             obj.colorpictures = i.colorpictures;
-            this.mainList.push(obj);
+            copymainList.push(obj);
           });
         }
       });
+       copymainList.forEach(i => {
+           this.mainList.forEach(j => {
+            if (i.colors === j.colors&&i.size === j.size) {
+             Object.assign(i,j)
+            }
+          });
+      });
+      this.mainList = copymainList
       this.$nextTick(()=>{
         this.movecolor()
       })
      
        
     },
-    getTotal() {
-      let arr1 = [];
-      let arr2 = [];
-      this.mainList.forEach(a => {
-        arr1.push(+a.number);
-        arr2.push(a.Price);
-      });
-      let num1 = arr1.reduce((a, b) => {
-        return a + b;
-      });
-      let num2 = arr2.sort((a, b) => {
-        return a - b;
-      });
-      this.$set(this.models, 9, num1);
-      this.$set(this.models, 8, num2[0]);
+    getTotal(i) {
+      if (this.mainList[i].Price>0) {
+      }else{
+        this.mainList[i].Price = 0
+      }
+       if (this.mainList[i].number>0) {
+         this.mainList[i].number = Math.floor(this.mainList[i].number)
+      }else{
+        this.mainList[i].number = 0
+      }
+       this.getgoodsTotal()
+    },
+    getgoodsTotal(){
+         let arr1 = [];
+         let arr2 = [];
+        this.mainList.forEach(a => {
+          arr1.push(+a.number);
+          arr2.push(a.Price);
+        });
+        let num1 = arr1.reduce((a, b) => {
+          return a + b;
+        });
+        let num2 = arr2.sort((a, b) => {
+          return a - b;
+        });
+        this.$set(this.models, 9, num1);
+        this.$set(this.models, 8, num2[0]);
     },
     isok() {
       if (this.value) {
@@ -930,10 +977,9 @@ export default {
         
     },
     getgoods() {
-      if (!this.content && !this.setdate && !this.imgLists.length && !this.mainList.length) {
-        this.$Message.warning("输入数据不能为空");
-        return false;
-      }
+      if (this.content &&this.setdate&& this.imgLists&& this.imgLists.length &&this.mainList.length) {
+    
+      
       let brandname,
         parentcategoryname,
         categoryname,
@@ -976,7 +1022,7 @@ export default {
       });
 
       if (this.tindex === this.data1.length) {
-        url = "commodity.ashx?action=add";
+        url = "/admin/common/commodity.ashx?action=add";
         parms = {
           title: this.models[2],
           generalattributename: brandname.join(","),
@@ -995,7 +1041,7 @@ export default {
           number: this.models[9],
         };
       } else {
-        url = "commodity.ashx?action=edit";
+        url = "/admin/common/commodity.ashx?action=edit";
         id = this.data1[this.tindex].id;
         parms = {
           title: this.models[2],
@@ -1028,6 +1074,7 @@ export default {
           }
         })
         .catch(() => {});
+      }else{    this.$Message.warning("请填写所有必填数据");}
     },
     closegoods(){
       this.isadds = true
@@ -1364,4 +1411,5 @@ p.titl1,div.titl1{background: #fff;margin-left: 10px;margin-bottom: 20px;}
 .colorimgbox img{width:22px ;height: 22px;margin-left: -10px;margin-right: 10px;transform: translateY(1px)}
 .tabtop{width: 180px;font-weight: 600;position: absolute;top: 171px;right: 42px;z-index: 999;background-color: #f8f8f9;}
 .tabtop span{margin-right: 88px;}
+.colorbox tr .feasttd{margin-left: 0px;border-left: 1px solid #ccc;width: 180px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;}
 </style>

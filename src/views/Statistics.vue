@@ -49,7 +49,7 @@
                     <div>
                         <div class="headitem headitem1">
                             <img src="../assets/imgs/sum-1.png" alt="">
-                            <p style="color:#c69c6d"><span style="font-size: 20px;">￥</span>{{sumdata.profits_sums/1000}}K</p>
+                            <p v-show="sumdata.profits_sums/1000"  style="color:#c69c6d"><span style="font-size: 20px;">￥</span>{{sumdata.profits_sums/1000}}K</p>
                         </div>
                     </div>
                     <div>
@@ -76,7 +76,7 @@
         <DatePicker v-show="tvalue==1" @on-change="setvalue2" confirm :options="options" @on-ok="getsmu" :value="value2" format="yyyy/MM/dd" type="daterange" placement="bottom-end" placeholder="请选择日期" size="small" style="width: 200px;position: absolute;top: 16px;right:30px;"></DatePicker>
      </div>  
         <div class="echarts">
-            <p class="echarthead"><!-- <img src="../assets/imgs/st-5.png" alt=""> --><span @click="changeline(0)" :class="{'diabs': navstatus}"><span style="background:#c69c6d"></span>总的利润</span><span @click="changeline(1)" :class="{'diabs':  navstatus!==1}"><span  style="background:#36a3f7"></span>访问量</span>
+            <p class="echarthead"><!-- <img src="../assets/imgs/st-5.png" alt=""> --><span @click="changeline(0)" :class="{'diabs': navstatus}"><span style="background:#c69c6d"></span>利润</span><span @click="changeline(1)" :class="{'diabs':  navstatus!==1}"><span  style="background:#36a3f7"></span>访问量</span>
             <span @click="changeline(2)" :class="{'diabs': navstatus!==2}"><span  style="background:#f4516c"></span>新订单</span><span @click="changeline(3)" :class="{'diabs':  navstatus!==3}"><span  style="background:#34bfa3"></span>新用户</span>
                 <span style="float: right;margin-right: 58px;">  <Button size="small" @click="setdays(7)"  style="margin-right: 10px;width: 46px" :type="days==7?'primary':'default'">7天</Button><Button size="small" :type="days==14?'primary':'default'" style="margin-right: 10px;width: 46px" @click="setdays(14)">14天</Button><Button size="small" style="margin-right: 10px;width: 46px" @click="setdays(30)" :type="days==30?'primary':'default'">30天</Button>
                 <DatePicker @on-change="setvalue" confirm :options="options" @on-ok="setdate" :value="value1" format="yyyy/MM/dd" type="daterange" placement="bottom-end" placeholder="请选择日期" size="small" style="width: 200px"></DatePicker></span>
@@ -148,7 +148,7 @@ export default {
      let base = new Date();
      this.$set(this.value2,1,[base.getFullYear(), base.getMonth() + 1, base.getDate()].join('-'))
      this.setvalue1()
-     this.getdays();
+     this.init();
      this.getsmu();
    
     },
@@ -327,7 +327,7 @@ export default {
   .headitem>div{height: 8px;background: #f2f3f8;border-radius:4px}
   .headitem .foots{font-size: 14px;color: #8c8c8c;}
   .headitem .foots span{float: right;}
-  .headitem>.bgbox{transform: translateY(-8px)}
+  .headitem>.bgbox{transform: translateY(-8px);max-width: 100%;}
   .echarts{background: #fff;margin: 10px ;padding: 40px 30px;}
   .echarts p{text-align: center;}
   .echarthead>span{font-size: 14px;font-weight: 600;margin-right: 20px;cursor: pointer;display: inline-block}

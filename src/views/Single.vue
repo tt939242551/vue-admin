@@ -3,7 +3,7 @@
     <div v-if="isadds">
       <div id="topbar">
         <p class="title">单品管理</p>
-        <Input search class="topsearch" size="small" enter-button="搜索" placeholder="搜索" />
+        <Input search v-model="searchvalue" @on-search="getSingleList(1)" class="topsearch" size="small" enter-button="搜索" placeholder="搜索" />
       </div>
       <div class="tabbox" id="tabbox">
         <div v-if="!tabs.length" style="height:10px"></div>
@@ -32,7 +32,7 @@
         </div>
 
         <div class="foot">
-          <Page :total="total" prev-text="上一页" next-text="下一页" @on-change="getlist" />
+          <Page :total="total" :current="page" prev-text="上一页" next-text="下一页" @on-change="getlist" />
         </div>
       </div>
       <Modal width="380" footer-hide v-model="xModal2" :styles="{top: '200px'}">
@@ -166,6 +166,7 @@ export default {
       tindex: 0,
       isCheck: [],
       value: "",
+      searchvalue:'',
       isadds: true,
       generalattribute: [],
       specialList:[],
@@ -198,8 +199,11 @@ export default {
               
          })
     },
-    getSingleList(){
-      this.$axios.post("/admin/common/category.ashx?action=selectlist",this.$qs.stringify({page:this.page,pageSize:this.pageSize,parentid:this.tabs[this.tvalue].id})).then(res=>{
+    getSingleList(n){
+       if (n) {
+         this.page = n
+       }else{ this.page = 1}
+      this.$axios.post("/admin/common/category.ashx?action=selectlist",this.$qs.stringify({page:this.page,pageSize:this.pageSize,parentid:this.tabs[this.tvalue].id,where:this.searchvalue})).then(res=>{
          if (res.status>=0) {
              this.data1 = res.item
              this.data1.forEach(i=>{
@@ -251,7 +255,7 @@ export default {
     },
     getlist(index) {
       this.page = index
-      this.getSingleList()
+      this.getSingleList(index)
     },
     selectionChange(a) {
       this.isCheck = [];
@@ -405,6 +409,7 @@ export default {
   },
   watch : {
       tvalue : function(){
+        this.searchvalue = ''
       this.page = 1
       setTimeout(()=>{
          this.getSingleList()

@@ -2,7 +2,7 @@
   <div id="general">
       <div id="topbar">
         <p class="title">通用属性</p>
-        <Input search class="topsearch" size="small" enter-button="搜索" placeholder="搜索" />
+        <Input search  v-model="searchvalue" @on-search="getselectlist(1)" class="topsearch" size="small" enter-button="搜索" placeholder="搜索" />
       </div>
     <div class="tabbox">
       <Tabs v-model="tvalue" >
@@ -26,7 +26,7 @@
       </div>
 
       <div class="foot">
-        <Page :total="total" prev-text="上一页" next-text="下一页" @on-change="getlist" />
+        <Page :total="total" :current="page" prev-text="上一页" next-text="下一页" @on-change="getlist" />
       </div>
     </div>
     <Modal width="360" footer-hide v-model="xModal2" :styles="{top: '200px'}">
@@ -110,6 +110,7 @@ export default {
       value: '',
       value1: '',
       value2: '',
+      searchvalue: '',
       titles:[],
       text1:"",
       imgval1: "",
@@ -155,9 +156,12 @@ export default {
      
          } )
     },
-    getselectlist(){
+    getselectlist(n){
+        if (n) {
+         this.page = n
+       }else{ this.page = 1}
        let url = "/admin/common/generalattribute.ashx?action=selectlist"
-       let params={page:this.page,pageSize:this.pageSize,parentid:this.tabs[this.tvalue].id}
+       let params={page:this.page,pageSize:this.pageSize,parentid:this.tabs[this.tvalue].id,title:this.searchvalue}
        this.$axios.post(url,this.$qs.stringify(params)).then(res=>{
          if (res.status>=0) {
             this.data1 = res.item
@@ -242,7 +246,7 @@ export default {
     },
     getlist(index) {
        this.page = index
-      this.getselectlist()
+      this.getselectlist(index)
     },
     selectionChange(a){
       this.isCheck = []
@@ -354,6 +358,7 @@ export default {
       tvalue : function(){
       this.isCheck = []
       this.page = 1
+       this.searchvalue = ''
       this.isshow = false
       if (this.tabs[this.tvalue].ispicture==='1') {
               this.isshow = true

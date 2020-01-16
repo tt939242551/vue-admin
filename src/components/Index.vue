@@ -66,7 +66,7 @@
                         <!-- 下拉菜单 -->
                         <Dropdown trigger="click" @on-click="userOperate" @on-visible-change="showArrow">
                             <div class="pointer">
-                                <span>{{userName}}</span>
+                                <span>{{userName?userName:''}}</span>
                                 <Icon v-show="arrowDown" type="md-arrow-dropdown"/>
                                 <Icon v-show="arrowUp" type="md-arrow-dropup"/>
                             </div>

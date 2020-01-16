@@ -25,7 +25,7 @@
                             </div>
                          </div>   
                         <span class="mach">{{items.realamount}}</span>
-                        <div class="stutas">{{items.status_content}}</div>
+                        <div class="stutas">{{items.status_content}}  <p v-show="items.remindshiptime">买家已提醒发货</p><p v-show="items.remindshiptime">{{items.remindshiptime}}</p> </div>
                         <div class="operate">
                            <p v-show="items.status=='2'"><Button size="small" @click="show(i)" type="primary" class="btn4">确认发货</Button></p>
                            <p v-show="items.status=='3'">发货中</p>
@@ -135,7 +135,7 @@
             <div>
                 <p style="color:#8c8c8c" @click="removelist"><Icon style="vertical-align: top;" size="18" type="ios-trash" />删除选中订单</p>
             </div>
-            <div ><Page :total="total" style="float: right;padding-top: 20px;" prev-text="上一页" next-text="下一页" @on-change="getlist" /></div>
+            <div ><Page :total="total" :current="page" style="float: right;padding-top: 20px;" prev-text="上一页" next-text="下一页" @on-change="getlist" /></div>
         </div>
         <Modal width="380" footer-hide v-model="xModal1" :styles="{top: '200px'}">
             <p class="stitle">填写运单号</p>
@@ -191,7 +191,7 @@
            <p>邮政编码：{{orderList[tindex].zcode}}</p>
            <p>运单号：{{orderList[tindex].expressname}}</p>
         </main>
-        <Button  @click="editorder"   class=" btn3" >修改</Button>
+        <Button :disabled="orderList[tindex].status_content=='交易关闭'"  @click="editorder"   class=" btn3" >修改</Button>
       </div>
       <p><Button type="primary"  @click="islist=true"   class=" btn5" >返回</Button></p>
         <Modal v-model="xModal2" width="422"  footer-hide :styles="{top: '200px'}">

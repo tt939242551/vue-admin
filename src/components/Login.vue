@@ -72,11 +72,11 @@ export default {
     },
     submit() {
       this.$axios.post('/admin/common/login.ashx',this.$qs.stringify({userName:this.account,userPwd:this.pwd})).then(res=>{
-        if (res.status >= 0) {
+        if (res.status > 0) {
         this.isShowLoading = true;
         // 登陆成功 设置用户信息头像
-       
-        localStorage.setItem("userName", res.username);
+       window.console.log(res)
+        localStorage.setItem("userName",this.account);
          localStorage.setItem("token","token"); 
          this.$router.push({ path: this.redirect || "/statistics" });
          location.reload() 

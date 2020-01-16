@@ -6,7 +6,7 @@
               <Select
                size="small"
               v-model="models[0]"
-              @on-change="getselectlist()"
+              @on-change="getselectlist(1)"
               style="width:120px;margin-right: 30px;"
               placeholder="请选择性别"
             >
@@ -17,7 +17,7 @@
             <span>注册时间</span>
             <DatePicker size="small" type="daterange"  @on-change="gettime"  :value="models[1]" split-panels placeholder="请选择时间" style="width: 200px"></DatePicker>
          </p>
-        <div class="inputbox"><Input size="small" @on-search="getselectlist"  search class="topsearch"  v-model="models[3]"  enter-button="搜索" placeholder="搜索" /></div>
+        <div class="inputbox"><Input size="small" @on-search="getselectlist(1)"  search class="topsearch"  v-model="models[3]"  enter-button="搜索" placeholder="搜索" /></div>
         <span @click="tableToExcel" class="outup">导出<img src="../assets/imgs/bg06.png" alt=""></span>
       </div>
     <div class="tabbox">
@@ -28,7 +28,7 @@
         </Table>
         <p>会员：{{total}}位</p>
       <div class="foot">
-        <Page :total="total" prev-text="上一页" next-text="下一页" @on-change="getlist" />
+        <Page :total="total" :current="page" prev-text="上一页" next-text="下一页" @on-change="getlist" />
       </div>
     </div>
  </div>
@@ -106,7 +106,10 @@ export default {
     },
     created(){this.getselectlist()},
     methods:{
-     getselectlist(){
+     getselectlist(n){
+       if (n) {
+         this.page = n
+       }else{ this.page = 1}
        let url = "/admin/common/tb_user.ashx?action=selectlist"
        let arr = [];
        if (this.models[1]) {
@@ -136,11 +139,10 @@ export default {
     },
     getlist(index) {
       this.page = index
-      this.getselectlist()
+      this.getselectlist(index)
     },
     gettime(t){
      this.models[1] = t
-     console.log(t)
      this.getselectlist()
     },
     show(i){

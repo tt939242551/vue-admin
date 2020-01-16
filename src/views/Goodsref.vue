@@ -23,14 +23,15 @@
                </div>
                <div class="imglistbox1" v-else>
                  <div :class="{imgbox1:true,farstimg:j===0}" v-for="(item,j) in items.item" :key="j">
-                   <div class="itembox itembox2">
-                     <img v-if="item.picture" :src="item.picture" alt="">
-                      <span style="width: 260px;height: 260px;display:inline-block;vertical-align: top;text-align: center;"><img v-if="item.commoditypictures1" style="max-width: 260px;max-height: 260px;border:none;" :src="item.commoditypictures1" alt=""></span>
-                     <img v-if="item.commoditypictures1" :src="item.commoditypictures1" alt="">
-                     <img v-if="!item.picture&&!item.commoditypictures1&&j>0"  src="../assets/imgs/g2-bg.png" alt="">
-                     <img v-if="!item.picture&&!item.commoditypictures1&&j===0"  src="../assets/imgs/g-bg.png" alt="">
+                   <div v-if="j" class="itembox itembox2">
+                      <span v-if="item.commoditypictures1"  style="width: 260px;height: 260px;display:inline-block;vertical-align: top;text-align: center;"><img  style="max-width: 260px;max-height: 260px;border:none;" :src="item.commoditypictures1" alt=""></span>
+                     <img v-if="!item.commoditypictures1"  src="../assets/imgs/g2-bg.png" alt="">
                      <p v-if="item.generalattributename" class="logop">{{item.generalattributename}}</p><p class="logop" v-else>品牌</p>
                      <p v-if="item.commodityname">{{item.commodityname}}</p><p v-else>商品名称</p>
+                  </div>
+                  <div v-else class="itembox itembox2">
+                     <img v-if="item.picture" :src="item.picture" alt="">
+                     <img v-if="!item.picture"  src="../assets/imgs/g-bg.png" alt="">
                   </div>
                    <p class="footer"> 
                      <span @click="showModal(j)" style="cursor: pointer;"><Icon class="icons" size="18" type="ios-create-outline" />编辑</span>
@@ -423,17 +424,17 @@ export default {
 
 
 .imglistbox1{display: inline-block;margin-top: 10px;}
-.imgbox1{display: inline-block;margin-right: 30px;margin-bottom: 30px;border: 1px solid #f0f0f0}
+.imgbox1{display: inline-block;margin-right: 30px;margin-bottom: 30px;border: 1px solid #f0f0f0;vertical-align: top;}
 .imgbox1 p{padding: 6px 12px 6px;font-size: 14px;color: #191919;}
 .imgbox1>.footer>span{float: right;color: #c69c6d;margin-bottom: 10px;}
 .imgbox1>.footer{padding: 10px 10px;border-top: 1px solid #f0f0f0;}
 .imgbox1 p .icons{transform: translateY(-2px);margin-left: 18px;margin-right: 2px;}
 .itembox{width: 220px;}
 .itembox>p{height: 42px;overflow: hidden;padding: 0 10px;}
-.farstimg .itembox.itembox2>img{width: 260px;height: 420px;border:none;margin-bottom: -146px;position: relative;z-index: 9}
+.farstimg .itembox.itembox2>img{border:none;margin-bottom: -146px;position: relative;z-index: 9}
 .itemnum{border-top: 1px solid #c69c6d;padding-top: 4px;margin: 10px 10px;display: inline-block;padding-right: 5px;}
 .itembox.itembox2{text-align: center;width: 260px;height: 420px;}
-.itembox.itembox2>img{max-width: 260px;max-height: 260px;border:none;}
+.itembox.itembox2>img{max-width: 260px;max-height: 420px;border:none;}
 .itembox2 .logop{text-align: center;color: #c69c6d;padding: 10px  0 2px;margin: 0 5px;border-top: 1px solid #c69c6d;}
 .itembox2>p:nth-child(3){padding-top: 0;height: 100px;}
 .modalmain{padding: 20px 30px;}
