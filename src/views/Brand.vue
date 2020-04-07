@@ -291,7 +291,17 @@ export default {
            ishomecount: 0,
         }
     },
-    mounted(){this.activityinit()},
+     beforeRouteEnter (to, from, next) {
+      next(vm => {
+     
+       vm.tvalue1 = 0
+       vm.tvalue2 = 0
+      vm.activityinit()
+     })
+    },
+    mounted(){
+     // this.activityinit()
+      },
     methods:{
         switchsth(i){
           if (this.tvalue2===0&&this.ishomecount>9&&i) {

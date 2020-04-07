@@ -144,6 +144,12 @@ export default {
             msg:{},
         }
     },
+    beforeRouteEnter (to, from, next) {
+      next(vm => {
+      vm.tvalue = 0
+      vm.navstatus = 0
+     })
+    },
     mounted(){
      let base = new Date();
      this.$set(this.value2,1,[base.getFullYear(), base.getMonth() + 1, base.getDate()].join('-'))
@@ -208,7 +214,12 @@ export default {
                } 
                this.getLine()
             } else {
-              this.$Message.warning(res.content);
+                if (res.status==-1008) {
+                  localStorage.setItem("userName", '');
+                 localStorage.setItem("token",""); 
+                  this.$router.push({ path: "/login" });
+              } 
+          
             }
           })
           .catch(() => {});

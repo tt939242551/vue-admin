@@ -230,6 +230,11 @@ export default {
          imgnumber: 0,
         }
     },
+    beforeRouteEnter (to, from, next) {
+      next(vm => {  
+       vm.tvalue = 0
+     })
+    },
     mounted(){this.getbannerList()
                this.getgoodsList()
                this.getother()

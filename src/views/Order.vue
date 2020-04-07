@@ -366,6 +366,8 @@ export default {
       if (vm.$route.query.id) {
         vm.usmid = vm.$route.query.id
       }
+       vm.page = 1
+       vm.islist = true
        vm.getgoodslist()
      })
     },

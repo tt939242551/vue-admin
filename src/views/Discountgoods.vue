@@ -32,8 +32,9 @@
                             </div>
                             <p class="footerp"> 
                                 <template>
-                                    <i-switch @on-change="switchsth(i)" style="transform: translateY(-2px);margin-left: 8px;" v-model="item.isselect" size="small"  />
+                                    <i-switch @on-change="switchsth(i)" style="transform: translateY(-2px);margin-left: 2px;" v-model="item.isselect" size="small"  />
                                 </template>
+                                <span v-if="item.isselect" style="color: #c69c6d;margin-left: 5px;">关闭展示</span><span v-else style="color: #c69c6d;margin-left: 5px;">开启展示</span>
                                 <span class="floutspan"><span @click="eaitgoods(i)" style="cursor: pointer;"><Icon class="icons" size="18" type="ios-create-outline" />修改</span><span @click="removegoods(i)"  style="cursor: pointer;"><Icon class="icons" size="18" type="ios-trash-outline" />删除</span></span>
                             </p>
                         </div>
@@ -166,8 +167,17 @@ export default {
            discountindex:0,
         }
     },
-    mounted(){this.getinit()
-      this.getdiscountlist()
+   beforeRouteEnter (to, from, next) {
+      next(vm => {
+     
+       vm.tvalue = 0
+       vm.getinit()
+      vm.getdiscountlist()
+     })
+    },
+    mounted(){
+    //  this.getinit()
+    //  this.getdiscountlist()
     },
     methods:{
         getinit(){
@@ -563,7 +573,7 @@ export default {
 .imgbox1{display: inline-block;margin-right: 30px;margin-bottom: 30px;border: 1px solid #f0f0f0}
 .imgbox1 p{padding: 8px;}
 .imgbox1 p>.floutspan{float: right;color: #c69c6d;}
-.imgbox1 p .icons{transform: translateY(-2px);margin-left: 18px;}
+.imgbox1 p .icons{transform: translateY(-2px);margin-left: 5px;}
 .imglistbox1.imglistbox2{display: inline-block;min-width: 520px;margin-top: 10px;}
 .itembox{width: 220px;height: 360px;position: relative;display: inline-block;margin-right: 16px}
 .itembox img{width: 100%;}

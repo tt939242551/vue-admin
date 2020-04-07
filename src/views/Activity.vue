@@ -332,7 +332,16 @@ export default {
            imgData: {accept: "image/gif, image/jpeg, image/png, image/jpg"},
         }
     },
-    mounted(){this.activityinit()},
+    mounted(){//this.activityinit()
+    },
+     beforeRouteEnter (to, from, next) {
+      next(vm => {
+     
+       vm.tvalue1 = 0
+       vm.tvalue2 = 0
+      vm.activityinit()
+     })
+    },
     methods:{
       switchsth(i){
             let url = ""

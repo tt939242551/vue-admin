@@ -40,7 +40,7 @@
             </Select>
             <Button type="primary" size="small" style="width:60px;margin-left: 30px;"  @click="initsmodels" >重置</Button>
          </p>
-        <Input search class="topsearch" size="small" v-model="smodels[3]" @on-search="getDatalist" enter-button="搜索" placeholder="搜索" />
+        <Input search class="topsearch" size="small" v-model="smodels[3]" @on-blur="getDatalist" @on-search="getDatalist" enter-button="搜索" placeholder="搜索" />
       </div>
       <div class="btnbox">
         <Button type="primary" class="btn1" @click="addList" ><Icon size="16" style="transform: translateY(-2px)" type="md-add" />新增</Button>
@@ -53,8 +53,25 @@
         :data="data1"
         @on-selection-change="selectionChange"
       >
+       <template slot-scope="{ row, index }" slot="goodsimg">
+         <div class="goodstitle">
+           <div>
+             <img style="width:100px;height:100px"  :src="data1[index].commoditypictures1" alt="">
+           </div>
+           <div class="goodstext">
+             <p>{{data1[index].title}}</p>
+            <!--  <p>编码：{{data1[index].Code}}</p> -->
+             <p>类别：{{data1[index].parentcategoryname}}</p>
+             <p>单品：{{data1[index].categoryname}}</p>
+             <p v-if="data1[index].isUppershelf==0">未出售</p>
+             <p v-else>出售中</p>
+           </div>
+         </div>
+        </template>
         <template slot-scope="{ row, index }" slot="action">
-          <span class="acbtn" style="margin-right: 20px" @click="show(index)">修改</span><span style="margin-right: 90px" class="acbtn" @click="movelist(index)" >删除 </span><span style="padding-right: 20px"> <Checkbox @on-change="settop(index)" v-model="data1[index].isoverhead"></Checkbox> </span>
+          <span class="acbtn" style="margin-right: 12px" @click="show(index)">修改</span><span style="margin-right: 12px" class="acbtn" @click="movelist(index)" >删除 </span>
+          <span v-if="data1[index].isUppershelf==0" style="margin-right: 53px" class="acbtn" @click="Uppershelf(index)"  >立即上架 </span><span v-else style="margin-right: 53px" class="acbtn" @click="Uppershelf(index)" >立即下架 </span><span style="padding-right: 20px">
+             <Checkbox @on-change="settop(index)" v-model="data1[index].isoverhead"></Checkbox> </span>
           
         </template>
       </Table>
@@ -67,11 +84,11 @@
        <div id="topbar2">
          <p class="title2"><span style="cursor: pointer;" @click="closegoods"> 商品管理</span> > {{tindex===data1.length ? "新增商品":"编辑商品"}}</p>
        </div>
-          <p class="titl1"> <span>宝贝标题</span>
-            <Input
+          <p class="titl1"> <span>宝贝标题</span><br>
+            <Input id="focusinput" 
               v-model="models[2]"
               placeholder="请输入宝贝名称"
-              style="min-width: 300px;margin-left: 20px;"
+              style="width: 300px;margin: 15px 0 8px 12px"
             /></p>
           <div class="titl1">
             <p>分类</p>
@@ -79,6 +96,7 @@
               <Select
                 @on-change="getCategory"
                 v-model="models[0]"
+                filterable
                 size="small"
                 style="width:200px;margin-right: 30px;margin-bottom: 30px;"
                 placeholder="请选择类别"
@@ -114,9 +132,6 @@
                 <Option v-for="(item,index) in items.item" :value="item.guid" :key="index">{{ item.title }}</Option>
               </Select>
              </div>
-            
-            
-
           </div>
 
       <p>特殊属性</p>
@@ -173,7 +188,7 @@
           type="file"
           ref="uploadfiles"
           class="inputer"
-          @input="fileChanges"
+          @change="fileChanges"
           multiple="multiple"
         />
         <span>尺码</span>
@@ -188,16 +203,18 @@
             <Button
               type="primary"
               size="small"
-              style="width:80px"
+              style="width:80px;margin-right: 20px;"
               icon="md-add"
               @click="if(value1&&disabledGrouplist1.indexOf(value2)===-1)disabledGrouplist1.push(value1)"
             >添加</Button>
+             <Button  size="small" style="width:80px" icon="ios-trash" @click="removeSize(1)"
+            >删除</Button>
             <CheckboxGroup class="checkboxs" v-model="disabledGroup1" @on-change="creatmainList">
               <Checkbox
                 v-for="itme in  disabledGrouplist1"
                 :label="itme"
                 :key="itme"
-                style="margin: 10px 130px 10px 0;"
+                style="margin-right: 20px;width:100px"
               ></Checkbox>
             </CheckboxGroup>
           </TabPane>
@@ -211,16 +228,18 @@
             <Button
               type="primary"
               size="small"
-              style="width:100px"
+              style="width:80px;margin-right: 20px;"
               icon="md-add"
               @click="if(value2&&disabledGrouplist2.indexOf(value2)===-1)disabledGrouplist2.push(value2)"
             >添加</Button>
+             <Button type="primary" size="small" style="width:80px" icon="ios-trash" @click="removeSize(2)"
+            >删除</Button>
             <CheckboxGroup class="checkboxs" v-model="disabledGroup2" @on-change="creatmainList">
               <Checkbox
                 v-for="itme in  disabledGrouplist2"
                 :label="itme"
                 :key="itme"
-                style="margin-right: 50px;"
+                 style="margin-right: 20px;width:100px"
               ></Checkbox>
             </CheckboxGroup>
           </TabPane>
@@ -234,16 +253,18 @@
             <Button
               type="primary"
               size="small"
-              style="width:100px"
+              style="width:80px;margin-right: 20px;"
               icon="md-add"
               @click="if(value3&&disabledGrouplist3.indexOf(value2)===-1)disabledGrouplist3.push(value3)"
             >添加</Button>
+             <Button type="primary" size="small" style="width:80px" icon="ios-trash" @click="removeSize(3)"
+            >删除</Button>
             <CheckboxGroup class="checkboxs" v-model="disabledGroup3" @on-change="creatmainList">
               <Checkbox
                 v-for="itme in  disabledGrouplist3"
                 :label="itme"
                 :key="itme"
-                style="margin-right: 50px;"
+                style="margin-right: 20px;width:100px"
               ></Checkbox>
             </CheckboxGroup>
           </TabPane>
@@ -295,22 +316,27 @@
             :value="setdate"
             @on-change="gettimeval"
             style="width: 200px;margin-left:8px;"
-          ></DatePicker>
+          ></DatePicker> 
+         
         </div>
+       <!--  <div style="margin-top:40px">
+            <span>商品编码</span><Input v-model="Code"  style="width: 200px;margin-left: 8px;" />
+         </div> -->
       </div>
       <p>图文概述</p>
       <div class="sction">
         <span style="width:88px">电脑端宝贝图</span>
         <Button type="primary" size="small" @click="fileClick" style="width:100px" icon="md-add">
           批量上传
-          <input
+
+        </Button>
+         <input
             type="file"
             ref="uploadfile"
             class="inputer"
-            @input="fileChange"
+            @change="fileChange"
             multiple="multiple"
           />
-        </Button>
         <div height="10px"></div>
         <div v-for="(item,i) in imgLists" :key="i" class="imgbox">
           <img :src="item" />
@@ -357,8 +383,9 @@ export default {
         },
         {
           title: "宝贝标题",
-          key: "title",
-          align: "center"
+          slot: "goodsimg",
+          align: "center",
+          width: 300,
         },
         {
           title: "品牌",
@@ -366,13 +393,18 @@ export default {
           align: "center"
         },
         {
-          title: "类别",
+          title: "分类",
           key: "parentcategoryname",
           align: "center"
         },
         {
-          title: "单品",
-          key: "categoryname",
+          title: "销量",
+          key: "Salesnumber",
+          align: "center"
+        },
+         {
+          title: "库存",
+          key: "number",
           align: "center"
         },
         {
@@ -383,7 +415,7 @@ export default {
         {
           title: ".",
           slot: "action",
-          width: 250,
+          width: 255,
           align: "right"
         }
       ],
@@ -467,14 +499,23 @@ export default {
       modal1: false,
       modal2: false,
       tabsisok: true,
+      Code:"",
       sizearr:[],
       colorarr:[],
     };
   },
   components: { Uediter },
+  beforeRouteEnter (to, from, next) {
+      next(vm => {
+       vm.page =1
+      vm.closegoods()
+      vm.getInit();
+      vm.getBasicslist()
+     })
+    },
   created() {
-    this.getInit();
-    this.getBasicslist()
+   // this.getInit();
+   // this.getBasicslist()
   },
   methods: {
     catchData(html) {
@@ -512,6 +553,9 @@ export default {
             this.isoverheadcount = res.isoverheadcount
             this.data1.forEach(i=>{
              i.setdate = i.setdate.match(/20\d{2}\/\d{1,2}\/\d{1,2}/)[0]
+              if(i.commoditypictures1){ 
+                   i.commoditypictures1 = i.commoditypictures1.match(/https:\/\/oss.bogole.com\/project\/code\/public\/e19102801\/upfile\/20\d{6,30}\.[a-z]{3,4}/)[0] 
+                 }
             })
             this.total = res.totalCount;
           } else {
@@ -545,11 +589,11 @@ export default {
       }
     },
     show(index) {
- 
       this.tindex = index;
       this.isadds = false;
       let id = this.data1[index].id;
-
+      
+     
       this.$axios
         .post(
           "/admin/common/commodity.ashx?action=selectdetails",
@@ -559,12 +603,10 @@ export default {
           if (res.status >= 0) {
             this.models[2] = res.item[0].title
             this.models[9] = res.item[0].number
-            this.content = decodeURIComponent(res.item[0].commoditydetails);
+           
             if (res.item[0].commoditypictures1) {
               this.imgLists =  res.item[0].commoditypictures1.match(/https:\/\/oss.bogole.com\/project\/code\/public\/e19102801\/upfile\/20\d{6,30}\.[a-z]{3,4}/g)
-            }
-            
-            
+            }    
             this.mainList = res.parentcategory;
             this.$nextTick(()=>{
                 this.movecolor()
@@ -572,6 +614,7 @@ export default {
             this.category = res.category;
             this.generalattribute = res.generalattribute;
             this.setdate = res.item[0].setdate;
+            this.Code = res.item[0].Code
             this.specialList = res.specialattributes;
             if (this.specialList.length>0) {
                  this.specialList.forEach(i => {
@@ -603,6 +646,7 @@ export default {
             });
             this.colorarr = [];
             this.sizearr = [];
+
             this.colorList =  [{ color: "", remark: "", colorpictures: ""}]
             this.mainList.forEach(i => {
               let obj = {};
@@ -645,7 +689,12 @@ export default {
             });
             this.getgoodsTotal();
             this.models[8] = res.item[0].Price;
-          } else {
+              setTimeout(function(){
+                document.querySelector("#focusinput input").focus()
+              console.log(document.querySelector("#focusinput input"))
+                },1000)
+             this.content = decodeURIComponent(res.item[0].commoditydetails);  
+         } else {
             this.$Message.warning(res.content);
           }
         });
@@ -669,6 +718,21 @@ export default {
           this.isCheck.push(item.id);
         }
       });
+    },
+    //上下架
+    Uppershelf(index){
+       this.$axios
+        .post("/admin/common/commodity.ashx?action=Get_Uppershelf",this.$qs.stringify({ id: this.data1[index].id }))
+        .then(res => {
+          if (res.status >= 0) {
+           if (this.data1[index].isUppershelf==0) {
+             this.data1[index].isUppershelf=1
+           }else{ this.data1[index].isUppershelf=0} 
+          } else {
+            this.$Message.warning(res.content);
+          }
+        })
+        .catch(() => {});
     },
     addList() {
       this.parentcategory = [] // 类别
@@ -701,12 +765,18 @@ export default {
       this.disabledGroup1 = [],
       this.disabledGroup2 = [],
       this.disabledGroup3 = [],
+      this.Code='',
+      this.setdate = ''
       this.$axios
         .post("/admin/common/commodity.ashx?action=InitializationAdd")
         .then(res => {
           if (res.status >= 0) {
             this.tabs = res.style;
             this.category = res.category;
+              setTimeout(function(){
+                document.querySelector("#focusinput input").focus()
+              console.log(document.querySelector("#focusinput input"))
+                },1000)
           } else {
             this.$Message.warning(res.content);
           }
@@ -800,6 +870,9 @@ export default {
             this.data1 = res.item;
             this.data1.forEach(i=>{
              i.setdate = i.setdate.match(/20\d{2}\/\d{1,2}\/\d{1,2}/)[0]
+              if(i.commoditypictures1){ 
+                   i.commoditypictures1 = i.commoditypictures1.match(/https:\/\/oss.bogole.com\/project\/code\/public\/e19102801\/upfile\/20\d{6,30}\.[a-z]{3,4}/)[0] 
+                 }
             })
             this.total = res.totalCount;
           } else {
@@ -819,6 +892,9 @@ export default {
             this.data1 = res.item;
             this.data1.forEach(i=>{
              i.setdate = i.setdate.match(/20\d{2}\/\d{1,2}\/\d{1,2}/)[0]
+              if(i.commoditypictures1){ 
+                   i.commoditypictures1 = i.commoditypictures1.match(/https:\/\/oss.bogole.com\/project\/code\/public\/e19102801\/upfile\/20\d{6,30}\.[a-z]{3,4}/)[0] 
+                 }
             })
             this.total = res.totalCount;
           } else {
@@ -826,6 +902,19 @@ export default {
           }
         })
         .catch(() => {});
+    },
+    removeSize(i){
+      if (this['disabledGroup'+i].length) {
+        let arr = JSON.parse(JSON.stringify(this['disabledGrouplist'+i]))  
+           arr.forEach((item,index)=>{
+          if (this['disabledGroup'+i][0]===item) {
+            this['disabledGrouplist'+i].splice(index,1)
+            this['disabledGroup'+i].shift()
+          } 
+        })
+        console.log(this['disabledGroup'+i].length)
+        this.removeSize(i)
+      }else{ this.creatmainList();}
     },
     removeList() {
       this.$axios
@@ -909,11 +998,12 @@ export default {
        copymainList.forEach(i => {
            this.mainList.forEach(j => {
             if (i.colors === j.colors&&i.size === j.size) {
-             Object.assign(i,j)
+             Object.assign(j,i)
             }
           });
       });
       this.mainList = copymainList
+      console.log(this.mainList)
       this.$nextTick(()=>{
         this.movecolor()
       })
@@ -1039,6 +1129,7 @@ export default {
           setdate: this.setdate,
           Price: this.models[8],
           number: this.models[9],
+          Code:this.Code
         };
       } else {
         url = "/admin/common/commodity.ashx?action=edit";
@@ -1060,6 +1151,7 @@ export default {
           setdate: this.setdate,
           Price: this.models[8],
           number: this.models[9],
+          Code:this.Code
         };
       }
       this.$axios
@@ -1093,12 +1185,25 @@ export default {
     addimg(index) {
       this.colorindex = index;
       this.$refs.uploadfiles.click();
+      this.$refs.uploadfiles.value = ''  
     },
     fileClick() {
       this.$refs.uploadfile.click();
+      this.$refs.uploadfile.value = ''
+    },
+    chickvalue(e){
+      	if(this.models[2] == ""){
+          return;
+        }	
+        if(!this.models[2].match("^[a-zA-Z0-9_\u4e00-\u9fa5]+$")){
+        this.$Message.warning("请不要输入特殊字符!");
+       
+         this.$set(this.models,2,"")
+        }
     },
     // 上传图片
     fileChanges(event) {
+   
       if (!event.target.files[0].size) return;
       let file = event.target.files[0];
       this.imgList = [];
@@ -1112,6 +1217,7 @@ export default {
           .then(res => {
             if (res.status >= 0) {
               this.colorList[this.colorindex].colorpictures = res.data[0];
+              console.log(this.colorList)
                this.creatmainList();
             } else {
               that.$Message.warning(res.content);
@@ -1121,6 +1227,7 @@ export default {
       }, 100);
     },
     fileChange(event) {
+  
       if (!event.target.files[0].size) return;
       let files = event.target.files;
 
@@ -1152,7 +1259,7 @@ export default {
     },
     // 单张上传
     fileAdd(file) {
-      // console.log(file);
+       
       let type = file.type; //文件的类型，判断是否是图片
       let size = file.size; //文件的大小，判断图片的大小
       if (this.imgData.accept.indexOf(type) === -1) {
@@ -1256,6 +1363,8 @@ export default {
   border: none;
   width: 111px;
   margin-left: 5px;
+  margin-top: 2px;
+  height: 30px;
   font-size: 14px;
 }
 .goods .ivu-tabs{overflow: visible}
@@ -1268,7 +1377,11 @@ export default {
   padding: 10px 0;
   margin: 0 0 20px;
 }
-
+.goodstitle>div:first-child{display: inline-block;width: 100px;height: 100px;margin: 8px 8px 8px 0;background: #fff;vertical-align: top;}
+.goodstitle .goodstext{width: 150px;text-align: left;display: inline-block;padding-top: 8px;}
+.goodstext>p{font-size: 12px;color: #999999;}
+.goodstitle .goodstext>p:first-child{font-size: 14px;color: #4c4c4c;}
+.goodstitle .goodstext>p:last-child{font-size: 14px;color: #ff6f37;margin-top: 8px;}
 .title {
   font-size: 14px;
   line-height: 20px;

@@ -82,11 +82,12 @@
         <p class="title">{{tabs[tvalue].title}} > 新增单品</p>
       </div>
       <main>
-        <div class="mtop">单品名称<Input style="width:220px;border-radius: 4px;margin-left:20px;font-size: 14px"  v-model="mtitle" placeholder="请输入类别名称"/></div>
+        <div class="mtop">*单品名称<Input style="width:220px;border-radius: 4px;margin-left:20px;font-size: 14px"  v-model="mtitle" placeholder="请输入类别名称"/></div>
         <h5>通用属性</h5>
         <div v-for="(items,i) in generalattribute"  :key="i">
-            <p class="ftitle">{{items.title}}</p>
+            <p class="ftitle"><span v-show="i===0">*</span>{{items.title}}</p>
             <div class="brand" >
+              <Button size="small" style="margin-right: 15px;margin-bottom: 15px;border-radius: 4px;min-width:80px" @click="changeBrand(i,-1)" type="default">全选</Button>
               <Button v-for="(item,j) in items.item" :key="j" size="small" style="margin-right: 15px;margin-bottom: 15px;border-radius: 4px;min-width:80px" @click="changeBrand(i,j)" :type="item.isselect ? 'primary' : 'default'">{{item.title}}</Button>
             </div>
         </div>
@@ -169,6 +170,7 @@ export default {
       searchvalue:'',
       isadds: true,
       generalattribute: [],
+      isallCheck: [],
       specialList:[],
       mtitle: "", 
       ms:"",
@@ -180,7 +182,16 @@ export default {
       specialindex: null
     };
   },
-  created(){this.getInit()},
+  created(){//this.getInit()
+  },
+   beforeRouteEnter (to, from, next) {
+      next(vm => {
+       vm.page =1
+      vm.isadds = true
+      vm.getInit();
+     
+     })
+    },
   methods: {
     getInit(){
       this.$axios.post("/admin/common/category.ashx?action=selectlist",this.$qs.stringify({page:0,pageSize:0,parentid:0})).then(res=>{
@@ -193,7 +204,6 @@ export default {
                  localStorage.setItem("token",""); 
                   this.$router.push({ path: this.redirect || "/statistics" });
               }
-           this.$Message.warning(res.content); 
          }
        }).catch(()=>{
               
@@ -243,6 +253,12 @@ export default {
        this.$axios.post("/admin/common/category.ashx?action=selectdetails",this.$qs.stringify({id:id})).then(res=>{
          if (res.status>=0) {
              this.generalattribute = res.item[0].generalattribute
+             let arr = []
+             this.generalattribute.forEach(i => {
+                  arr.push(true)
+             })
+             this.isallCheck = arr 
+            
              this.specialList = res.specialattributes   
          }else{
            this.$Message.warning(res.content); 
@@ -280,6 +296,11 @@ export default {
        this.$axios.post("/admin/common/category.ashx?action=InitializationAdd").then(res=>{
          if (res.status>=0) {
              this.generalattribute = res.generalattribute
+              let arr = []
+             this.generalattribute.forEach(i => {
+                  arr.push(true)
+             })
+             this.isallCheck = arr 
          }else{
            this.$Message.warning(res.content); 
          }
@@ -336,6 +357,13 @@ export default {
       }
     },
     changeBrand(i,j) {
+      if (j===-1) {
+        this.generalattribute[i].item.forEach((item,index)=>{
+          this.$set(this.generalattribute[i].item[index],"isselect",this.isallCheck[i]) 
+        })
+        this.isallCheck[i] = !this.isallCheck[i]
+        return
+      }
       if (this.generalattribute[i].item[j].isselect) {
         this.$set(this.generalattribute[i].item[j],"isselect",false) 
       }else{this.$set(this.generalattribute[i].item[j],"isselect",true) }
@@ -372,7 +400,20 @@ export default {
         } 
     },
     postSpecial(){
-    
+     if (this.mtitle=="") {
+       this.$Message.warning("单品名必须填写");
+       return
+     }
+     var status = true
+     this.generalattribute[0].item.forEach(item=>{
+       if (item.isselect) {
+          status = false
+       }
+     })
+      if (status) {
+       this.$Message.warning("品牌必须选择");
+       return
+     }
       let brandname=[];
       let brandid=[];
        let url,pamls;

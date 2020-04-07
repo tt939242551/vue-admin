@@ -104,7 +104,13 @@ export default {
       ],
         }
     },
-    created(){this.getselectlist()},
+    created(){//this.getselectlist()
+    },
+    beforeRouteEnter (to, from, next) {
+      next(vm => {
+      vm.getselectlist()
+     })
+    },
     methods:{
      getselectlist(n){
        if (n) {

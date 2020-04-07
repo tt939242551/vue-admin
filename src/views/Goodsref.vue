@@ -38,6 +38,9 @@
                   </p>
                  </div>
                </div>
+               <template>
+                    <i-switch @on-change="switchsth(i)" style="margin-left: 20px;margin-right: 8px;" v-model="items.isopen" size="small"  /> <span v-if="items.isopen">关闭展示</span><span v-else>开启展示</span>
+                </template>
             </TabPane>
         </Tabs>
       </div>
@@ -138,6 +141,11 @@ export default {
            styles:1,
            imgData: {accept: "image/gif, image/jpeg, image/png, image/jpg"},
         }
+    },
+     beforeRouteEnter (to, from, next) {
+      next(vm => {
+       vm.tvalue = 0
+     })
     },
     mounted(){this.getgoodsinit()},
     methods:{
@@ -240,6 +248,16 @@ export default {
           })
           .catch(() => {});
         },
+     switchsth(i){   
+            this.$axios.post("/admin/common/recommendationcommodity.ashx?action=editisopen",this.$qs.stringify({id:this.tabs[i].id}))
+              .then(res => {
+                if (res.status > 0) {
+                } else {
+                  this.$Message.warning(res.content); 
+                }
+              })
+              .catch(() => {});  
+    },   
     showModal(i){
       this.goodsindex = i
       this.Modal[0] = ""
