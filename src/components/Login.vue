@@ -79,7 +79,7 @@ export default {
         localStorage.setItem("userName",this.account);
          localStorage.setItem("token","token"); 
          this.$router.push({ path: this.redirect || "/statistics" });
-         location.reload() 
+        // location.reload() 
        if (this.single) {
          localStorage.setItem("userPwd", this.pwd);
        }

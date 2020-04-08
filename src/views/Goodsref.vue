@@ -44,7 +44,7 @@
             </TabPane>
         </Tabs>
       </div>
-       <input type="file" ref="uploadfiles" style="display:none" @input="fileChanges"  multiple="multiple" />
+       <input type="file" ref="uploadfiles" style="display:none" @change="fileChanges"  multiple="multiple" />
          <Modal v-model="xModal1" width="490"  footer-hide :styles="{top: '200px'}">
             <div class="modalmain">
               <div class="mtitle">新增商品推荐</div>
@@ -370,6 +370,7 @@ export default {
          // 图片上传
     addimg() {
       this.$refs.uploadfiles.click();
+      this.$refs.uploadfiles.value = ''
     },
     fileChanges(event) {
       if (!event.target.files[0].size) return;
@@ -377,6 +378,7 @@ export default {
       this.imgmodel = [];
       this.fileAdd(file);
       setTimeout(() => {
+        this.$Loading.start();
         this.$axios
           .post(
             "/admin/common/upload_ajax.ashx?action=UpLoadFile",
@@ -384,12 +386,18 @@ export default {
           )
           .then(res => {
             if (res.status >= 0) {
+               this.$Loading.finish();
               this.imgmodels = res.data[0];
+              
             } else {
+               this.$Loading.error();
               this.$Message.warning("图片上传失败");
             }
           })
-          .catch(() => {this.$Message.warning("图片上传失败");});
+          .catch(() => {
+             this.$Loading.error();
+            this.$Message.warning("图片上传失败");
+            });
       }, 100);
     },
         // 单张上传

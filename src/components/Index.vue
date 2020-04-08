@@ -55,10 +55,10 @@
                     </div>
                     <div class="h-right">
                         <!-- 消息 -->
-                        <div class="notice-c" @click="info" title="查看新消息">
+                      <!--   <div class="notice-c" @click="info" title="查看新消息">
                             <div :class="{newMsg: hasNewMsg}"></div>
                             <Icon type="ios-notifications-outline" />
-                        </div>
+                        </div> -->
                       <!--    用户头像 
                         <div class="user-img-c">
                             <img :src="userImg">
@@ -124,7 +124,7 @@ export default {
             asideClassName: 'aside-big', // 控制侧边栏宽度变化
             asideArrowIcons: [], // 缓存侧边栏箭头图标 收缩时用
             // 面包屑
-            crumbs: '首页管理',
+            crumbs: '',
             userName: '',
             userImg: '',
         }

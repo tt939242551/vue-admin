@@ -20,7 +20,7 @@
                   </p>
                  </div>
                </div>
-              <input type="file" ref="uploadfiles" style="display:none" @input="fileChanges"  multiple="multiple" />
+              <input type="file" ref="uploadfiles" style="display:none" @change="fileChanges"  multiple="multiple" />
             </TabPane>
             <TabPane label="商品分类" >
               <img style="float: right; margin: 20px 10px 20px 0" src="../assets/imgs/b-3.png" alt="">
@@ -429,6 +429,7 @@ export default {
     addimg(i) {
       this.imgnumber = i
       this.$refs.uploadfiles.click();
+      this.$refs.uploadfiles.value = ''
     },
     fileChanges(event) {
       if (!event.target.files[0].size) return;
@@ -436,6 +437,7 @@ export default {
       this.imgmodel = [];
       this.fileAdd(file);
       setTimeout(() => {
+        this.$Loading.start();
         this.$axios
           .post(
             "/admin/common/upload_ajax.ashx?action=UpLoadFile",
@@ -443,6 +445,8 @@ export default {
           )
           .then(res => {
             if (res.status >= 0) {
+              
+               this.$Loading.finish();
               if (this.imgnumber == 0) {
                  this.imgmodels = res.data[0];
               }
@@ -453,10 +457,13 @@ export default {
                 this.otherList.discouncommodityturl = res.data[0]
               }
             } else {
+               this.$Loading.error();
               this.$Message.warning("图片上传失败");
             }
           })
-          .catch(() => {this.$Message.warning("图片上传失败");});
+          .catch(() => {
+             this.$Loading.error();
+            this.$Message.warning("图片上传失败");});
       },200);
     },
         // 单张上传

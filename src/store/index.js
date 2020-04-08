@@ -7,13 +7,13 @@ const store = new Vuex.Store({
     state: {
         // 左侧菜单栏数据
         menuItems: [
-            {
+          {
                 name: 'statistics', // 要跳转的路由名称 不是路径
                 size: 18, // icon大小
                 type: 'ios-stats', // icon类型
                 text: '数据统计', // 文本内容
             },
-            {
+              {
                 name: 'user', // 要跳转的路由名称 不是路径
                 size: 18, // icon大小
                 type: 'ios-contact', // icon类型
@@ -75,7 +75,13 @@ const store = new Vuex.Store({
                 name: 'order', // 要跳转的路由名称 不是路径
                 size: 18, // icon大小
                 type: 'ios-paper', // icon类型
-                text: '订单', // 文本内容
+                text: '订单管理', // 文本内容
+            },
+            {
+                name: 'userAdmin', // 要跳转的路由名称 不是路径
+                size: 18, // icon大小
+                type: 'ios-contacts', // icon类型
+                text: '后台用户管理', // 文本内容
             },
 
         ],

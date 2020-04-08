@@ -68,6 +68,7 @@ export const asyncRoutes = {
         name: 'common',
         component: () => import('../views/Common.vue'),
     },
+
     'order': {
         path: 'order',
         name: 'order',
@@ -77,6 +78,11 @@ export const asyncRoutes = {
                 vm.getgoodslist()
               })
           }
+    },
+    'userAdmin': {
+        path: 'userAdmin',
+        name: 'userAdmin',
+        component: () => import('../views/userAdmin.vue'),
     },
 }
 

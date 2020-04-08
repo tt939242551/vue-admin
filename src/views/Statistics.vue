@@ -156,7 +156,7 @@ export default {
      this.setvalue1()
      this.init();
      this.getsmu();
-   
+    
     },
     methods:{
         setdays(i){
@@ -213,6 +213,7 @@ export default {
                    }   
                } 
                this.getLine()
+              
             } else {
                 if (res.status==-1008) {
                   localStorage.setItem("userName", '');
@@ -269,6 +270,7 @@ export default {
           .then(res => {
             if (res.status > 0) {
                this.sumdata = res 
+               this.$forceUpdate()
             } else {
               this.$Message.warning(res.content);
             }

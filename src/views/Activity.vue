@@ -165,7 +165,7 @@
               <Button size="small" @click="isok7" type="primary" class="btn2">提交</Button>
             </div>     
         </Modal>
-         <input type="file" ref="uploadfiles" style="display:none" @input="fileChanges"  multiple="multiple" />
+         <input type="file" ref="uploadfiles" style="display:none" @change="fileChanges"  multiple="multiple" />
       <div  v-if="tabs.length" class="tabbox">
         <Tabs v-model="tvalue2" >
             <TabPane  label="活动信息" icon="md-radio-button-on">
@@ -962,6 +962,7 @@ export default {
      // 图片上传
     addimg() {
       this.$refs.uploadfiles.click();
+      this.$refs.uploadfiles.value = ''
     },
     fileChanges(event) {
       if (!event.target.files[0].size) return;
@@ -969,6 +970,7 @@ export default {
       this.imgmodel = [];
       this.fileAdd(file);
       setTimeout(() => {
+        this.$Loading.start();
         this.$axios
           .post(
             "/admin/common/upload_ajax.ashx?action=UpLoadFile",
@@ -976,12 +978,18 @@ export default {
           )
           .then(res => {
             if (res.status >= 0) {
+               this.$Loading.finish();
               this.imgmodels = res.data[0];
+              
             } else {
+               this.$Loading.error();
               this.$Message.warning("图片上传失败");
             }
           })
-          .catch(() => {this.$Message.warning("图片上传失败");});
+          .catch(() => {
+             this.$Loading.error();
+            this.$Message.warning("图片上传失败");
+            });
       }, 100);
     },
         // 单张上传

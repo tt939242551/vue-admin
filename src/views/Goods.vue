@@ -1209,6 +1209,7 @@ export default {
       this.imgList = [];
       this.fileAdd(file);
       setTimeout(() => {
+         this.$Loading.start();
         this.$axios
           .post(
             "/admin/common/upload_ajax.ashx?action=UpLoadFile",
@@ -1216,14 +1217,16 @@ export default {
           )
           .then(res => {
             if (res.status >= 0) {
+               this.$Loading.finish();
               this.colorList[this.colorindex].colorpictures = res.data[0];
               console.log(this.colorList)
                this.creatmainList();
             } else {
+               this.$Loading.error();
               that.$Message.warning(res.content);
             }
           })
-          .catch(() => {});
+          .catch(() => { this.$Loading.error();});
       }, 100);
     },
     fileChange(event) {
