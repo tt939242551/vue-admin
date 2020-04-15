@@ -1,6 +1,24 @@
 <template>
   <div>
     <div class="order" v-if="islist">
+        <p class="searchbox">
+        <!--     <span>性别</span>
+              <Select
+               size="small"
+              v-model="models[0]"
+              @on-change="getselectlist(1)"
+              style="width:120px;margin-right: 30px;"
+              placeholder="请选择性别"
+            >
+              <Option value="男">男</Option>
+              <Option value="女">女</Option>
+              <Option value="">不限</Option>
+            </Select> -->
+            <span style="width:120px;margin-right: 10px;">订单时间</span>
+            <DatePicker size="small" type="daterange"  @on-change="gettime"  :value="models[1]" split-panels placeholder="请选择时间" style="width: 200px;transform: translateY(1px)"></DatePicker>
+             <Input size="small" @on-search="gettimes"  search class="topsearch"  v-model="models[3]"  enter-button="搜索" placeholder="搜索" />
+         </p>
+       
         <Tabs v-model="tvalue">
             <TabPane label="全部订单" >
                 <section class="content">
@@ -144,7 +162,7 @@
         </Modal>
     </div>
     <div class="order2" v-else>
-       <p><span></span>我的订单 > <span style="cursor: pointer;" @click="islist=true">全部订单</span> >  订单详情</p>
+       <p><span></span><span style="cursor: pointer;" @click="islist=true">订单管理</span> >  订单详情</p>
        <div class="content">
          <div class="msg">
            
@@ -232,6 +250,7 @@ export default {
         tindex: 0,
         value:"",
         single:false,
+        models:[],
         orderList:[],
         stuta:[],
         page: 1,
@@ -253,8 +272,12 @@ export default {
             if (this.$route.query.id) {
                 id = this.$route.query.id
             }
+               let arr = [];
+              if (this.models[1]) {
+                  arr = this.models[1]
+              }
            let url = "/common/order.ashx"
-          let params={pageindex:this.page,pageSize:this.pageSize,status:this.tvalue?this.tvalue+1:0,type:10,usmid:this.usmid}
+          let params={pageindex:this.page,pageSize:this.pageSize,status:this.tvalue?this.tvalue+1:0,type:10,usmid:this.usmid,stardate:arr[0],enddate:arr[1],where:this.models[3]}
           this.isredin = false
            this.$axios.post(url,this.$qs.stringify(params)).then(res=>{
            if (res.status>0) {
@@ -288,6 +311,15 @@ export default {
       this.value = ''
        this.xModal1=true
        this.tindex = i
+    },
+    gettime(t){
+     this.models[1] = t
+     this.page = 1
+     this.getgoodslist()
+    },
+      gettimes(){
+     this.page = 1
+     this.getgoodslist()
     },
     isok1(){
       if (this.value) {
@@ -367,6 +399,7 @@ export default {
         vm.usmid = vm.$route.query.id
       }
        vm.page = 1
+       vm.tvalue = 0
        vm.islist = true
        vm.getgoodslist()
      })
@@ -404,7 +437,9 @@ export default {
     margin: 15px 10px;
     padding: 10px 15px 100px;
     min-width: 1300px;
+    
 }
+.order .searchbox{position: absolute;top: 25px;right: 25px;z-index: 99;}
 .content{border: 1px solid #f0f0f0;width: 1270px;margin-left: 10px}
 .content>div{padding: 0 16px;border-bottom: 1px solid #f0f0f0}
 .content .foot{border-bottom: none}
@@ -423,8 +458,8 @@ export default {
 .content>p>span:nth-child(7){margin-right: 80px;}
 .number{width: 70px;text-align: center;display: inline-block;padding: 26px  0;vertical-align: top;height: 100%;}
 .mach{ position: absolute;top: 0;left: 927px;width: 130px;text-align: center;padding: 26px  0;padding-right: 5px; border-right: 1px solid #f0f0f0;height: 100%;color: #c69c6d;font-family: Microsoft YaHei}
-.stutas{position: absolute;top: 0;left: 1056px;padding: 26px  0;border-right: 1px solid #f0f0f0;height: 100%;width: 82px;}
-.stutas p{font-size: 12px;color: #c69c6d;text-align: center;margin-left: -41px;}
+.stutas{position: absolute;top: 0;left: 1016px;padding: 26px  0;border-right: 1px solid #f0f0f0;height: 100%;width: 118px;text-align: center;}
+.stutas p{font-size: 12px;color: #c69c6d;text-align: center;}
 .operate{position: absolute;top: 0;left:  1142px;text-align: center;width:116px;padding: 26px  0;}
 .operate a{margin-top: 5px;display: inline-block;color: #c69c6d;text-decoration: underline}
 .operate2 p:last-child{color: #8c8c8c;font-size: 12px;margin-top: 5px;display: inline-block}
@@ -452,7 +487,12 @@ export default {
   width: 230px;
   margin: 20px 0 30px 40px;
 }
-
+.topsearch {
+  width: 280px;
+  margin-right: 100px;
+  margin-left: 50px;
+  float: right;
+}
 .order2 .content>div{border: none}
 .order2 .content{background: #fff;display: inline-block;border: 1px solid #f9f6f1;padding: 20px 0px;font-size: 14px;color: #191919;margin-bottom: 20px;margin-left: 10px;width: 98.5%;}
 .order2 .msg>p:nth-child(2){font-size: 16px;margin-top: 16px;}

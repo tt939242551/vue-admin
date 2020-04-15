@@ -148,6 +148,9 @@ export default {
       next(vm => {
       vm.tvalue = 0
       vm.navstatus = 0
+       if (from.name=='login') {
+          location.reload() 
+      } 
      })
     },
     mounted(){
@@ -156,7 +159,6 @@ export default {
      this.setvalue1()
      this.init();
      this.getsmu();
-    
     },
     methods:{
         setdays(i){
@@ -191,9 +193,8 @@ export default {
                     let now = new Date(base - oneDay*i);
                      this.date.unshift([now.getFullYear(), now.getMonth() + 1, now.getDate()].join('-')); 
                 } 
-        this.$axios
-          .post(
-            "/common/statistics.ashx",
+        this.$axios.post(
+ "/common/statistics.ashx",
             this.$qs.stringify({ start_date: this.value1[0],end_date: this.value1[1],type:10})
           )
           .then(res => {
@@ -269,8 +270,7 @@ export default {
           )
           .then(res => {
             if (res.status > 0) {
-               this.sumdata = res 
-               this.$forceUpdate()
+               this.sumdata = res  
             } else {
               this.$Message.warning(res.content);
             }

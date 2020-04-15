@@ -38,13 +38,16 @@
                   </p>
                  </div>
                </div>
-               <template>
+               <p>
+                 <template>
                     <i-switch @on-change="switchsth(i)" style="margin-left: 20px;margin-right: 8px;" v-model="items.isopen" size="small"  /> <span v-if="items.isopen">关闭展示</span><span v-else>开启展示</span>
-                </template>
+                  </template>
+               </p>
+              
             </TabPane>
         </Tabs>
       </div>
-       <input type="file" ref="uploadfiles" style="display:none" @change="fileChanges"  multiple="multiple" />
+       <input type="file" ref="uploadfiles" style="display:none" @change="fileChange"  multiple="multiple" />
          <Modal v-model="xModal1" width="490"  footer-hide :styles="{top: '200px'}">
             <div class="modalmain">
               <div class="mtitle">新增商品推荐</div>
@@ -68,7 +71,7 @@
         <Modal footer-hide v-model="xModal" width="360">
           <div  v-if="tabs.length" style="text-align:center;font-size: 20px;margin: 20px 0 ;">
               <p>请确认是否清空{{tabs[tvalue].title}}？</p>
-              <p>清空后数据将不可回复</p>
+              <p>清空后数据将不可恢复</p>
           </div>
           <div style="text-align:center;margin: 20px 0 ;">
               <Button style="width:80px" type="primary" class="samintbtn" @click="removebrandall">确定</Button><Button  style="width:80px;margin-left: 30px;display: inline-block;" class="samintbtn" @click="xModal5=false">取消</Button>
@@ -372,6 +375,40 @@ export default {
       this.$refs.uploadfiles.click();
       this.$refs.uploadfiles.value = ''
     },
+     //文件流上传图片
+      fileChange(event) {
+  
+      if (!event.target.files[0].size) return;
+      let files = event.target.files;
+
+      // 批量上传
+       let formData = new FormData()
+      for (let i = 0; i < files.length; i++) {
+        // 单张上传
+        formData.append("file"+i,files[i])
+      } 
+       this.$Loading.start();
+        this.$axios
+          ({
+           url: "/admin/common/upload_ajax.ashx?action=UpLoadFiles",
+           data: formData, method: 'post',
+           headers: { 
+          'Content-Type': 'multipart/form-data'
+         }})
+          
+          .then(res => {
+            if (res.status > 0) {
+               this.$Loading.finish();
+              this.imgmodels = res.data[0];
+            } else {
+               this.$Loading.error();
+              that.$Message.warning(res.content);
+            }
+          })
+          .catch(() => {});
+  
+    },
+    //base64上传图片
     fileChanges(event) {
       if (!event.target.files[0].size) return;
       let file = event.target.files[0];

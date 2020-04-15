@@ -20,7 +20,7 @@
                   </p>
                  </div>
                </div>
-              <input type="file" ref="uploadfiles" style="display:none" @change="fileChanges"  multiple="multiple" />
+              <input type="file" ref="uploadfiles" style="display:none" @change="fileChange"  multiple="multiple" />
             </TabPane>
             <TabPane label="商品分类" >
               <img style="float: right; margin: 20px 10px 20px 0" src="../assets/imgs/b-3.png" alt="">
@@ -408,6 +408,7 @@ export default {
     closeotheredit(){
         this.isedit=false
         this.editindex= 0
+         this.getother()
     },
     editindexs(i){
       this.editindex = i
@@ -431,6 +432,48 @@ export default {
       this.$refs.uploadfiles.click();
       this.$refs.uploadfiles.value = ''
     },
+     //文件流上传图片
+      fileChange(event) {
+  
+      if (!event.target.files[0].size) return;
+      let files = event.target.files;
+
+      // 批量上传
+       let formData = new FormData()
+      for (let i = 0; i < files.length; i++) {
+        // 单张上传
+        formData.append("file"+i,files[i])
+      } 
+       this.$Loading.start();
+        this.$axios
+          ({
+           url: "/admin/common/upload_ajax.ashx?action=UpLoadFiles",
+           data: formData, method: 'post',
+           headers: { 
+          'Content-Type': 'multipart/form-data'
+         }})
+          
+          .then(res => {
+            if (res.status > 0) {
+               this.$Loading.finish();
+               if (this.imgnumber == 0) {
+                 this.imgmodels = res.data[0];
+              }
+              if (this.imgnumber === 1) {
+                this.otherList.activitycommodityurl = res.data[0]
+              }
+              if (this.imgnumber === 2) {
+                this.otherList.discouncommodityturl = res.data[0]
+              }
+            } else {
+               this.$Loading.error();
+              that.$Message.warning(res.content);
+            }
+          })
+          .catch(() => {});
+  
+    },
+    //base64上传图片
     fileChanges(event) {
       if (!event.target.files[0].size) return;
       let file = event.target.files[0];

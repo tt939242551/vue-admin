@@ -39,7 +39,7 @@ export default {
   name: "login",
   data() {
     return {
-      account: "admin",
+      account: "",
       pwd: "",
       accountError: "",
       pwdError: "",
@@ -78,7 +78,12 @@ export default {
        window.console.log(res)
         localStorage.setItem("userName",this.account);
          localStorage.setItem("token","token"); 
-         this.$router.push({ path: this.redirect || "/statistics" });
+         if (res.role_id==2) {
+            window.location.href = "http://sfstyling.bogole.com/business/index.html";
+         }else{
+            this.$router.push({ path: this.redirect || "/statistics" });
+         }
+        
         // location.reload() 
        if (this.single) {
          localStorage.setItem("userPwd", this.pwd);

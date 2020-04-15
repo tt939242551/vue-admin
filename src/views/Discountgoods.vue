@@ -167,9 +167,9 @@ export default {
            discountindex:0,
         }
     },
+    //路由守卫初始化数据
    beforeRouteEnter (to, from, next) {
       next(vm => {
-     
        vm.tvalue = 0
        vm.getinit()
       vm.getdiscountlist()
@@ -180,6 +180,7 @@ export default {
     //  this.getdiscountlist()
     },
     methods:{
+        //初始化
         getinit(){
            this.$axios.post("/admin/common/discount.ashx?action=selectlist")
           .then(res => {
@@ -194,9 +195,7 @@ export default {
                  }
               })
                })
-              }
-             
-              
+              }  
             } else {
                if (res.status==-1008) {
                   localStorage.setItem("userName", '');
@@ -208,6 +207,8 @@ export default {
           })
           .catch(() => {});   
         },
+      //侧边类别  
+        //新增编辑类别弹窗
         eaitcategory(i){
             this.categoryindex = i
             if (i==="add") {
@@ -219,6 +220,7 @@ export default {
             }
              this.xModal1 = true
         },
+        //开启关闭首页折扣商品
         switchdiscount(i){
           this.$axios.post("/admin/common/discount.ashx?action=editisdiscount",this.$qs.stringify({isdiscount:i}))
           .then(res => {
@@ -231,6 +233,7 @@ export default {
           })
           .catch(() => {}); 
         },
+         //新增编辑类别
         isok1(){
         if (this.Modal[0]) {
           let url =""
@@ -245,15 +248,15 @@ export default {
           .then(res => {
             if (res.status > 0) {
               this.getinit()
-              this.xModal1 = false
             } else {
-              this.$Message.warning(res.content);
-              this.xModal1 = false
+              this.$Message.warning(res.content);  
             }
+             this.xModal1 = false
           })
           .catch(() => {});
           }else{this.$Message.warning("数据不能为空");} 
         },
+        //删除类别
         removecategory(i){
            let arr = []
             arr.push(this.categoryList[i].id)
@@ -269,6 +272,7 @@ export default {
           .catch(() => {});
         },
        //折扣商品
+        //新增,编辑折扣商品弹窗
         eaitgoods(i){
             this.goodsindex = i
             if (i==="add") {
@@ -286,6 +290,7 @@ export default {
             }
              this.xModal2 = true
         },
+        //新增折扣商品初始化
         getaddgoods(){
          this.$axios
           .post("/admin/common/discount.ashx?action=addinit")
@@ -300,6 +305,7 @@ export default {
           })
           .catch(() => {});
         },
+        //编辑折扣商品初始化
         editgoodsinit(){
         this.$axios
           .post("/admin/common/discount.ashx?action=editinit",this.$qs.stringify({ id: this.categoryList[this.categoryvalue].item[this.goodsindex].id }))
@@ -341,6 +347,7 @@ export default {
           })
           .catch(() => {});
        },
+      //新增,编辑折扣商品 
     isok2(){
       if (this.Modal[4]) {
         if (this.Modal[0]||this.Modal[1]) {
@@ -366,6 +373,7 @@ export default {
         
          }else{this.$Message.warning("折扣必须选择");} 
        },
+       //删除折扣商品
         removegoods(i){
            let arr = []
             arr.push(this.categoryList[this.categoryvalue].item[i].id)
@@ -380,6 +388,7 @@ export default {
           })
           .catch(() => {});
         },
+        //清空折扣商品
         removegoodslist(){
          this.$axios
           .post(
@@ -397,6 +406,7 @@ export default {
           })
           .catch(() => {});
         },
+        //选择类别查询单品
       getCategory(guid) {
         this.Modal[2] = "";
         this.getcommodityList()
@@ -422,6 +432,7 @@ export default {
           .catch(() => {});
       }
     },
+    //选择品牌,类别,单品查询商品
     getcommodityList(){
         if (this.xModal2) {
             this.Modal[3] = "";
@@ -441,13 +452,12 @@ export default {
         }
       
     },
+    //开启关闭单个商品是否首页展示
     switchsth(i){  
          let n = 0
          let goodsList =  this.categoryList[this.categoryvalue].item
          goodsList.forEach(item=>{
-           if (item.isselect) {
-             n++
-           }
+           if (item.isselect) n++ 
          })
          if (n>4) {
           this.getinit()
@@ -459,6 +469,8 @@ export default {
             this.$axios.post("/admin/common/discount.ashx?action=editisselect",this.$qs.stringify(parme))
               .then(res => {
                 if (res.status > 0) {
+                    let str = i?"已开启":"已关闭"
+                   this.$Message.success(str+"折扣商品板块"); 
                 } else {
                   this.$Message.warning(res.content); 
                 }
@@ -468,6 +480,7 @@ export default {
       
     },
     //折扣设置
+    //折扣设置初始化
     getdiscountlist(){
          this.$axios
           .post("/admin/common/discount.ashx?action=selectlistseting")
@@ -480,6 +493,7 @@ export default {
           })
           .catch(() => {});
     },
+    //新增编辑折扣弹窗
     eaitdiscount(i){
       this.discountindex = i
       if (i==="add") {
@@ -489,6 +503,7 @@ export default {
             }
         this.xModal4 = true
         },
+     //新增,编辑折扣   
      isok3(){
         if (this.Modal[0]>=0.01&&this.Modal[0]<=0.99) {
           let url =""
@@ -512,6 +527,7 @@ export default {
           .catch(() => {});
           }else{this.$Message.warning("折扣格式不正确");} 
         },
+        //删除折扣
       removediscount(i){
            let arr = []
             arr.push(this.discountlist[i].id)
@@ -526,6 +542,7 @@ export default {
           })
           .catch(() => {});
         },
+      //清空折扣  
      removediscountall(){
           this.$axios
           .post("/admin/common/discount.ashx?action=deleteseting",this.$qs.stringify({emptys: "清空"}))

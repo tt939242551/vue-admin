@@ -2,6 +2,7 @@
   <div class="home">
        <div id="topbar">
               <Button type="primary" class="btn1" @click="show('add')" ><Icon size="16" style="transform: translateY(-2px)" type="md-add" />新增</Button>
+                <div class="inputbox"><Input size="small" @on-search="getselectlist(1)"  search class="topsearch"  v-model="models"  enter-button="搜索" placeholder="搜索" /></div>
        
         <!--  <p class="title">
             <span>性别</span>
@@ -19,7 +20,7 @@
             <span>注册时间</span>
             <DatePicker size="small" type="daterange"  @on-change="gettime"  :value="models[1]" split-panels placeholder="请选择时间" style="width: 200px"></DatePicker>
          </p>
-        <div class="inputbox"><Input size="small" @on-search="getselectlist(1)"  search class="topsearch"  v-model="models[3]"  enter-button="搜索" placeholder="搜索" /></div>
+      
         <span @click="tableToExcel" class="outup">导出<img src="../assets/imgs/bg06.png" alt=""></span> -->
       </div> 
     <div class="tabbox">
@@ -28,38 +29,68 @@
               <span class="acbtn" style="margin-right: 20px" @click="show(index)">修改信息</span><span class="acbtn" @click="moveuser(index)" >删除用户</span>
             </template>
         </Table>
-        <p>后台用户：{{total}}位</p>
+        <p> <span class="acbtn2" @click="modal1=true" ><Icon  style="transform: translateY(-2px)" size="16" type="ios-trash" />删除选中用户</span><span style="float: right;">后台用户：{{total}}位</span></p>
       <div class="foot">
         <Page :total="total" :current="page" prev-text="上一页" next-text="下一页" @on-change="getlist" />
       </div>
     </div>
-      <Modal v-model="modal2" :title="index==='add'?'新增地址':'编辑地址'" width="630"  footer-hide :styles="{top: '120px'}">
+       <Modal footer-hide v-model="modal0" width="360" :styles="{top: '200px'}">
+          <div  style="text-align:center;font-size: 20px;margin: 20px 0 ;">
+              <p>请确认是否删除该用户？</p>
+              <p>删除后数据将不可恢复</p>
+          </div>
+          <div style="text-align:center;margin: 20px 0 ;">
+              <Button style="width:80px" type="primary" class="samintbtn" @click="movelist">确定</Button><Button  style="width:80px;margin-left: 30px;display: inline-block;" class="samintbtn" @click="modal0=false">取消</Button>
+          </div>
+        </Modal>
+         <Modal footer-hide v-model="modal1" width="360" :styles="{top: '200px'}">
+          <div  style="text-align:center;font-size: 20px;margin: 20px 0 ;">
+              <p>请确认是否删除选中用户？</p>
+              <p>删除后数据将不可恢复</p>
+          </div>
+          <div style="text-align:center;margin: 20px 0 ;">
+              <Button style="width:80px" type="primary" class="samintbtn" @click="removeList">确定</Button><Button  style="width:80px;margin-left: 30px;display: inline-block;" class="samintbtn" @click="modal1=false">取消</Button>
+          </div>
+        </Modal>
+      <Modal v-model="modal2" :title="index==='add'?'新增用户':'修改用户信息'" width="580"  footer-hide :styles="{top: '120px'}">
             <div class="modalmain">
               <p style="color:#c69c6d;"><i> * </i>为必填内容</p>
     
-              <p><span><i> * </i>地址信息：</span> 
-               <Select v-model="formDate[4]" style="width:138px;margin-right: 10px;">
-                    <Option v-for="item in itemrole" :value="item" :key="item">{{ item }}</Option>
+              <p><span><i> * </i>用户类型：</span> 
+               <Select v-model="formDate[0]" style="width:300px">
+                    <Option v-for="item in itemrole" :value="item.id" :key="item.id">{{ item.role_name }}</Option>
                 </Select></p>
-              <p><span><i> * </i>详细地址：</span>
-                 <i-input  style="width:333px;"
-                        type="textarea" v-model="formDate[1]"  :rows="2"  clearable placeholder="请输入详细地址信息，如道路、门牌号、小区、楼栋号、单 元等信息"> </i-input>
+              <p><span><i> * </i>用户名：</span>
+                 <i-input  style="width:300px"
+                        type="text" v-model="formDate[1]"    clearable placeholder="请输入用户名"> </i-input>
               </p>
-              <p><span>邮政编码：</span>
-                  <i-input  style="width:333px;"
-                        type="text" v-model="formDate[2]"  :maxlength="7"  clearable placeholder="请填写邮编"> </i-input>
+               <p v-if="index!=='add'&&!isedit"><span><i> * </i>密码：</span>
+                  <i-input  style="width:200px" disabled
+                        type="password" v-model="formDate[2]"  clearable placeholder="请填写密码"> </i-input><span  @click="editpassword" style="color:#c69c6d;cursor: pointer; font-size: 12px;">修改密码</span>
               </p>
-              <p><span><i> * </i>收货人姓名：</span>
-                <i-input  style="width:333px;"
-                        type="text" v-model="formDate[3]" :maxlength="25"  clearable placeholder="长度不超过25个字符"> </i-input>
+              <p v-else><span><i> * </i>密码：</span>
+                  <i-input  style="width:300px" 
+                        type="password" v-model="formDate[2]"  clearable placeholder="请填写密码"> </i-input>
               </p>
-              <p><span><i> * </i>手机号码：</span>
+               <p v-show="index==='add'||isedit"><span><i> * </i>确认密码：</span>
+                  <i-input  style="width:300px"  @on-blur="chackpassword" 
+                        type="password" v-model="formDate[3]" password  clearable placeholder="请确认密码"> </i-input>
+              </p>
+              <p><span>姓名：</span>
+                <i-input  style="width:300px"
+                        type="text" v-model="formDate[4]" :maxlength="25"  clearable placeholder="长度不超过25个字符"> </i-input>
+              </p>
+              <p><span>手机号码：</span>
               
-                <i-input  style="width:185px;"
-                        type="text" v-model="formDate[5]" :maxlength="11"  clearable placeholder="电话号码"> </i-input>
+                <i-input  style="width:300px"
+                        type="text" v-model="formDate[5]" :maxlength="11"  clearable placeholder="请输入电话号码"> </i-input>
               </p>
-              <p class="last"><span></span><Checkbox v-model="formDate[6]">设置为默认收货地址</Checkbox></p>
-              <Button size="small" @click="addAddress" type="primary" class="btn4">保存</Button>
+                <p><span>邮箱：</span>
+              
+                <i-input  style="width:300px"
+                        type="text" v-model="formDate[6]"  clearable placeholder="请输入邮箱"> </i-input>
+              </p>
+              <Button size="small" @click="adduser" type="primary" class="btn4">保存</Button><Button size="small" style="margin-left: 40px;" @click="modal2=false"  class="btn4">取消</Button>
             </div>     
         </Modal>
  </div>
@@ -71,27 +102,36 @@ export default {
     data(){
         return{
            index: 0, 
-           models:[],
+           models:'',
            data1:[],
            page:1,
            isCheck: [],
           formDate:[],
           itemrole:[],
+          isedit:false,
+          isok1:false,
           pageSize:10,
           total:1,
+          modal0:false,
+          modal1:false,
           modal2:false,
           columns1: [
+       {
+          type: "selection",
+          width: 60,
+          align: "center"
+        },
+         {
+          title: "用户类型",
+          key: "rolename", 
+          align: "center"
+        },
         {
           title: "用户登录名",
           key: "user_name",
           align: "center"
         },
-        {
-          title: "用户ID",
-          key: "id",
-          width: 100,
-          align: "center"
-        },
+       
                 {
           title: "用户名",
           key: "real_name",
@@ -122,7 +162,9 @@ export default {
     },
     beforeRouteEnter (to, from, next) {
       next(vm => {
+        vm.modal2 = false
       vm.getselectlist()
+      vm.getitemrole()
      })
     },
     methods:{
@@ -131,11 +173,7 @@ export default {
          this.page = n
        }else{ this.page = 1}
        let url = "/admin/common/user.ashx?action=selectlist_user"
-       let arr = [];
-       if (this.models[1]) {
-           arr = this.models[1]
-       }
-       let params={page:this.page,pageSize:this.pageSize,sex:this.models[0],stardate:arr[0],enddate:arr[1],username:this.models[3]}
+       let params={page:this.page,pageSize:this.pageSize,user_name:this.models}
        this.$axios.post(url,this.$qs.stringify(params)).then(res=>{
          if (res.status>=0) {
             this.data1 = res.item
@@ -157,22 +195,92 @@ export default {
               
          } )
     },
+    getitemrole(){
+       this.$axios.post('/admin/common/user.ashx?action=selectmanager_role').then(res=>{   
+                         window.console.log(res)  
+                    if (res.status == 1) {
+                   
+                      this.itemrole = res.itemrole
+                    
+                        } else {
+                    this.$Message.error(res.content);
+                        }
+                    }).catch()
+    },
     getlist(index) {
       this.page = index
       this.getselectlist(index)
     },
-    gettime(t){
-     this.models[1] = t
-     this.getselectlist()
+    editpassword(){
+      this.isedit = true
+       this.$set(this.formDate,2,'')
+        this.$set(this.formDate,3,'')
     },
     show(i){
-      this.modal2 = true
+     
+      this.isedit = false
       this.index = i
+      if (i==='add') {
+        this.formDate = []
+      }else{
+         this.$axios.post('/admin/common/user.ashx?action=select_details',this.$qs.stringify({id:this.data1[i].id})).then(res=>{     
+                    if (res.status === 1) {
+                      let msg = res.item[0]
+                      msg.itemrole.forEach(item=>{
+                        if (item.isselect) {
+                          this.$set(this.formDate,0,item.id)
+                        }
+                      })
+                        this.$set(this.formDate,1,msg.user_name)
+                        this.$set(this.formDate,2,msg.password)
+                        
+                       this.$set(this.formDate,4,msg.real_name)
+                       this.$set(this.formDate,5,msg.telephone)
+                       this.$set(this.formDate,6,msg.email)
+                        } else {
+                    this.$Message.error(res.content);
+                        }
+                    }).catch()
+      }
+       this.modal2 = true
       
     },
-     movelist(i){
+      adduser(){
+           if (this.index==='add'||this.isedit) {
+              if (!this.isok1) {
+                 this.$Message.error("两次输入密码不一致")
+                 return false
+              }
+           }
+           if (this.formDate[0]&&this.formDate[1]&&this.formDate[2]) {
+              let addparme = null 
+              let url = ''
+              if(this.index==="add"){
+                url = '/admin/common/user.ashx?action=insert_user'
+                addparme = {user_name:this.formDate[1],role_id:this.formDate[0],password:this.formDate[2],password2:this.formDate[3],real_name:this.formDate[4],telephone:this.formDate[5],email:this.formDate[6]}
+              } else{
+                  url = '/admin/common/user.ashx?action=edit_user'
+                  addparme = {id:this.data1[this.index].id,user_name:this.formDate[1],role_id:this.formDate[0],newPassword1:this.formDate[3],newPassword2:this.formDate[3],RealName:this.formDate[4],Telephone:this.formDate[5],Email:this.formDate[6]}
+              }
+               
+               this.$axios.post(url,this.$qs.stringify(addparme)).then(res=>{     
+                    if (res.status === 1) {
+                        this.models = ''
+                        this.getselectlist()
+                        this.modal2 = false
+                        } else {
+                    this.$Message.error(res.content);
+                        }
+                    }).catch()
+           }else{this.$Message.error("请填写所有必填信息")}
+      },
+      moveuser(i){
+        this.index = i
+        this.modal0 = true
+      },
+     movelist(){
       let url = "/admin/common/user.ashx?action=delete_user"
-      let arr = [this.data1[i].id]
+      let arr = [this.data1[this.index].id]
        this.$axios.post(url,this.$qs.stringify({ids: JSON.stringify(arr)})).then(res=>{
          if (res.status>=0) {
             this.getselectlist(this.page);
@@ -181,6 +289,7 @@ export default {
          }
        }).catch(()=>{
          } )
+      this.modal0 = false
     },
       removeList() {
       this.$axios
@@ -196,6 +305,15 @@ export default {
           }
         })
         .catch(() => {});
+         this.modal1 = false
+    },
+    chackpassword(){
+      if (this.formDate[2]===this.formDate[3]) {
+        this.isok1 = true
+      }else{
+         this.isok1 = false
+       // this.$Message.error("两次输入密码不一致")
+      }
     },
      selectionChange(a) {
       this.isCheck = [];
@@ -261,6 +379,7 @@ export default {
   color: #787878;
   width: 86px;
   border-radius: 4px;
+  
 }
 .btnbox .ivu-icon {
   font-size: 15px;
@@ -282,10 +401,11 @@ export default {
   margin: 20px 0 0;
  background: #fff;
  border-bottom: 1px solid #dcdee2;
+ 
 }
 .outup{color: #c69c6d;float: right;vertical-align: middle;line-height: 40px;cursor: pointer;}
 .outup img {transform: translateY(4px);margin-left: 8px;}
-.tabbox p{margin: 10px 35px 0;}
+.tabbox p{margin: 10px 20px;}
 .title {
   font-size: 14px;
   line-height: 20px;
@@ -325,22 +445,21 @@ export default {
   float: right;
   padding: 20px;
 }
-.btn1{color: #fff;margin: 8px 0 30px;font-size: 14px;height: 32px;line-height: 18px;}
-.inputbox{display: inline-block;vertical-align: middle;margin-left: 50px;transform: translateY(-2px)}
+.btn1{color: #fff;font-size: 14px;height: 32px;line-height: 18px;}
+.inputbox{vertical-align: middle;float: right;margin: 5px 20px;}
 .x_label{width: 310px;display: inline-block;font-size: 16px;margin: 20px 100px 10px 20px;}
 .x_label p {width: 100px;line-height: 32px;display: inline-block;}
-.samintbtn{margin: 30px 10px 30px 32px;}
 .postimg{display: flex;padding: 10px 0 20px 20px;flex-wrap: wrap}
 .postimg p {margin: 0 15px; font-size: 15px;line-height: 36px;}
 .headtext{font-size: 20px;color: #282a3c;}
 
 .modalmain{padding: 20px 60px 40px;}
 .modalmain>p{margin-bottom: 20px;font-size: 14px;font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;}
-.modalmain>p>span{font-size: 14px;color: #191919;width: 100px;display: inline-block;text-align: right;margin-right: 10px;}
+.modalmain>p>span{font-size: 14px;color: #191919;width: 90px;display: inline-block;text-align: right;margin-right: 10px;}
 .modalmain>p.last{margin: -10px 0 40px;}
 .btn4{width: 74px;margin-left: 110px;border-radius: 0;font-size: 14px;line-height: 22px;}
 .addlist{background: #f6f6f6;margin-left: 10px;padding: 6px 0 6px 16px;width: 450px;transform: translateY(-10px);margin-bottom: 10px;}
 .addlist span{color: #8c8c8c;margin-right: 20px;}
 .acbtn{display: inline-block;color: #c69c6d;cursor: pointer;}
-.acbtn2{display: inline-block;cursor: pointer;color: #787878;margin-top: 20px;}
+.acbtn2{display: inline-block;cursor: pointer;color: #787878;}
 </style>

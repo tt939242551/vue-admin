@@ -43,7 +43,7 @@
               <Button style="width:80px" type="primary"  @click="removeTabs">确定</Button><Button  style="width:80px;margin-left: 30px;display: inline-block;" class="samintbtn2" @click="xModal3=false">取消</Button>
           </div>
       </Modal>
-    <Modal  footer-hide v-model="xModal" :styles="{top: '200px',width:'500px'}">
+    <Modal  footer-hide v-model="xModal" :styles="{top: isshow?'40px':'200px',width:'500px'}">
          <p slot="header" class="headtext">
             编辑{{text1}}
         </p>
@@ -65,7 +65,7 @@
       </div>
         
       <Button style="width: 80px;margin-right:20px;margin-left: 102px;" type="primary" class="samintbtn" @click="isok1">提交</Button>
-      <Button style="width: 80px;" @click="isoff">返回</Button>
+      <Button style="width: 80px;" @click="xModal=false">返回</Button>
     </Modal>
   </div>
 </template>
@@ -130,6 +130,8 @@ export default {
 
   },
   methods: {
+    //通用属性初始化
+    //获取通用属性分类
     gettlist(){
        let url = "/admin/common/generalattribute.ashx?action=selectlist"
        let params={page:'0',pageSize:'0',parentid:"0",}
@@ -156,6 +158,7 @@ export default {
      
          } )
     },
+    //获取选中通用属性下数据
     getselectlist(n){
         if (n) {
          this.page = n
@@ -180,6 +183,7 @@ export default {
               
          } )
     },
+    //删除通用属性
      removeTabs(){
       let arr = []
       arr.push(this.tabs[this.tvalue].id)
@@ -194,10 +198,12 @@ export default {
               
          } )
     },
+  //新增通用属性弹窗
    handleTabsAdd() {
       this.value = ""
       this.xModal2 = true;
     },
+    //删除多条选中数据
     removelist(){
       let url = "/admin/common/generalattribute.ashx?action=delete"
        this.$axios.post(url,this.$qs.stringify({ids: JSON.stringify(this.isCheck)})).then(res=>{
@@ -209,6 +215,7 @@ export default {
        }).catch(()=>{
          } )
     },
+    //删除单条数据
     movelist(i){
       let url = "/admin/common/generalattribute.ashx?action=delete"
       let arr = [this.data1[i].id]
@@ -222,10 +229,13 @@ export default {
          } )
     },
     gettimeval(t){this.value2=t},
+    //修改单条数据初始化
     show(index) {
       this.tindex = index;
       let i = this.tvalue
       this.text1 = this.titles[i]
+      this.imgval1 = ""
+      this.imgval2 = ""
       this.xModal = true
       if(index!==this.data1.length){
       this.$axios.post("/admin/common/generalattribute.ashx?action=selectdetails",this.$qs.stringify({id:this.data1[index].id})).then(res=>{
@@ -244,10 +254,12 @@ export default {
         this.value2=''
       }
     },
+    //分页
     getlist(index) {
        this.page = index
       this.getselectlist(index)
     },
+    //多选框
     selectionChange(a){
       this.isCheck = []
      a.forEach((item)=>{
@@ -256,10 +268,12 @@ export default {
        }
      })
     },
+    //新增单条数据
     addList(){
     let i = this.data1.length
     this.show(i)
     },
+     //新增,修改单条数据
     isok1(){
         let url = ""
         let pamel ={}
@@ -276,14 +290,14 @@ export default {
          if (res.status>=0) {
          this.getselectlist()
          this.xModal=false
-         this.imgval1 = ""
-          this.imgval2 = ""
+         
          }else{
            this.$Message.warning(res.content); 
          }
        }) 
         }else{this.$Message.warning('输入数据不能为空');}
     },
+     //新增通用属性
     isok2() {
       if (this.value) {
         this.$axios.post("/admin/common/generalattribute.ashx?action=add",this.$qs.stringify({title:this.value, parentid:0,setdate:"",
@@ -301,14 +315,19 @@ export default {
         this.$Message.warning("输入数据不能为空");
       }
     },
-    isoff(){
-      this.xModal=false
-      this.imgval1 = ""
-      this.imgval2 = ""
+    //上传品牌图
+   getImgUrl1(file) {  
+    this.UpLoadimg(file,'imgval1') 
     },
-    getImgUrl1(file) {
-      if (file) {
-              let reader = new FileReader();
+    //上传logo图
+   getImgUrl2(file) { 
+     this.UpLoadimg(file,'imgval2')  
+
+    },
+    //上传图片
+    UpLoadimg(file,t){
+        if (file) {
+         let reader = new FileReader();
       // 调用reader.readAsDataURL()方法，把图片转成base64
       reader.readAsDataURL(file);
         let that = this;
@@ -317,20 +336,18 @@ export default {
           let imgarr =  [this.result]
          that.$axios.post("/admin/common/upload_ajax.ashx?action=UpLoadFile",that.$qs.stringify({imglist: JSON.stringify(imgarr)})).then(res=>{
          if (res.status>=0) {
-           that.imgval1 = res.data[0]
+           that[t] = res.data[0]
          }else{
            that.$Message.warning(res.content); 
          }
        }).catch(()=>{
         })};
       }else{
-         this.imgval1 = ""
+        this[t] = ''
       }
-
-      
-        
+     
     },
-    getImgUrl2(file) {
+/*     getImgUrl2(file) {
       if (file) {
              let reader = new FileReader();
       // 调用reader.readAsDataURL()方法，把图片转成base64
@@ -352,7 +369,7 @@ export default {
         this.imgval2 = ""
       }
 
-    }
+    } */
   },
   watch : {
       tvalue : function(){
@@ -365,7 +382,6 @@ export default {
             }
       this.getselectlist()
       this.isredin = false
-
     }
   }
 };

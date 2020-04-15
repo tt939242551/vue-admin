@@ -13,7 +13,25 @@ const store = new Vuex.Store({
                 type: 'ios-stats', // icon类型
                 text: '数据统计', // 文本内容
             },
-              {
+            {
+                name: 'order', // 要跳转的路由名称 不是路径
+                size: 18, // icon大小
+                type: 'ios-paper', // icon类型
+                text: '订单管理', // 文本内容
+            },
+            {
+                name: 'goods', // 要跳转的路由名称 不是路径
+                size: 18, // icon大小
+                type: 'md-settings', // icon类型
+                text: '商品管理', // 文本内容
+            },
+            {
+                name: 'examineGoods', // 要跳转的路由名称 不是路径
+                size: 18, // icon大小
+                type: 'md-create', // icon类型
+                text: '待审商品', // 文本内容
+            },
+            {
                 name: 'user', // 要跳转的路由名称 不是路径
                 size: 18, // icon大小
                 type: 'ios-contact', // icon类型
@@ -49,12 +67,7 @@ const store = new Vuex.Store({
                 type: 'md-calculator', // icon类型
                 text: '折扣商品', // 文本内容
             },
-            {
-                name: 'goods', // 要跳转的路由名称 不是路径
-                size: 18, // icon大小
-                type: 'md-settings', // icon类型
-                text: '商品管理', // 文本内容
-            },
+          
             {
                 text: '类别管理',
                 type: 'md-filing',
@@ -71,12 +84,7 @@ const store = new Vuex.Store({
                     },
                 ]
             },
-            {
-                name: 'order', // 要跳转的路由名称 不是路径
-                size: 18, // icon大小
-                type: 'ios-paper', // icon类型
-                text: '订单管理', // 文本内容
-            },
+          
             {
                 name: 'userAdmin', // 要跳转的路由名称 不是路径
                 size: 18, // icon大小

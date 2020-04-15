@@ -11,8 +11,9 @@
       <div class="tabbar" >
         <span v-if="tabs.length==0" class="tabspan">暂无数据</span>
         <span style="display: inline-block;" v-else><span  @click="getactivityls(i)" :class="{tabspan: true,active:tvalue1===i}" v-for="(itme,i) in tabs" :key="i">{{itme.activityname}}</span></span>
-        <span @click="xModal=true"  style="cursor: pointer;float: right;color: #c69c6d;font-size: 14px;margin-top: 16px;"><Icon class="icons" size="18" type="ios-trash-outline" />删除</span>  
-        <span @click="addactiv" style="cursor: pointer;float: right;color: #c69c6d;font-size: 14px;margin-top: 16px;"><Icon class="icons" size="18" type="md-add" />新增</span>
+        <span @click="xModal=true"  style="cursor: pointer;float: right;color: #c69c6d;font-size: 14px;margin-top: 16px;"><Icon class="icons" size="18" type="ios-trash-outline" />删除</span> 
+        <span @click="addactiv(tvalue1)" style="cursor: pointer;float: right;color: #c69c6d;font-size: 14px;margin-top: 16px;"><Icon class="icons" size="18" type="ios-create-outline" />修改</span> 
+        <span @click="addactiv('add')" style="cursor: pointer;float: right;color: #c69c6d;font-size: 14px;margin-top: 16px;"><Icon class="icons" size="18" type="md-add" />新增</span>
       </div>
       <div v-show="tvalue2>1" class="switch2">开启{{tabs2[tvalue2]}}
          <template>
@@ -28,10 +29,15 @@
              <Button style="width:80px" type="primary" class="samintbtn" @click="removeactivity">确定</Button><Button  style="width:80px;margin-left: 30px;display: inline-block;" class="samintbtn" @click="xModal=false">取消</Button>
         </div>
     </Modal>
-       <Modal width="380" footer-hide v-model="xModal1" :styles="{top: '200px'}">
+      <Modal width="380" footer-hide v-model="xModal1" :styles="{top: '200px'}">
         <p class="stitle">新增活动</p>
         <Input class="sinput" v-model="Modal[0]" placeholder="请输入活动名称" />
         <Button type="primary" class="samintbtn" @click="isok1" style="width:80px;margin-left: 135px;margin-bottom: 30px;">提交</Button>
+      </Modal>
+       <Modal width="380" footer-hide v-model="xModal1s" :styles="{top: '200px'}">
+        <p class="stitle">修改活动</p>
+        <Input class="sinput" v-model="Modal[0]" placeholder="请输入活动名称" />
+        <Button type="primary" class="samintbtn" @click="isok1s" style="width:80px;margin-left: 135px;margin-bottom: 30px;">提交</Button>
       </Modal>
        <Modal v-model="xModal2" width="680"  footer-hide :styles="{top: '100px'}">
             <div class="modalmain">
@@ -165,7 +171,7 @@
               <Button size="small" @click="isok7" type="primary" class="btn2">提交</Button>
             </div>     
         </Modal>
-         <input type="file" ref="uploadfiles" style="display:none" @change="fileChanges"  multiple="multiple" />
+         <input type="file" ref="uploadfiles" style="display:none" @change="fileChange"  multiple="multiple" />
       <div  v-if="tabs.length" class="tabbox">
         <Tabs v-model="tvalue2" >
             <TabPane  label="活动信息" icon="md-radio-button-on">
@@ -301,6 +307,7 @@ export default {
            tvalue2: 0,
            xModal:false,
            xModal1: false,
+           xModal1s:false,
            xModal2:false,
            xModal3:false,
            xModal4:false,
@@ -336,13 +343,13 @@ export default {
     },
      beforeRouteEnter (to, from, next) {
       next(vm => {
-     
        vm.tvalue1 = 0
        vm.tvalue2 = 0
       vm.activityinit()
      })
     },
     methods:{
+      //开启关闭2级子栏目
       switchsth(i){
             let url = ""
             let parme = {}
@@ -379,6 +386,7 @@ export default {
           })
           .catch(() => {}); 
         },
+          //开启关闭活动推荐板块
         switchsthactivity(i){
          let url = "/admin/common/activity.ashx?action=editisactivitys"
         this.$axios.post(url,this.$qs.stringify({isactivitys:i}))
@@ -392,6 +400,7 @@ export default {
           })
           .catch(() => {})
         },
+      //活动推荐初始化  
       activityinit(){
            this.$axios.post("/admin/common/activity.ashx?action=selectlist")
           .then(res => {
@@ -409,11 +418,19 @@ export default {
             }
           })
           .catch(() => {}); 
+      }, 
+      //新增,修改活动弹窗
+      addactiv(i){
+        if (i==='add') {
+           this.xModal1 = true
+          this.Modal[0]=""
+        }else{
+          this.xModal1s = true
+          this.Modal[0]= this.tabs[i].activityname
+        }
+       
       },
-      addactiv(){
-        this.xModal1 = true
-        this.Modal[0]=""
-      },
+       //新增活动
       isok1(){
           if (this.Modal[0]) {
         this.$axios.post("/admin/common/activity.ashx?action=add",this.$qs.stringify({ activityname: this.Modal[0] }))
@@ -428,6 +445,22 @@ export default {
           .catch(() => {}); 
           }else{this.$Message.warning("活动名不能为空");}
       },
+     //修改活动
+       isok1s(){
+          if (this.Modal[0]) {
+        this.$axios.post("/admin/common/activity.ashx?action=addinformation",this.$qs.stringify({ activityname: this.Modal[0] ,id: this.tabs[this.tvalue1].id}))
+          .then(res => {
+            if (res.status > 0) {
+              this.xModal1s = false
+              this.activityinit() 
+            } else {
+              this.$Message.warning(res.content);
+            }
+          })
+          .catch(() => {}); 
+          }else{this.$Message.warning("活动名不能为空");}
+      },
+      //编辑活动信息
      isok2(){
         if (this.Modal[1]&&this.Modal[2]) {
         this.$axios.post("/admin/common/activity.ashx?action=addinformation",this.$qs.stringify({ activitytitle: this.Modal[1],activityinformation: this.Modal[2],activityurl: this.Modal[0],activitypicture: this.imgmodels,id: this.tabs[this.tvalue1].id}))
@@ -442,7 +475,7 @@ export default {
           .catch(() => {}); 
           }else{this.$Message.warning("数据不能为空");}
       },
-  
+      //删除活动
       removeactivity(){
          let arr = []
             arr.push(this.tabs[this.tvalue1].id)
@@ -459,6 +492,7 @@ export default {
           })
           .catch(() => {});
       },
+      //编辑活动信息初始化
       eitactivity(){
           this.xModal2 = true
           this.Modal[0] = this.tabs[this.tvalue1].activityurl
@@ -466,10 +500,35 @@ export default {
           this.Modal[2] = this.tabs[this.tvalue1].activityinformation
           this.imgmodels = this.tabs[this.tvalue1].activitypicture
       },
-      getactivityls(i){this.tvalue1=i
+      //切换活动
+      getactivityls(i){
+        this.tvalue1=i
        this.tvalue2 = 0
-      }, 
-      //Banner
+      },
+
+    //Banner
+     //Banner初始化
+    getbannerList(){
+         this.$axios
+          .post("/admin/common/banner.ashx?action=selectlist",this.$qs.stringify({ typeguid: this.tabs[this.tvalue1].guid }))
+          .then(res => {
+            if (res.status >= 0) {
+              this.bannerList = res.item;
+              this.bannerList.forEach((itmes,i)=>{
+                   itmes.sort.forEach((item,j)=>{
+                     if (item.isselect) {
+                       this.$set(this.xmodel,i,item.id)
+                          //this.xmodel[i] = item.id
+                        }
+                  })
+              })
+            } else {
+              this.$Message.warning(res.content);
+            }
+          })
+          .catch(() => {});
+      },
+      //新增,修改Banner初始化
      showModal(i){
       if (i==="add") {
          this.bannerindex = this.bannerList.length
@@ -482,6 +541,7 @@ export default {
          }
       this.xModal3 = true
     },
+     //新增,修改Banner
     isok3(){
       if (this.imgmodels) {
           let url =""
@@ -504,26 +564,8 @@ export default {
           .catch(() => {});
       }else{this.$Message.warning("图片必须上传");} 
     },
-    getbannerList(){
-         this.$axios
-          .post("/admin/common/banner.ashx?action=selectlist",this.$qs.stringify({ typeguid: this.tabs[this.tvalue1].guid }))
-          .then(res => {
-            if (res.status >= 0) {
-              this.bannerList = res.item;
-              this.bannerList.forEach((itmes,i)=>{
-                   itmes.sort.forEach((item,j)=>{
-                     if (item.isselect) {
-                       this.$set(this.xmodel,i,item.id)
-                          //this.xmodel[i] = item.id
-                        }
-                  })
-              })
-            } else {
-              this.$Message.warning(res.content);
-            }
-          })
-          .catch(() => {});
-      },
+
+    //删除banner
     removebanner(i){
         this.$axios.post("/admin/common/banner.ashx?action=delete",this.$qs.stringify({ id: this.bannerList[i].id ,typeguid: this.tabs[this.tvalue1].guid}))
           .then(res => {
@@ -536,6 +578,7 @@ export default {
           })
           .catch(() => {}); 
     }, 
+    //banner排序
     setsort(i){
       if (this.tvalue2===1) {
          this.$axios.post("/admin/common/banner.ashx?action=editsort",this.$qs.stringify({ id: this.bannerList[i].id,xgid:this.xmodel[i] }))
@@ -550,7 +593,31 @@ export default {
       }
      
     },
+
+
     // 品牌推荐
+    //品牌推荐初始化
+    getbrandList(){
+         this.$axios
+          .post("/admin/common/activity.ashx?action=selectlistbrandrecommend",this.$qs.stringify({ typeguid: this.tabs[this.tvalue1].guid }))
+          .then(res => {
+            if (res.status >= 0) {
+              this.brandList = res.item;
+              this.brandList.forEach((itmes,i)=>{
+                   itmes.sort.forEach((item,j)=>{
+                     if (item.isselect) {
+                        this.$set(this.xmodel,i,item.id)
+                         // this.xmodel[i] = item.id
+                        }
+                  })
+              })
+            } else {
+              this.$Message.warning(res.content);
+            }
+          })
+          .catch(() => {});
+      },
+    //编辑,新增品牌弹窗
      showModal1(i){
       if (i==="add") {
          this.brandindex = this.brandList.length?this.brandList.length: 0
@@ -564,6 +631,7 @@ export default {
          }
       this.xModal4 = true
     },
+    //编辑,新增品牌
     isok4(){
       if (this.Modal[0]&&this.Modal[1]) {
           let url =""
@@ -586,6 +654,7 @@ export default {
           .catch(() => {});
       }else{this.$Message.warning("数据不能为空");} 
     },
+   //编辑品牌初始化
     editbrandinit(){
         this.$axios
           .post("/admin/common/activity.ashx?action=editbrandrecommendinit",this.$qs.stringify({ id: this.brandList[this.brandindex].id }))
@@ -604,6 +673,7 @@ export default {
           })
           .catch(() => {});
     },
+    //新增品牌初始化
     getbrandListall(){
          this.$axios
           .post("/admin/common/activity.ashx?action=addbrandrecommendinit")
@@ -616,26 +686,8 @@ export default {
           })
           .catch(() => {});
       },
-    getbrandList(){
-         this.$axios
-          .post("/admin/common/activity.ashx?action=selectlistbrandrecommend",this.$qs.stringify({ typeguid: this.tabs[this.tvalue1].guid }))
-          .then(res => {
-            if (res.status >= 0) {
-              this.brandList = res.item;
-              this.brandList.forEach((itmes,i)=>{
-                   itmes.sort.forEach((item,j)=>{
-                     if (item.isselect) {
-                        this.$set(this.xmodel,i,item.id)
-                         // this.xmodel[i] = item.id
-                        }
-                  })
-              })
-            } else {
-              this.$Message.warning(res.content);
-            }
-          })
-          .catch(() => {});
-      },
+    
+      //删除品牌
     removebrand(i){
         this.$axios.post("/admin/common/activity.ashx?action=deletebrandrecommend",this.$qs.stringify({ id: this.brandList[i].id ,typeguid: this.tabs[this.tvalue1].guid}))
           .then(res => {
@@ -647,6 +699,7 @@ export default {
           })
           .catch(() => {}); 
     },
+    //清空所有品牌
      removebrandall(){
         this.$axios.post("/admin/common/activity.ashx?action=deletebrandrecommend",this.$qs.stringify({ emptys: "清空" ,typeguid: this.tabs[this.tvalue1].guid}))
           .then(res => {
@@ -659,7 +712,8 @@ export default {
             }
           })
           .catch(() => {}); 
-    }, 
+    },
+    //品牌排序 
     setsort1(i){
       if (this.tvalue2===2) {
          this.$axios.post("/admin/common/activity.ashx?action=editsortbrandrecommend",this.$qs.stringify({ id: this.brandList[i].id,xgid:this.xmodel[i] }))
@@ -675,6 +729,30 @@ export default {
      
     },
    // 活动商品
+   //活动商品初始化  
+    getgoodsList(){
+         this.$axios
+          .post("/admin/common/activity.ashx?action=selectlistactivecommodities",this.$qs.stringify({ typeguid: this.tabs[this.tvalue1].guid }))
+          .then(res => {
+            if (res.status >= 0) {
+              this.goodsList = res.item;
+              this.goodsList.forEach((itmes,i)=>{ 
+                  itmes.sort.forEach((item,j)=>{
+                     if (item.isselect) {
+                       this.$set(this.xmodel,i,item.id)
+                        }
+                  })
+                if(itmes.commoditypictures1){ 
+                   itmes.commoditypictures1 = itmes.commoditypictures1.match(/https:\/\/oss.bogole.com\/project\/code\/public\/e19102801\/upfile\/20\d{6,30}\.[a-z]{3,4}/)[0] 
+                 }
+              })
+            } else {
+              this.$Message.warning(res.content);
+            }
+          })
+          .catch(() => {});
+      },
+   //新增,修改活动商品弹窗
     showModal2(i){
          this.Modal[0] = ""
          this.Modal[1] = ""
@@ -690,6 +768,7 @@ export default {
          }
       this.xModal6 = true
     },
+    //新增,修改活动商品
     isok5(){
       if (this.commodity.length) {
           let url =""
@@ -712,6 +791,7 @@ export default {
           .catch(() => {});
       }else{this.$Message.warning("该栏目下没有商品无法提交");} 
     },
+    //修改活动商品初始化
     editgoodsinit(){
         this.$axios
           .post("/admin/common/activity.ashx?action=editactivecommoditiesinit",this.$qs.stringify({ id: this.goodsList[this.goodsindex].id }))
@@ -747,6 +827,7 @@ export default {
           })
           .catch(() => {});
     },
+     //新增活动商品初始化
     getgoodsListall(){
          this.$axios
           .post("/admin/common/activity.ashx?action=addactivecommoditiesinit")
@@ -760,28 +841,7 @@ export default {
           })
           .catch(() => {});
       },
-    getgoodsList(){
-         this.$axios
-          .post("/admin/common/activity.ashx?action=selectlistactivecommodities",this.$qs.stringify({ typeguid: this.tabs[this.tvalue1].guid }))
-          .then(res => {
-            if (res.status >= 0) {
-              this.goodsList = res.item;
-              this.goodsList.forEach((itmes,i)=>{ 
-                  itmes.sort.forEach((item,j)=>{
-                     if (item.isselect) {
-                       this.$set(this.xmodel,i,item.id)
-                        }
-                  })
-                if(itmes.commoditypictures1){ 
-                   itmes.commoditypictures1 = itmes.commoditypictures1.match(/https:\/\/oss.bogole.com\/project\/code\/public\/e19102801\/upfile\/20\d{6,30}\.[a-z]{3,4}/)[0] 
-                 }
-              })
-            } else {
-              this.$Message.warning(res.content);
-            }
-          })
-          .catch(() => {});
-      },
+    //删除活动商品
     removegoods(i){
         this.$axios.post("/admin/common/activity.ashx?action=deleteactivecommodities",this.$qs.stringify({ id: this.goodsList[i].id ,typeguid: this.tabs[this.tvalue1].guid}))
           .then(res => {
@@ -793,6 +853,7 @@ export default {
           })
           .catch(() => {}); 
     },
+    //清空活动商品
      removegoodsall(){
         this.$axios.post("/admin/common/activity.ashx?action=deleteactivecommodities",this.$qs.stringify({ id: "清空" ,typeguid: this.tabs[this.tvalue1].guid}))
           .then(res => {
@@ -806,6 +867,7 @@ export default {
           })
           .catch(() => {}); 
     }, 
+    //活动商品排序
     setsort2(i){
       if (this.tvalue2===3) {
          this.$axios.post("/admin/common/activity.ashx?action=editsortactivecommodities",this.$qs.stringify({ id: this.goodsList[i].id,xgid:this.xmodel[i] }))
@@ -820,6 +882,7 @@ export default {
       }
      
     },
+    //选择类别获取单品
     getCategory(guid) {
       this.Modal[2] = "";
       this.getcommodityList()
@@ -846,6 +909,7 @@ export default {
       }
 
     },
+    //选择品牌,类别,单品获取商品
     getcommodityList(){
       if (this.xModal6) {
          this.Modal[3] = "";
@@ -866,13 +930,7 @@ export default {
       
     },
    //广告位1
-    showModal3(i){
-       this.advertisingindex1 = i
-       this.imgmodels = this.advertisingList1[this.advertisingindex1].picture
-       this.Modal[0] = this.advertisingList1[this.advertisingindex1].urllink
-      
-      this.xModal8 = true
-    },
+    //广告位1初始化
     getadvertisingList1(){
          this.$axios
           .post("/admin/common/activity.ashx?action=selectlistadvertisingposition",this.$qs.stringify({ typeguid: this.tabs[this.tvalue1].guid ,position: 1}))
@@ -885,6 +943,14 @@ export default {
           })
           .catch(() => {});
       },
+    //广告位1弹窗  
+    showModal3(i){
+       this.advertisingindex1 = i
+       this.imgmodels = this.advertisingList1[this.advertisingindex1].picture
+       this.Modal[0] = this.advertisingList1[this.advertisingindex1].urllink 
+      this.xModal8 = true
+    },
+   //编辑广告位1
      isok6(){
       if (this.imgmodels) {
           let url =""
@@ -905,7 +971,21 @@ export default {
       }else{this.$Message.warning("图片必须上传");} 
     },
    //广告位2
-    showModal4(i){
+    //广告位2初始化
+     getadvertisingList2(){
+         this.$axios
+          .post("/admin/common/activity.ashx?action=selectlistadvertisingposition",this.$qs.stringify({ typeguid: this.tabs[this.tvalue1].guid ,position: 2}))
+          .then(res => {
+            if (res.status >= 0) {
+             this.advertisingList2 = res.item
+            } else {
+              this.$Message.warning(res.content);
+            }
+          })
+          .catch(() => {});
+      },
+    //广告位2弹窗  
+     showModal4(i){
        this.advertisingindex2 = i
        if (this.advertisingList2.length) {
           this.imgmodels = this.advertisingList2[this.advertisingindex2].picture
@@ -921,18 +1001,7 @@ export default {
       
       this.xModal9 = true
     },
-    getadvertisingList2(){
-         this.$axios
-          .post("/admin/common/activity.ashx?action=selectlistadvertisingposition",this.$qs.stringify({ typeguid: this.tabs[this.tvalue1].guid ,position: 2}))
-          .then(res => {
-            if (res.status >= 0) {
-             this.advertisingList2 = res.item
-            } else {
-              this.$Message.warning(res.content);
-            }
-          })
-          .catch(() => {});
-      },
+    //编辑广告位2
      isok7(){
       if (this.imgmodels) {
           let url =""
@@ -964,6 +1033,38 @@ export default {
       this.$refs.uploadfiles.click();
       this.$refs.uploadfiles.value = ''
     },
+    //文件流上传图片
+     fileChange(event) {
+      if (!event.target.files[0].size) return;
+      let files = event.target.files;
+      // 批量上传
+       let formData = new FormData()
+      for (let i = 0; i < files.length; i++) {
+        // 单张上传
+        formData.append("file"+i,files[i])
+      } 
+       this.$Loading.start();
+        this.$axios
+          ({
+           url: "/admin/common/upload_ajax.ashx?action=UpLoadFiles",
+           data: formData, method: 'post',
+           headers: { 
+          'Content-Type': 'multipart/form-data'
+         }})
+          
+          .then(res => {
+            if (res.status > 0) {
+               this.$Loading.finish();
+              this.imgmodels = res.data[0];
+            } else {
+               this.$Loading.error();
+              that.$Message.warning(res.content);
+            }
+          })
+          .catch(() => {});
+  
+    },
+    //base64上传图片
     fileChanges(event) {
       if (!event.target.files[0].size) return;
       let file = event.target.files[0];
@@ -992,7 +1093,7 @@ export default {
             });
       }, 100);
     },
-        // 单张上传
+    // 图片转base64
     fileAdd(file) {
       // console.log(file);
       let type = file.type; //文件的类型，判断是否是图片
@@ -1021,6 +1122,7 @@ export default {
     }, 
     },
     watch: {
+    //监听2级导航变化调不同初始化函数
     tvalue2: function() {
       this.xmodel = []
      if (this.tvalue2===0) {

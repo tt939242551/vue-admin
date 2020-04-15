@@ -4,7 +4,7 @@
         <ul class="upload-imgs">
           <li :style="{width: wsize1}" v-if="imgLen>=4 ? false : true">
             <input type="file" class="upload" @change="addImg" ref="inputer" multiple accept="image/png,image/jpeg,image/gif,image/jpg"/>
-            <a class="add"><i class="iconfont icon-plus"></i><p style="margin-top: 11px">点击上传</p></a> 
+            <a class="add"><i class="iconfont icon-plus"></i><p style="margin-top: 11px;font-size: 12px;">点击上传</p></a> 
           </li>
           <li class="liimg" v-show="imgsrc">
             <p class="img" :style="{width: wsize2}"><img :style="{width: wsize2}" :src="imgsrc"><a class="close" @click="delImg">×</a></p>
@@ -60,10 +60,6 @@ export default {
         console.log(this.imgs)
         this.imgs.img0 = ''
         this.$emit("imgs",this.imgs.img0)
-
-      
-
-
       },
       submit(){
         for(let key in this.imgs){
@@ -82,13 +78,13 @@ export default {
 <style scoped>
 
 .upload-imgs{margin: 10px 0 10px 0;overflow: hidden;font-size: 0;position: relative;}
-.upload-imgs li{position: relative;height: 118px;font-size: 14px;display: inline-block;padding: 10px;margin-right: 25px;border: 2px dashed #ccc;text-align: center;vertical-align: middle;}
-.upload-imgs .add{display: block;background-color: #ccc;color: #ffffff;height: 94px;padding: 8px 0;}
+.upload-imgs li{position: relative;height: 130px;font-size: 14px;display: inline-block;padding: 10px;margin-right: 25px;border: 2px dashed #ccc;text-align: center;vertical-align: middle;}
+.upload-imgs .add{display: block;background-color: #ccc;color: #ffffff;height: 106px;padding: 8px 0;}
 .upload-imgs .add .iconfont{padding: 10px 0;font-size: 40px;}
 .upload-imgs .liimg {position: absolute;top: 0;left: 0;}
-.upload-imgs li .upload{position: absolute;top: 0;bottom: 0;left: 0;right: 0;height: 118px;opacity: 0;}
-.upload-imgs .img{position: relative;height: 94px;line-height: 94px;}
-.upload-imgs .img img{vertical-align: middle;height: 94px;}
+.upload-imgs li .upload{position: absolute;top: 0;bottom: 0;left: 0;right: 0;height: 130px;opacity: 0;}
+.upload-imgs .img{position: relative;height: 106px;}
+.upload-imgs .img img{vertical-align: middle;height: 106px;}
 .upload-imgs .img .close{display: none;}
 .upload-imgs li:hover .img .close{display: block;position: absolute;right: -6px;top: -10px;line-height: 1;font-size: 22px;color: #aaa;}
 

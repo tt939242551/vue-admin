@@ -42,16 +42,12 @@
          </p>
         <Input search class="topsearch" size="small" v-model="smodels[3]" @on-blur="getDatalist" @on-search="getDatalist" enter-button="搜索" placeholder="搜索" />
       </div>
-      <div class="btnbox">
-        <Button type="primary" class="btn1" @click="addList" ><Icon size="16" style="transform: translateY(-2px)" type="md-add" />新增</Button>
-        <div class="tabtop"><span>操作</span> 热销置顶</div>
-      </div>
       <Table
-        stripe
+        stripe no-data-text="暂无待审商品"
         ref="selection"
         :columns="columns1"
         :data="data1"
-        @on-selection-change="selectionChange"
+         @on-selection-change="selectionChange"
       >
        <template slot-scope="{ row, index }" slot="goodsimg">
          <div class="goodstitle">
@@ -60,22 +56,21 @@
            </div>
            <div class="goodstext">
              <p>{{data1[index].title}}</p>
-            <!--  <p>编码：{{data1[index].Code}}</p> -->
              <p>类别：{{data1[index].parentcategoryname}}</p>
              <p>单品：{{data1[index].categoryname}}</p>
-             <p v-if="data1[index].isUppershelf==0">未出售</p>
-             <p v-else>出售中</p>
+             <p>{{goodsstatus[data1[index].examinetype]}}</p>
            </div>
          </div>
         </template>
         <template slot-scope="{ row, index }" slot="action">
-          <span class="acbtn" style="margin-right: 12px" @click="show(index)">修改</span><span style="margin-right: 12px" class="acbtn" @click="movelist(index)" >删除 </span>
-          <span v-if="data1[index].isUppershelf==0" style="margin-right: 53px" class="acbtn" @click="Uppershelf(index)"  >立即上架 </span><span v-else style="margin-right: 53px" class="acbtn" @click="Uppershelf(index)" >立即下架 </span><span style="padding-right: 20px">
-             <Checkbox @on-change="settop(index)" v-model="data1[index].isoverhead"></Checkbox> </span>
-          
+          <span v-if="data1[index].examinetype==1" class="acbtn" style="margin-right: 12px" @click="show(index)">修改</span> <span v-else class="acbtn" style="margin-right: 12px" @click="show(index)">查看</span>
+          <span  v-show="data1[index].examinetype==1||data1[index].examinetype==4||data1[index].examinetype==5" style="margin-right: 12px" class="acbtn" @click="updateexaminetype(data1[index].id,3)" >通过审核 </span>
+           <span v-show="data1[index].examinetype==1" style="margin-right: 12px" class="acbtn" @click="updateexaminetype(data1[index].id,2)" >驳回审核 </span>
+           <span v-show="data1[index].examinetype==4||data1[index].examinetype==5" style="margin-right: 12px" class="acbtn" @click="updateexaminetype(data1[index].id,6)" >驳回审核 </span>
+          <span  class="acbtn" @click="movelist(index)" >删除 </span> 
         </template>
       </Table>
-       <span class="acbtn2" @click="modal6 = true" ><Icon  style="transform: translateY(-2px)" size="16" type="ios-trash" />删除选中商品</span>
+       <span class="acbtn2" @click="removeList" ><Icon  style="transform: translateY(-2px)" size="16" type="ios-trash" />删除选中商品</span>
       <div class="foot">
         <Page :total="total" :current="page" prev-text="上一页" next-text="下一页" @on-change="getlist" />
       </div>
@@ -133,7 +128,6 @@
               </Select>
              </div>
           </div>
-
       <p>特殊属性</p>
       <div class="sction">
         <div class="special" v-for="(i,index) in specialList" :key="index">
@@ -316,19 +310,14 @@
             :value="setdate"
             @on-change="gettimeval"
             style="width: 200px;margin-left:8px;"
-          ></DatePicker> 
-         
+          ></DatePicker>         
         </div>
-       <!--  <div style="margin-top:40px">
-            <span>商品编码</span><Input v-model="Code"  style="width: 200px;margin-left: 8px;" />
-         </div> -->
       </div>
       <p>图文概述</p>
       <div class="sction">
         <span style="width:88px">电脑端宝贝图</span>
         <Button type="primary" size="small" @click="fileClick" style="width:100px" icon="md-add">
           批量上传
-
         </Button>
          <input
             type="file"
@@ -348,8 +337,8 @@
         <Uediter :catchData="catchData" :content="content" ref="ue"></Uediter>
        </div>
       </div>
-      <Button type="primary" @click="getgoods" style="width:150px;margin: 30px 0 30px 25px;">提交</Button>
-      <Button  @click="closegoods" style="width:150px;margin: 30px 0 30px 20px;border-color: #c69c6d;color: #c69c6d;">取消</Button>
+          <Button v-show="data1[tindex].examinetype==1"  type="primary" @click="getgoods" style="width:150px;margin: 30px 0 30px 25px;">保存</Button>
+          <Button   @click="closegoods" style="width:150px;margin: 30px 0 30px 25px;border-color: #c69c6d;color: #c69c6d;">取消</Button>    
     </div>
     <Modal transfer v-model="modal1" @on-ok="ok" @on-cancel="cancel">
       <p class="modal_p">切换了之后, 之前选择的尺码将被清空 !</p>
@@ -366,39 +355,21 @@
                 <Button style="width:80px" type="primary" class="samintbtn" @click="getInit">确定</Button>
             </div>
         </Modal> 
-     <Modal footer-hide v-model="modal5" width="360" :styles="{top: '200px'}">
-          <div  style="text-align:center;font-size: 20px;margin: 20px 0 ;">
-              <p>请确认是否删除该商品？</p>
-              <p>删除后数据将不可恢复</p>
-          </div>
-          <div style="text-align:center;margin: 20px 0 ;">
-              <Button style="width:80px" type="primary" class="samintbtn" @click="moveGoods(1)">确定</Button><Button  style="width:80px;margin-left: 30px;display: inline-block;" class="samintbtn" @click="modal5=false">取消</Button>
-          </div>
-        </Modal>
-         <Modal footer-hide v-model="modal6" width="360" :styles="{top: '200px'}">
-          <div  style="text-align:center;font-size: 20px;margin: 20px 0 ;">
-              <p>请确认是否删除选中商品？</p>
-              <p>删除后数据将不可恢复</p>
-          </div>
-          <div style="text-align:center;margin: 20px 0 ;">
-              <Button style="width:80px" type="primary" class="samintbtn" @click="moveGoods(2)">确定</Button><Button  style="width:80px;margin-left: 30px;display: inline-block;" class="samintbtn" @click="modal6=false">取消</Button>
-          </div>
-        </Modal>    
   </div>
 </template>
 
 <script>
 import Uediter from "@/components/ue.vue";
 export default {
-  name: "goods",
+  name: "examineGoods",
   data() {
     return {
       columns1: [
-        {
+         {
           type: "selection",
           width: 60,
           align: "center"
-        },
+        }, 
         {
           title: "宝贝标题",
           slot: "goodsimg",
@@ -415,11 +386,6 @@ export default {
           key: "parentcategoryname",
           align: "center"
         },
-        {
-          title: "销量",
-          key: "Salesnumber",
-          align: "center"
-        },
          {
           title: "库存",
           key: "number",
@@ -431,10 +397,10 @@ export default {
           align: "center"
         },
         {
-          title: ".",
+          title: "操作",
           slot: "action",
-          width: 255,
-          align: "right"
+          width: 220,
+          align: "center"
         }
       ],
       data1: [],
@@ -451,6 +417,7 @@ export default {
       setdate: "",
       xModal4:false,
       tindex: 0,
+      goodsstatus:['未审核','商品审核','驳回审核','审核成功','上架审核','下架审核','驳回上下架审核'],//商品状态
       smodels:[],
       bmodels:[],
       models: ["", "", "", "", "", "", "", "", "", ""],
@@ -516,8 +483,6 @@ export default {
       categoryItem: [],
       modal1: false,
       modal2: false,
-      modal5: false,
-      modal6: false,
       tabsisok: true,
       Code:"",
       sizearr:[],
@@ -533,25 +498,20 @@ export default {
       vm.getBasicslist()
      })
     },
-  created() {
-   // this.getInit();
-   // this.getBasicslist()
-  },
   methods: {
-
-    //初始化
+   //初始化
     getInit() {
       this.smodels=[]
       this.xModal4 = false
       this.$axios
         .post(
-          "/admin/common/commodity.ashx?action=selectlist",
+          "/admin/common/Buyer_commodity.ashx?action=selectlist",
           this.$qs.stringify({ page: this.page, pageSize: this.pageSize })
         )
         .then(res => {
           if (res.status >= 0) {
             this.data1 = res.item;
-            this.isoverheadcount = res.isoverheadcount
+           // 返回数据格式处理
             this.data1.forEach(i=>{
              i.setdate = i.setdate.match(/20\d{2}\/\d{1,2}\/\d{1,2}/)[0]
               if(i.commoditypictures1){ 
@@ -559,18 +519,19 @@ export default {
                  }
             })
             this.total = res.totalCount;
+            this.$forceUpdate()
           } else {
              if (res.status==-1008) {
                   localStorage.setItem("userName", '');
                  localStorage.setItem("token",""); 
-                  this.$router.push({ path: this.redirect || "/statistics" });
-              }
+                  this.$router.push({ path: this.redirect || "/goods" });
+              } 
             this.$Message.warning(res.content);
           }
         })
         .catch(() => {});
     },
-     //搜索下拉数据初始化
+    //搜索下拉数据初始化
     getBasicslist(){
       this.$axios
         .post(
@@ -586,7 +547,7 @@ export default {
         })
         .catch(() => {});
     },
-      //选择类别查询单品
+    //选择类别查询单品
     getSingleList(t){
       this.smodels[2] = ""
       this.getDatalist()
@@ -594,8 +555,7 @@ export default {
          let id ;
          this.parentcategory.forEach(i=>{
            if (i.title ===t) {
-             id = i.id
-             
+             id = i.id 
            }
          })
         this.$axios
@@ -612,13 +572,13 @@ export default {
           })
           .catch(() => {});
     }
-    }, 
-   //选择品牌,类别,单品查询商品
+    },
+    //选择品牌,类别,单品查询商品
     getDatalist(){
       this.page = 1
       this.$axios
         .post(
-          "/admin/common/commodity.ashx?action=selectlist",
+          "/admin/common/Buyer_commodity.ashx?action=selectlist",
           this.$qs.stringify({ page: this.page, pageSize: this.pageSize ,where:this.smodels[3],categoryname:this.smodels[2],parentcategoryname:this.smodels[1],generalattributename:this.smodels[0]})
         )
         .then(res => {
@@ -637,11 +597,17 @@ export default {
         })
         .catch(() => {});
     },
+   //重置搜索条件
+    initsmodels(){
+      this.page = 1
+      this.smodels =[]
+      this.SingleList =[]
+    },
      //选择分页查询商品
-      getDatalistindex(){
+     getDatalistindex(){
       this.$axios
         .post(
-          "/admin/common/commodity.ashx?action=selectlist",
+          "/admin/common/Buyer_commodity.ashx?action=selectlist",
           this.$qs.stringify({ page: this.page, pageSize: this.pageSize ,where:this.smodels[3],categoryname:this.smodels[2],parentcategoryname:this.smodels[1],generalattributename:this.smodels[0]})
         )
         .then(res => {
@@ -659,12 +625,29 @@ export default {
           }
         })
         .catch(() => {});
-    }, 
-  //重置搜索条件
-    initsmodels(){
-      this.page = 1
-      this.smodels =[]
-      this.SingleList =[]
+    },
+     //分页
+    getlist(index) {
+      this.page = index;
+      if (this.smodels[0]||this.smodels[1]||this.smodels[2]||this.smodels[3]) {
+        this.getDatalistindex()
+      }else{this.getInit();}
+    
+    },
+  //商品状态修改
+    updateexaminetype(id,i){
+        this.$axios.post(
+            "/admin/common/Buyer_commodity.ashx?action=updateexaminetype",
+            this.$qs.stringify({ id:id ,examinetype: i})
+          )
+          .then(res => {
+            if (res.status >= 0) {
+               this.getInit();
+            } else {
+              that.$Message.warning(res.content);
+            }
+          })
+          .catch(() => {});
     },
     //商品多选
     selectionChange(a) {
@@ -675,25 +658,12 @@ export default {
         }
       });
     },
-   //删除商品弹窗
-    movelist(i){
-      this.tindex = i
-      this.modal5 = true
-    },
-    //删除商品
-    moveGoods(i) {
-      let arr = []
-      if (i==1) {
-         arr = [this.data1[this.tindex].id]
-         this.modal5 = false
-      }else{
-         arr = this.isCheck
-          this.modal6 = false
-      }
+     //删除选中商品
+    removeList() {
       this.$axios
         .post(
           "/admin/common/commodity.ashx?action=delete",
-          this.$qs.stringify({ ids: JSON.stringify(arr) })
+          this.$qs.stringify({ ids: JSON.stringify(this.isCheck) })
         )
         .then(res => {
           if (res.status >= 0) {
@@ -704,60 +674,29 @@ export default {
         })
         .catch(() => {});
     },
-    //上下架
-    Uppershelf(index){
-       this.$axios
-        .post("/admin/common/commodity.ashx?action=Get_Uppershelf",this.$qs.stringify({ id: this.data1[index].id }))
-        .then(res => {
-          if (res.status >= 0) {
-           if (this.data1[index].isUppershelf==0) {
-             this.data1[index].isUppershelf=1
-           }else{ this.data1[index].isUppershelf=0} 
-          } else {
-            this.$Message.warning(res.content);
-          }
-        })
-        .catch(() => {});
+    //删除单个商品
+    movelist(i){
+      let url = "/admin/common/commodity.ashx?action=delete"
+      let arr = [this.data1[i].id]
+       this.$axios.post(url,this.$qs.stringify({ids: JSON.stringify(arr)})).then(res=>{
+         if (res.status>=0) {
+            this.getInit();
+         }else{
+           this.$Message.warning(res.content); 
+         }
+       }).catch(()=>{
+         } )
     },
-    //设置热销置顶
-    settop(i){
-       if (this.isoverheadcount>=10&&this.data1[i].isoverhead) {
-         this.xModal4 = true
-       }else{
-           this.$axios.post(
-            "/admin/common/commodity.ashx?action=editisoverhead",
-            this.$qs.stringify({ id:this.data1[i].id ,isoverhead: this.data1[i].isoverhead})
-          )
-          .then(res => {
-            if (res.status >= 0) {
-               if (this.data1[i].isoverhead) {
-                 this.isoverheadcount++
-               }else{ this.isoverheadcount--}
-            } else {
-              that.$Message.warning(res.content);
-            }
-          })
-          .catch(() => {});
-       }
-        
-    },
-  //分页
-    getlist(index) {
-      this.page = index;
-      if (this.smodels[0]||this.smodels[1]||this.smodels[2]||this.smodels[3]) {
-        this.getDatalistindex()
-      }else{this.getInit();}
-    
-    },
- //商品编辑页
-     //商品编辑初始化
+
+//商品编辑页
+   //商品编辑初始化
     show(index) {
       this.tindex = index;
       this.isadds = false;
       let id = this.data1[index].id;
       this.$axios
         .post(
-          "/admin/common/commodity.ashx?action=selectdetails",
+          "/admin/common/Buyer_commodity.ashx?action=selectdetails",
           this.$qs.stringify({ id: id })
         )
         .then(res => {
@@ -786,7 +725,6 @@ export default {
               });
             });
             }
-          
             this.category.forEach(i => {
               if (i.isselect) {
                 this.models[0] = i.id;
@@ -868,7 +806,7 @@ export default {
     gettimeval(t) {
       this.setdate = t;
     },
-  //合并商品详情列表中相同颜色项
+    //合并商品详情列表中相同颜色项
     movecolor(){  
       for(var i=0;i<this.mainList.length;i++ ){
         let t1 = 'color' + i
@@ -882,56 +820,6 @@ export default {
              this.$refs[t1][0].style["border-bottom"] = "none"
         }
       }
-    },
-   //商品新增初始化
-    addList() {
-      this.parentcategory = [] // 类别
-      this.generalattribute = []// 品牌
-      this.smodels=[]
-       this.bmodels=[]
-       this.models= ["", "", "", "", "", "", "", "", "", ""]
-       this.imgList= []
-       this.imgLists= []
-       this.size= 0
-       this.colorindex= 0
-       this.colorList= [
-        {
-          color: "",
-          remark: "",
-          colorpictures: ""
-        }
-      ]
-       this.mainList= []
-       this.specialList= []
-       this.specialListItem= []
-       this.specialmodels= []
-      this.category=[]
-      this.categoryItem= []
-      this.sizearr=[]
-      this.colorarr=[]
-      this.tindex = this.data1.length;
-      this.isadds = false;
-      this.content = ''
-      this.disabledGroup1 = [],
-      this.disabledGroup2 = [],
-      this.disabledGroup3 = [],
-      this.Code='',
-      this.setdate = ''
-      this.$axios
-        .post("/admin/common/commodity.ashx?action=InitializationAdd")
-        .then(res => {
-          if (res.status >= 0) {
-            this.tabs = res.style;
-            this.category = res.category;
-              setTimeout(function(){
-                document.querySelector("#focusinput input").focus()
-              console.log(document.querySelector("#focusinput input"))
-                },1000)
-          } else {
-            this.$Message.warning(res.content);
-          }
-        })
-        .catch(() => {});
     },
     //选择分类获取单品
     getCategory(id) {
@@ -956,7 +844,7 @@ export default {
           .catch(() => {});
       }
     },
-    //选择单品获取品牌,通用属性
+   //选择单品获取品牌,通用属性
     getSingle(id) {
       if (id) {
         this.$axios
@@ -975,8 +863,7 @@ export default {
                 this.bmodels[index] = i.guid;
                }
               })
-            });
-              
+            });   
             } else {
               this.$Message.warning(res.content);
             }
@@ -984,7 +871,7 @@ export default {
           .catch(() => {});
       }
     },
-   //删除尺码
+    //删除尺码
     removeSize(i){
       if (this['disabledGroup'+i].length) {
         let arr = JSON.parse(JSON.stringify(this['disabledGrouplist'+i]))  
@@ -1012,7 +899,6 @@ export default {
          this.colorList[i].color = ""
          this.$Message.warning("该颜色已经存在");
       }
-   
       }
     },
     //删除颜色
@@ -1024,7 +910,7 @@ export default {
           this.creatmainList();
       }
     },
-     //根据颜色尺码生成商品列表
+    //根据颜色尺码生成商品列表
     creatmainList() {
       let copymainList = [];
       let t = "disabledGroup" + (this.tvalue2 + 1);
@@ -1062,7 +948,8 @@ export default {
       console.log(this.mainList)
       this.$nextTick(()=>{
         this.movecolor()
-      })   
+      })
+  
     },
     //处理输入数量和价格
     getTotal(i) {
@@ -1074,7 +961,7 @@ export default {
       }
        this.getgoodsTotal()
     },
-  //自动生成一口价和数量
+     //自动生成一口价和数量
     getgoodsTotal(){
          let arr1 = [];
          let arr2 = [];
@@ -1091,6 +978,7 @@ export default {
         this.$set(this.models, 9, num1);
         this.$set(this.models, 8, num2[0]);
     },
+
    // 新增,编辑商品
     getgoods() {
       if (this.content &&this.setdate&& this.imgLists&& this.imgLists.length &&this.mainList.length) {
@@ -1111,7 +999,9 @@ export default {
               brandname.push(j.title) ;
            }
         })
+
       });
+
       this.category.forEach(item => {
         if (item.id === this.models[0]) {
           parentcategoryname = item.title;
@@ -1132,8 +1022,9 @@ export default {
           });
         }
       });
+
       if (this.tindex === this.data1.length) {
-        url = "/admin/common/commodity.ashx?action=add";
+        url = "/admin/common/commodity.ashx?action=Add";
         parms = {
           title: this.models[2],
           generalattributename: brandname.join(","),
@@ -1150,10 +1041,11 @@ export default {
           setdate: this.setdate,
           Price: this.models[8],
           number: this.models[9],
-          Code:this.Code
+          Code:this.Code,
+    
         };
       } else {
-        url = "/admin/common/commodity.ashx?action=edit";
+        url = "/admin/common/Buyer_commodity.ashx?action=edit";
         id = this.data1[this.tindex].id;
         parms = {
           title: this.models[2],
@@ -1172,7 +1064,8 @@ export default {
           setdate: this.setdate,
           Price: this.models[8],
           number: this.models[9],
-          Code:this.Code
+          Code:this.Code,
+  
         };
       }
       this.$axios
@@ -1189,7 +1082,7 @@ export default {
         .catch(() => {});
       }else{    this.$Message.warning("请填写所有必填数据");}
     },
-     //关闭商品编辑
+    //关闭商品编辑
     closegoods(){
       this.isadds = true
       this.colorList = [
@@ -1204,36 +1097,33 @@ export default {
       this.disabledGroup3 = [];
       this.getBasicslist()
     },
-     //上传颜色图片
+    //上传颜色图片
     addimg(index) {
       this.colorindex = index;
       this.$refs.uploadfiles.click();
       this.$refs.uploadfiles.value = ''  
     },
-     //上传图片
+    //上传图片
     fileClick() {
       this.$refs.uploadfile.click();
       this.$refs.uploadfile.value = ''
     },
-/*     chickvalue(e){
+    /*     chickvalue(e){
       	if(this.models[2] == ""){
           return;
         }	
         if(!this.models[2].match("^[a-zA-Z0-9_\u4e00-\u9fa5]+$")){
         this.$Message.warning("请不要输入特殊字符!");
-       
          this.$set(this.models,2,"")
         }
     }, */
-    // base64上传图片
+    // 上传图片
     fileChanges(event) {
-   
       if (!event.target.files[0].size) return;
       let file = event.target.files[0];
       this.imgList = [];
       this.fileAdd(file);
       setTimeout(() => {
-         this.$Loading.start();
         this.$axios
           .post(
             "/admin/common/upload_ajax.ashx?action=UpLoadFile",
@@ -1241,19 +1131,17 @@ export default {
           )
           .then(res => {
             if (res.status >= 0) {
-               this.$Loading.finish();
               this.colorList[this.colorindex].colorpictures = res.data[0];
               console.log(this.colorList)
                this.creatmainList();
             } else {
-               this.$Loading.error();
               that.$Message.warning(res.content);
             }
           })
-          .catch(() => { this.$Loading.error();});
+          .catch(() => {});
       }, 100);
     },
-     //文件流上传图片
+    //文件流上传图片
     fileChange(event) {
       if (!event.target.files[0].size) return;
       let files = event.target.files;
@@ -1433,7 +1321,8 @@ export default {
 }
 .foot {
   float: right;
-  padding-top: 56px;
+  padding-top: 30px;
+
 }
 /* .line{
   width: 100%;height: 20px;background: #f2f3f8;transform: scaleX(1.1)

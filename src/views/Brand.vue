@@ -4,24 +4,34 @@
         <p class="title"><span></span>品牌推荐</p>
         <div class="switch1">开启品牌推荐 
          <template>
-              <i-switch  @on-change="switchsthactivity" style="transform: translateY(-2px);margin-left: 8px;" v-model="isopens" size="small"  />
+              <i-switch  @on-change="switchsthbrand" style="transform: translateY(-2px);margin-left: 8px;" v-model="isopens" size="small"  />
           </template>
          </div>
       </div>
       <div class="tabbar1">
-        <span @click="activityinit" :class="{tabspan: true,active:navValue===-1}" style="margin-right: 50px;">所有品牌</span>
+        <span @click="brandinit" :class="{tabspan: true,active:navValue===-1}" style="margin-right: 50px;">所有品牌</span>
         <span @click="getnavls(i)" :class="{tabspan: true,active:navValue===i}" v-for="(itme,i) in navlist" :key="i">{{itme}}</span>
          <Input search v-model="searchvalue" class="topsearch" size="small" enter-button="搜索" placeholder="在当前条件下搜索" />
       </div>
-      <div :class="{tabbar2:true,isall:isall}">
-        <span v-if="!tabs[0]" class="tabspan">暂无数据</span>
-        <span  @click="getactivityls(i)" :class="{tabspan: true,active:tvalue1===i}" v-for="(itme,i) in tabs" :key="i">{{itme.title}}</span>
-        <span v-if="!isall" @click="isall=true" class="showall">更多<Icon class="icons" style="margin-left: 4px;" size="18" type="ios-arrow-down" /></span><span v-else @click="isall=false" class="showall">收起<Icon style="margin-left: 4px;" class="icons" size="18" type="ios-arrow-up" /></span>
+      <div :class="{tabbar2:true,isall:isall,ishome:navValue===0}">
+        <span v-if="!tabs[0]" class="tabspan">暂无品牌</span>
+        <span class="tabspan" v-for="(itme,i) in tabs" :key="i"><span  @click="getactivityls(i)" :class="{active:tvalue1===i}" style="margin-right: 6px;vertical-align: middle;line-height: 22px;">{{itme.title}}</span>
+           <Select v-if="navValue===0" @on-change="setBrandsort(i)" size="small" placeholder="" v-model="sortmodel[i]" style="width:42px;">
+                        <Option v-for="(item2,j) in itme.sort" :value="item2.id" :key="j+1">{{item2.sort}}</Option>
+                     </Select> 
+        </span>
+          
+      <span v-if="!isall" @click="isall=true" class="showall">更多<Icon class="icons" style="margin-left: 4px;" size="18" type="ios-arrow-down" /></span><span v-else @click="isall=false" class="showall">收起<Icon style="margin-left: 4px;" class="icons" size="18" type="ios-arrow-up" /></span> 
       </div>
+     <!--  <div v-show="tvalue2==0" class="switch2" style=" transform: translateX(-80px);">首页位置
+          <Select  @on-change="setBrandsort()" size="small" placeholder="" v-model="sortmodel[tvalue1]" style="width:48px;">
+                        <Option v-for="(item,j) in tabs[tvalue1].sort" :value="item.id" :key="j+1">{{item.sort}}</Option>
+                     </Select> 
+      </div> -->
       <div class="switch2">开启{{tabs2[tvalue2]}}
          <template>
               <i-switch @on-change="switchsth" style="transform: translateY(-2px);margin-left: 8px;" v-model="isopen" size="small"  />
-          </template>
+          </template> 
       </div>
 
        <Modal v-model="xModal2" width="480"  footer-hide :styles="{top: '200px'}">
@@ -134,10 +144,10 @@
                 <p>请关闭其它展示位再进行开启</p>
             </div>
             <div style="text-align:center;margin: 20px 0 ;">
-                <Button style="width:80px" type="primary" class="samintbtn" @click="activityinit">确定</Button>
+                <Button style="width:80px" type="primary" class="samintbtn" @click="brandinit">确定</Button>
             </div>
         </Modal>
-         <input type="file" ref="uploadfiles" style="display:none" @change="fileChanges"  multiple="multiple" />
+         <input type="file" ref="uploadfiles" style="display:none" @change="fileChange"  multiple="multiple" />
       <div class="tabbox">
         <Tabs v-model="tvalue2" >
             <TabPane  label="品牌信息" icon="md-radio-button-on">
@@ -146,7 +156,7 @@
                         <img  src="../assets/imgs/br-1-1.png" alt="">
                        <img :src="brand.logo" alt="">
                         <p><img class="limg1" src="../assets/imgs/br-1-2.png" alt=""><img class="limg2" src="../assets/imgs/br-1-2.png" alt="">
-                            <span v-if="brand.brandintroduction">{{brand.brandintroduction}}</span>
+                            <span style="padding:8px" v-if="brand.brandintroduction">{{brand.brandintroduction}}</span>
                             <span v-else>暂无介绍</span>
                         </p>
                     </div>
@@ -186,7 +196,7 @@
                      <span><span @click="showModal2(i)" style="cursor: pointer;"><Icon class="icons" size="18" type="ios-create-outline" />修改</span><span @click="removegoods(i)"  style="cursor: pointer;"><Icon class="icons" size="18" type="ios-trash-outline" />删除</span></span>
                   </p>
                  </div>
-                 <p><span @click="xModal7=true"  style="cursor: pointer;"><Icon class="icons" size="18" type="ios-trash-outline" />清空</span></p>
+                 <p v-show="goodsList.length"><span @click="xModal7=true"  style="cursor: pointer;"><Icon class="icons" size="18" type="ios-trash-outline" />清空</span></p>
                </div>
             </TabPane> 
             <TabPane label="广告位" icon="md-radio-button-on">
@@ -220,7 +230,7 @@
                      <span><span @click="showModal2(i)" style="cursor: pointer;"><Icon class="icons" size="18" type="ios-create-outline" />修改</span><span @click="removegoods(i)"  style="cursor: pointer;"><Icon class="icons" size="18" type="ios-trash-outline" />删除</span></span>
                   </p>
                  </div>
-                 <p><span @click="xModal7=true"  style="cursor: pointer;"><Icon class="icons" size="18" type="ios-trash-outline" />清空</span></p>
+                 <p v-show="goodsList.length"><span @click="xModal7=true"  style="cursor: pointer;"><Icon class="icons" size="18" type="ios-trash-outline" />清空</span></p>
                </div>
             </TabPane> 
     
@@ -236,7 +246,7 @@
                      <span><span @click="showModal1(i)" style="cursor: pointer;"><Icon class="icons" size="18" type="ios-create-outline" />修改</span><span @click="removebrand(i)"  style="cursor: pointer;"><Icon class="icons" size="18" type="ios-trash-outline" />删除</span></span>
                   </p>
                  </div>
-                 <p><span @click="xModal5=true"  style="cursor: pointer;"><Icon class="icons" size="18" type="ios-trash-outline" />清空</span></p>
+                 <p v-show="goodsList.length"><span @click="xModal5=true"  style="cursor: pointer;"><Icon class="icons" size="18" type="ios-trash-outline" />清空</span></p>
                </div>
             </TabPane>
         </Tabs>
@@ -283,6 +293,7 @@ export default {
            advertising:"",
            xmodel:[],
            Modal:[],
+           sortmodel:[],
            navlist:["首页展示","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"],
            tabs:[],
            imgmodels:"",
@@ -291,23 +302,24 @@ export default {
            ishomecount: 0,
         }
     },
-     beforeRouteEnter (to, from, next) {
+    //前置路由守卫,初始化页面
+   beforeRouteEnter (to, from, next) {
       next(vm => {
-     
        vm.tvalue1 = 0
        vm.tvalue2 = 0
-      vm.activityinit()
+      vm.brandinit()
      })
     },
     mounted(){
-     // this.activityinit()
+     // this.brandinit()
       },
     methods:{
+       //开启关闭2级子栏目
         switchsth(i){
           if (this.tvalue2===0&&this.ishomecount>9&&i) {
             this.xModal9 = true
             return false
-          }
+            }
             let url = ""
             let parme = {}
             parme.id =  this.brand.id
@@ -336,13 +348,17 @@ export default {
               let str = i?"已开启":"已关闭"
               this.getbrandinit()
               this.$Message.success(str+this.tabs2[this.tvalue2]); 
+              if (this.navValue===0&&this.tvalue2==0) {
+               this.getnavlist()
+              }
             } else {
               this.$Message.warning(res.content); 
             }
           })
           .catch(() => {}); 
         },
-      switchsthactivity(i){
+     //开启关闭品牌推荐板块
+      switchsthbrand(i){
          let url = "/admin/common/brandrecommendation.ashx?action=editisbrandrecommendation"
         this.$axios.post(url,this.$qs.stringify({isbrandrecommendation:i}))
           .then(res => {
@@ -355,7 +371,20 @@ export default {
           })
           .catch(() => {})
         },
-      activityinit(){
+    //首页展示banner排序
+     setBrandsort(i){
+      this.$axios.post("/admin/common/brandrecommendation.ashx?action=editsort",this.$qs.stringify({ id: this.tabs[i].bid,xgid:this.sortmodel[i] }))
+          .then(res => {
+            if (res.status >= 0) {
+              this.getnavlist()
+            } else {
+              this.$Message.warning(res.content); 
+            }
+          })
+          .catch(() => {}); 
+     },  
+      //品牌推荐初始化  获取所有品牌
+      brandinit(){
            this.navValue = -1
            this.$axios.post("/admin/common/brandrecommendation.ashx?action=generalattributeselectlist",this.$qs.stringify({ ishome: false }))
           .then(res => {
@@ -373,6 +402,7 @@ export default {
           })
           .catch(() => {}); 
       },
+      //品牌推荐初始化
       getbrandinit(){
          this.xModal9=false
           this.$axios.post("/admin/common/brandrecommendation.ashx?action=selectlist",this.$qs.stringify({ brandid: this.tabs[this.tvalue1].guid }))
@@ -384,19 +414,28 @@ export default {
              if (this.tvalue2===0) {
                 this.isopen =  this.brand.ishome
              }
-            
             } else {
               this.$Message.warning(res.content);
             }
           })
           .catch(() => {}); 
       },
+      //按条件获取品牌
       getnavlist(){
           this.$axios.post("/admin/common/brandrecommendation.ashx?action=generalattributeselectlist",this.$qs.stringify({ ishome:  this.navValue===0,Letter: this.navValue===0?"":this.navlist[ this.navValue],title:this.searchvalue }))
           .then(res => {
             if (res.status >= 0) {
               if ( res.item.length>0) {
                 this.tabs = res.item 
+                 if ( this.navValue===0) {
+                     this.tabs.forEach((itmes,i)=>{
+                   itmes.sort.forEach((item,j)=>{
+                     if (item.isselect) {
+                          this.sortmodel[i] = item.id
+                        }
+                    })
+                   })
+                 }
                 this.tvalue1 = 0 
                 this.tvalue2 = 0 
                 this.getbrandinit()
@@ -410,10 +449,12 @@ export default {
           })
           .catch(() => {}); 
       },
+      //按字母获取品牌
       getnavls(i){
           this.navValue = i
           this.getnavlist() 
       },
+     //品牌信息修改
      isok2(){
         if (this.Modal[1]) {
         this.$axios.post("/admin/common/brandrecommendation.ashx?action=edit",this.$qs.stringify({ brandintroduction: this.Modal[1],id: this.brand.id}))
@@ -428,21 +469,41 @@ export default {
           .catch(() => {}); 
           }else{this.$Message.warning("介绍不能为空");}
       },
-  
-      removeactivity(){
-          xModal=false
-      },
+      //编辑品牌信息弹窗
       eitactivity(){
           this.xModal2 = true
           this.Modal[0] = this.tabs[this.tvalue1].title
           this.Modal[1] = this.brand.brandintroduction
       },
+      //品牌切换
       getactivityls(i){
          this.tvalue1=i 
          this.tvalue2 = 0
          this.getbrandinit()
          }, 
-      //Banner
+    //Banner
+    //Banner初始化
+    getbannerList(){
+         this.$axios
+          .post("/admin/common/banner.ashx?action=selectlist",this.$qs.stringify({ typeguid: this.brand.guid }))
+          .then(res => {
+            if (res.status >= 0) {
+              this.bannerList = res.item;
+              this.bannerList.forEach((itmes,i)=>{
+                   itmes.sort.forEach((item,j)=>{
+                     if (item.isselect) {
+                         this.$set(this.xmodel,i,item.id)
+                         // this.xmodel[i] = item.id
+                        }
+                  })
+              })
+            } else {
+              this.$Message.warning(res.content);
+            }
+          })
+          .catch(() => {});
+      },
+     //新增,修改Banner初始化
      showModal(i){
       if (i==="add") {
          this.bannerindex = this.bannerList.length
@@ -455,6 +516,7 @@ export default {
          }
       this.xModal3 = true
     },
+    //新增,修改Banner
     isok3(){
       if (this.imgmodels) {
           let url =""
@@ -477,26 +539,7 @@ export default {
           .catch(() => {});
       }else{this.$Message.warning("图片必须上传");} 
     },
-    getbannerList(){
-         this.$axios
-          .post("/admin/common/banner.ashx?action=selectlist",this.$qs.stringify({ typeguid: this.brand.guid }))
-          .then(res => {
-            if (res.status >= 0) {
-              this.bannerList = res.item;
-              this.bannerList.forEach((itmes,i)=>{
-                   itmes.sort.forEach((item,j)=>{
-                     if (item.isselect) {
-                         this.$set(this.xmodel,i,item.id)
-                         // this.xmodel[i] = item.id
-                        }
-                  })
-              })
-            } else {
-              this.$Message.warning(res.content);
-            }
-          })
-          .catch(() => {});
-      },
+    //删除banner
     removebanner(i){
         this.$axios.post("/admin/common/banner.ashx?action=delete",this.$qs.stringify({ id: this.bannerList[i].id ,typeguid: this.brand.guid}))
           .then(res => {
@@ -509,6 +552,7 @@ export default {
           })
           .catch(() => {}); 
     }, 
+   //banner排序
     setsort(i){
       if (this.tvalue2===1) {
         this.$axios.post("/admin/common/banner.ashx?action=editsort",this.$qs.stringify({ id: this.bannerList[i].id,xgid:this.xmodel[i] }))
@@ -523,85 +567,27 @@ export default {
       }
       
     },
-    // 其他品牌
-     showModal1(i){
-      if (i==="add") {
-         this.brandindex = this.brandList.length?this.brandList.length: 0
-         this.Modal[0] = ""
-         this.Modal[1] = ""
-         this.getbrandListall()
-         }else{
-         this.brandindex = i
-         this.editbrandinit()
-        
-         }
-      this.xModal4 = true
-    },
-    isok4(){
-      if (this.Modal[0]&&this.Modal[1]) {
-          let url =""
-          let parem ={}
-          if (this.brandindex === this.brandList.length) {
-            url = "/admin/common/activity.ashx?action=addbrandrecommend"
-            parem = { generalattributeid: this.Modal[0],brandurl:this.Modal[1],typeguid: this.brand.guid }
-          }else{url = "/admin/common/activity.ashx?action=editbrandrecommend"
-           parem =  { generalattributeid: this.Modal[0],brandurl:this.Modal[1],id: this.brandList[this.brandindex].id }
-          }
-         this.$axios.post(url,this.$qs.stringify(parem))
-          .then(res => {
-            if (res.status >= 0) {
-              this.getbrandList()
-              this.xModal4 = false
-            } else {
-              this.$Message.warning(res.content);
-            }
-          })
-          .catch(() => {});
-      }else{this.$Message.warning("数据不能为空");} 
-    },
-    editbrandinit(){
-        this.$axios
-          .post("/admin/common/activity.ashx?action=editbrandrecommendinit",this.$qs.stringify({ id: this.brandList[this.brandindex].id }))
-          .then(res => {
-            if (res.status >= 0) {
-              this.brandallList = res.item[0].item[0].item;
-              this.Modal[1] = res.item[0].brandurl
-              this.brandallList.forEach(item=>{
-                if (item.isselect) {
-                  this.Modal[0] = item.guid
-                }
-              })
-            } else {
-              this.$Message.warning(res.content);
-            }
-          })
-          .catch(() => {});
-    },
-    getbrandListall(){
+   
+   // 品牌上新
+    //品牌上新商品初始化  
+    getgoodsList(){
+         this.goodsList=[]
+         this.xmodel=[]
          this.$axios
-          .post("/admin/common/activity.ashx?action=addbrandrecommendinit")
+          .post("/admin/common/brandrecommendation.ashx?action=selectlistbrandrecommendcommodity",this.$qs.stringify({ typeguid: this.brand.guid ,typeid:this.typeid}))
           .then(res => {
             if (res.status >= 0) {
-              this.brandallList = res.item[0].item;
-            } else {
-              this.$Message.warning(res.content);
-            }
-          })
-          .catch(() => {});
-      },
-    getbrandList(){
-         this.$axios
-          .post("/admin/common/activity.ashx?action=selectlistbrandrecommend",this.$qs.stringify({ typeguid: this.brand.guid }))
-          .then(res => {
-            if (res.status >= 0) {
-              this.brandList = res.item;
-              this.brandList.forEach((itmes,i)=>{
-                   itmes.sort.forEach((item,j)=>{
+              this.goodsList = res.item;
+              this.goodsList.forEach((itmes,i)=>{ 
+                  itmes.sort.forEach((item,j)=>{
                      if (item.isselect) {
-                          //this.$set(this.xmodel,i,item.id)
-                          this.xmodel[i] = item.id
+                         // this.$set(this.xmodel,i,item.id)
+                         this.xmodel[i] = item.id
                         }
                   })
+             if(itmes.commoditypictures1){ 
+                  itmes.commoditypictures1 = itmes.commoditypictures1.match(/https:\/\/oss.bogole.com\/project\/code\/public\/e19102801\/upfile\/20\d{6,30}\.[a-z]{3,4}/)[0] 
+                 }
               })
             } else {
               this.$Message.warning(res.content);
@@ -609,45 +595,7 @@ export default {
           })
           .catch(() => {});
       },
-    removebrand(i){
-        this.$axios.post("/admin/common/activity.ashx?action=deletebrandrecommend",this.$qs.stringify({ id: this.brandList[i].id ,typeguid: this.brand.guid}))
-          .then(res => {
-            if (res.status >= 0) {
-              this.getbrandList()
-            } else {
-              this.$Message.warning(res.content); 
-            }
-          })
-          .catch(() => {}); 
-    },
-     removebrandall(){
-        this.$axios.post("/admin/common/activity.ashx?action=deletebrandrecommend",this.$qs.stringify({ emptys: "清空" ,typeguid: this.brand.guid}))
-          .then(res => {
-            if (res.status >= 0) {
-              this.getbrandList()
-              this.xModal5 = false
-            } else {
-              this.$Message.warning(res.content);
-              
-            }
-          })
-          .catch(() => {}); 
-    }, 
-    setsort1(i){
-      if (this.tvalue2===5) {
-         this.$axios.post("/admin/common/activity.ashx?action=editsortbrandrecommend",this.$qs.stringify({ id: this.brandList[i].id,xgid:this.xmodel[i] }))
-          .then(res => {
-            if (res.status >= 0) {
-              this.getbrandList()
-            } else {
-              this.$Message.warning(res.content); 
-            }
-          })
-          .catch(() => {}); 
-      }
-     
-    },
-   // 品牌上新
+   //编辑,新增品牌上新弹窗
     showModal2(i){
       if (i==="add") {
          this.goodsindex = this.goodsList.length?this.goodsList.length: 0
@@ -663,6 +611,7 @@ export default {
          }
       this.xModal6 = true
     },
+    //编辑,新增品牌上新商品
     isok5(){
       if (this.commodity.length) {
           let url =""
@@ -686,6 +635,7 @@ export default {
           .catch(() => {});
       }else{this.$Message.warning("没有商品, 不能提交");} 
     },
+     //编辑品牌上新商品初始化
     editgoodsinit(){
         this.$axios
           .post("/admin/common/brandrecommendation.ashx?action=editbrandrecommendcommodityinit",this.$qs.stringify({ id: this.goodsList[this.goodsindex].id }))
@@ -717,6 +667,7 @@ export default {
           })
           .catch(() => {});
     },
+     //新增品牌上新商品初始化
     getgoodsListall(){
          this.$axios
           .post("/admin/common/brandrecommendation.ashx?action=addactivecommoditiesinit",this.$qs.stringify({ brandid: this.tabs[this.tvalue1].guid}))
@@ -730,31 +681,7 @@ export default {
           })
           .catch(() => {});
       },
-    getgoodsList(){
-         this.goodsList=[]
-         this.xmodel=[]
-         this.$axios
-          .post("/admin/common/brandrecommendation.ashx?action=selectlistbrandrecommendcommodity",this.$qs.stringify({ typeguid: this.brand.guid ,typeid:this.typeid}))
-          .then(res => {
-            if (res.status >= 0) {
-              this.goodsList = res.item;
-              this.goodsList.forEach((itmes,i)=>{ 
-                  itmes.sort.forEach((item,j)=>{
-                     if (item.isselect) {
-                         // this.$set(this.xmodel,i,item.id)
-                         this.xmodel[i] = item.id
-                        }
-                  })
-             if(itmes.commoditypictures1){ 
-                  itmes.commoditypictures1 = itmes.commoditypictures1.match(/https:\/\/oss.bogole.com\/project\/code\/public\/e19102801\/upfile\/20\d{6,30}\.[a-z]{3,4}/)[0] 
-                 }
-              })
-            } else {
-              this.$Message.warning(res.content);
-            }
-          })
-          .catch(() => {});
-      },
+     //删除品牌上新商品
     removegoods(i){
         this.$axios.post("/admin/common/brandrecommendation.ashx?action=deletebrandrecommendcommodity",this.$qs.stringify({ id: this.goodsList[i].id ,typeguid: this.brand.guid,typeid:this.typeid}))
           .then(res => {
@@ -766,6 +693,7 @@ export default {
           })
           .catch(() => {}); 
     },
+     //清空品牌上新商品
      removegoodsall(){
         this.$axios.post("/admin/common/brandrecommendation.ashx?action=deletebrandrecommendcommodity",this.$qs.stringify({ id: "清空" ,typeguid: this.brand.guid,typeid:this.typeid}))
           .then(res => {
@@ -778,7 +706,8 @@ export default {
             }
           })
           .catch(() => {}); 
-    }, 
+    },
+    //品牌上新商品排序 
     setsort2(i){
       if (this.tvalue2===2||this.tvalue2===4) {
         this.$axios.post("/admin/common/brandrecommendation.ashx?action=editsortbrandrecommendcommodity",this.$qs.stringify({ id: this.goodsList[i].id,xgid:this.xmodel[i] }))
@@ -793,6 +722,7 @@ export default {
       }
       
     },
+     //选择类别获取单品
     getCategory(guid) {
       this.Modal[2] = "";
       this.getcommodityList()
@@ -819,6 +749,7 @@ export default {
       }
 
     },
+     //选择品牌,类别,单品获取商品
     getcommodityList(){
        this.Modal[3] = "";
         this.$axios
@@ -835,17 +766,8 @@ export default {
           })
           .catch(() => {});
     },
-   //广告位1
-    showModal3(){
-        if (this.advertising) {
-           this.imgmodels = this.advertising.picture
-           this.$set(this.Modal,0,this.advertising.urllink) 
-        }else{
-          this.imgmodels =""
-          this.Modal[0] = ""
-        }
-      this.xModal8 = true
-    },
+   //广告位
+    //广告位初始化
     getadvertising(){
          this.$axios
           .post("/admin/common/brandrecommendation.ashx?action=selectlistadvertisingposition",this.$qs.stringify({ typeguid: this.brand.guid }))
@@ -858,6 +780,18 @@ export default {
           })
           .catch(() => {});
       },
+    //广告位弹窗  
+    showModal3(){
+        if (this.advertising) {
+           this.imgmodels = this.advertising.picture
+           this.$set(this.Modal,0,this.advertising.urllink) 
+        }else{
+          this.imgmodels =""
+          this.Modal[0] = ""
+        }
+      this.xModal8 = true
+    },
+   //编辑广告位
      isok6(){
       if (this.imgmodels) {
           let url =""
@@ -877,13 +811,177 @@ export default {
           .catch(() => {});
       }else{this.$Message.warning("图片必须上传");} 
     },
-
+     // 其他品牌
+        // 其他品牌初始化
+        getbrandList(){
+         this.$axios
+          .post("/admin/common/activity.ashx?action=selectlistbrandrecommend",this.$qs.stringify({ typeguid: this.brand.guid }))
+          .then(res => {
+            if (res.status >= 0) {
+              this.brandList = res.item;
+              this.brandList.forEach((itmes,i)=>{
+                   itmes.sort.forEach((item,j)=>{
+                     if (item.isselect) {
+                          //this.$set(this.xmodel,i,item.id)
+                          this.xmodel[i] = item.id
+                        }
+                  })
+              })
+            } else {
+              this.$Message.warning(res.content);
+            }
+          })
+          .catch(() => {});
+      },
+      //编辑,新增其他品牌弹窗
+     showModal1(i){
+      if (i==="add") {
+         this.brandindex = this.brandList.length?this.brandList.length: 0
+         this.Modal[0] = ""
+         this.Modal[1] = ""
+         this.getbrandListall()
+         }else{
+         this.brandindex = i
+         this.editbrandinit()
+         }
+      this.xModal4 = true
+    },
+     //编辑,新增其他品牌
+    isok4(){
+      if (this.Modal[0]&&this.Modal[1]) {
+          let url =""
+          let parem ={}
+          if (this.brandindex === this.brandList.length) {
+            url = "/admin/common/activity.ashx?action=addbrandrecommend"
+            parem = { generalattributeid: this.Modal[0],brandurl:this.Modal[1],typeguid: this.brand.guid }
+          }else{url = "/admin/common/activity.ashx?action=editbrandrecommend"
+           parem =  { generalattributeid: this.Modal[0],brandurl:this.Modal[1],id: this.brandList[this.brandindex].id }
+          }
+         this.$axios.post(url,this.$qs.stringify(parem))
+          .then(res => {
+            if (res.status >= 0) {
+              this.getbrandList()
+              this.xModal4 = false
+            } else {
+              this.$Message.warning(res.content);
+            }
+          })
+          .catch(() => {});
+      }else{this.$Message.warning("数据不能为空");} 
+    },
+     //编辑其他品牌初始化
+    editbrandinit(){
+        this.$axios
+          .post("/admin/common/activity.ashx?action=editbrandrecommendinit",this.$qs.stringify({ id: this.brandList[this.brandindex].id }))
+          .then(res => {
+            if (res.status >= 0) {
+              this.brandallList = res.item[0].item[0].item;
+              this.Modal[1] = res.item[0].brandurl
+              this.brandallList.forEach(item=>{
+                if (item.isselect) {
+                  this.Modal[0] = item.guid
+                }
+              })
+            } else {
+              this.$Message.warning(res.content);
+            }
+          })
+          .catch(() => {});
+    },
+    //新增其他品牌初始化
+    getbrandListall(){
+         this.$axios
+          .post("/admin/common/activity.ashx?action=addbrandrecommendinit")
+          .then(res => {
+            if (res.status >= 0) {
+              this.brandallList = res.item[0].item;
+            } else {
+              this.$Message.warning(res.content);
+            }
+          })
+          .catch(() => {});
+      },
+    //删除品牌
+    removebrand(i){
+        this.$axios.post("/admin/common/activity.ashx?action=deletebrandrecommend",this.$qs.stringify({ id: this.brandList[i].id ,typeguid: this.brand.guid}))
+          .then(res => {
+            if (res.status >= 0) {
+              this.getbrandList()
+            } else {
+              this.$Message.warning(res.content); 
+            }
+          })
+          .catch(() => {}); 
+    },
+    //清空所有品牌
+     removebrandall(){
+        this.$axios.post("/admin/common/activity.ashx?action=deletebrandrecommend",this.$qs.stringify({ emptys: "清空" ,typeguid: this.brand.guid}))
+          .then(res => {
+            if (res.status >= 0) {
+              this.getbrandList()
+              this.xModal5 = false
+            } else {
+              this.$Message.warning(res.content);
+              
+            }
+          })
+          .catch(() => {}); 
+    }, 
+    //品牌排序
+    setsort1(i){
+      if (this.tvalue2===5) {
+         this.$axios.post("/admin/common/activity.ashx?action=editsortbrandrecommend",this.$qs.stringify({ id: this.brandList[i].id,xgid:this.xmodel[i] }))
+          .then(res => {
+            if (res.status >= 0) {
+              this.getbrandList()
+            } else {
+              this.$Message.warning(res.content); 
+            }
+          })
+          .catch(() => {}); 
+      }
+     
+    },
 
      // 图片上传
     addimg() {
       this.$refs.uploadfiles.click();
       this.$refs.uploadfiles.value = ''
     },
+     //文件流上传图片
+      fileChange(event) {
+  
+      if (!event.target.files[0].size) return;
+      let files = event.target.files;
+
+      // 批量上传
+       let formData = new FormData()
+      for (let i = 0; i < files.length; i++) {
+        // 单张上传
+        formData.append("file"+i,files[i])
+      } 
+       this.$Loading.start();
+        this.$axios
+          ({
+           url: "/admin/common/upload_ajax.ashx?action=UpLoadFiles",
+           data: formData, method: 'post',
+           headers: { 
+          'Content-Type': 'multipart/form-data'
+         }})
+          
+          .then(res => {
+            if (res.status > 0) {
+               this.$Loading.finish();
+              this.imgmodels = res.data[0];
+            } else {
+               this.$Loading.error();
+              that.$Message.warning(res.content);
+            }
+          })
+          .catch(() => {});
+  
+    },
+    //base64上传图片
     fileChanges(event) {
       if (!event.target.files[0].size) return;
       let file = event.target.files[0];
@@ -912,7 +1010,7 @@ export default {
             });
       }, 100);
     },
-        // 单张上传
+    // 图片文件转base64
     fileAdd(file) {
       // console.log(file);
       let type = file.type; //文件的类型，判断是否是图片
@@ -941,6 +1039,7 @@ export default {
     }, 
     },
     watch: {
+    //监听2级导航变化调不同初始化函数
     tvalue2: function() {
       this.xmodel = []
      if (this.tvalue2===0) {
@@ -977,6 +1076,8 @@ export default {
  #brand .ivu-tabs-nav .ivu-tabs-tab{padding-bottom: 12px;}
 .imglistbox .ivu-select-small.ivu-select-single .ivu-select-selection{border-radius: 18px;border-color: #c69c6d;color: #c69c6d;height: 20px;}
  .imglistbox1 .ivu-select-small.ivu-select-single .ivu-select-selection{border-radius: 18px;border-color: #c69c6d;color: #c69c6d;height: 20px;}
+ #brand .ivu-select-small.ivu-select-single .ivu-select-selection{border-radius: 18px;border-color: #c69c6d;color: #c69c6d;height: 20px;}
+ #brand .ivu-select-small.ivu-select-single .ivu-select-selection{border-radius: 18px;border-color: #c69c6d;color: #c69c6d;height: 20px;} 
  #brand .ivu-select-arrow{color: #c69c6d}
  #brand .ivu-select-small.ivu-select-single .ivu-select-selection .ivu-select-placeholder, .ivu-select-small.ivu-select-single .ivu-select-selection .ivu-select-selected-value{line-height: 18px;}
  #brand .ivu-tabs .ivu-tabs-tabpane{padding-bottom: 100px;}
@@ -994,9 +1095,10 @@ export default {
 .tabbar1 .tabspan.active{color: #c69c6d;vertical-align: middle;text-decoration: underline}
 .tabbar2{background: #fff;padding: 0 16px;padding-left: 150px;position: relative; font-family: Microsoft YaHei;height: 88px;overflow: hidden;}
 .tabbar2.isall{height: auto;overflow: visible;}
+.tabbar2.ishome{overflow: visible;}
 .showall{position: absolute;top: 12px;right: 10px;color: #c69c6d;cursor: pointer;}
 .tabbar2 .tabspan{font-size: 16px;margin-right: 20px;padding:10px 20px 10px 0 ;display: inline-block;vertical-align: middle;cursor: pointer;}
-.tabbar2 .tabspan.active{color: #c69c6d;vertical-align: middle;text-decoration: underline}
+.tabbar2 .tabspan.active,.tabbar2 .tabspan .active{color: #c69c6d;vertical-align: middle;text-decoration: underline}
 .tabbox {background: #fff;padding: 15px;padding-top: 10px;margin-top: 10px;}
 .stitle {font-size: 18px;text-align: center; margin: 25px 0;}
  .sinput {width: 240px; margin: 10px 0 40px 58px;}

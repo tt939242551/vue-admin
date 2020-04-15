@@ -58,6 +58,11 @@ export const asyncRoutes = {
         name: 'goods',
         component: () => import('../views/Goods.vue')
     },
+    'examineGoods': {
+        path: 'examineGoods',
+        name: 'examineGoods',
+        component: () => import('../views/ExamineGoods.vue')
+    },
     'single': {
         path: 'single',
         name: 'single',
