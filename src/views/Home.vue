@@ -232,33 +232,35 @@ export default {
     },
     beforeRouteEnter (to, from, next) {
       next(vm => {  
-       vm.tvalue = 0
+       vm.tvalue = 0;
+       vm.getbannerList()
      })
     },
-    mounted(){this.getbannerList()
-               this.getgoodsList()
+    mounted(){
+               this.getgoodsList();
                this.getother()
               },
     methods:{
+      //开启关闭首页展示
        switchsth(i){
-            let url = ""
-            let parme = {}
-            parme.id =  this.otherList.id
+            let url = "";
+            let parme = {};
+            parme.id =  this.otherList.id;
             if (this.tvalue===0) {
-               url = "/admin/common/Other.ashx?action=editisbanner" 
+               url = "/admin/common/Other.ashx?action=editisbanner";
                parme.isbanner = i
             }else if (this.tvalue===1) {
-              url = "/admin/common/Other.ashx?action=editiscommoditytype"
+              url = "/admin/common/Other.ashx?action=editiscommoditytype";
                parme.iscommoditytype = i
             }else if (this.tvalue===2) {
-              url = "/admin/common/Other.ashx?action=editisadvertisingposition"
+              url = "/admin/common/Other.ashx?action=editisadvertisingposition";
                parme.isadvertisingposition = i
             }
         this.$axios.post(url,this.$qs.stringify(parme))
           .then(res => {
             if (res.status > 0) {
-              this.getother()
-              let str = i?"已开启":"已关闭"
+              this.getother();
+              let str = i?"已开启":"已关闭";
               this.$Message.success(str+this.tabs2[this.tvalue2]); 
             } else {
               this.$Message.warning(res.content); 
@@ -266,6 +268,7 @@ export default {
           })
           .catch(() => {}); 
         },
+      //首页banner初始化
       getbannerList(){
          this.$axios
           .post("/admin/common/banner.ashx?action=selectlist")
@@ -289,253 +292,7 @@ export default {
           })
           .catch(() => {});
       },
-      getlist(index) {
-       this.page = index
-      //this.getselectlist()
-    },
-    showModal(i){
-      if (i==="add") {
-         this.bannerindex = this.bannerList.length
-        this.imgmodels = ""
-        this.xmodel[0] = ""
-         }else{
-         this.bannerindex = i
-         this.imgmodels = this.bannerList[i].bannerpicture
-         this.xmodel[0] = this.bannerList[i].urllink
-         }
-      this.xModal1 = true
-    },
-    removebanner(i){
-        this.$axios.post("/admin/common/banner.ashx?action=delete",this.$qs.stringify({ id: this.bannerList[i].id }))
-          .then(res => {
-            if (res.status >= 0) {
-              this.getbannerList()
-            } else {
-              this.$Message.warning(res.content);
-              
-            }
-          })
-          .catch(() => {}); 
-    },
-    setsort(i){
-      this.$axios.post("/admin/common/banner.ashx?action=editsort",this.$qs.stringify({ id: this.bannerList[i].id,xgid:this.model[i] }))
-          .then(res => {
-            if (res.status >= 0) {
-              this.getbannerList()
-            } else {
-              this.$Message.warning(res.content); 
-            }
-          })
-          .catch(() => {}); 
-    },
-    isok1(){
-      if (this.imgmodels) {
-          let url =""
-          let parse 
-          if (this.bannerindex === this.bannerList.length) {
-            url = "/admin/common/banner.ashx?action=add"
-            parse = { bannerpicture: this.imgmodels,urllink:this.xmodel[0],id: "", }
-          }else{url = "/admin/common/banner.ashx?action=edit"
-           parse = { bannerpicture: this.imgmodels,urllink:this.xmodel[0],id: this.bannerList[this.bannerindex].id, }
-          }
-         this.$axios.post(url,this.$qs.stringify(parse))
-          .then(res => {
-            if (res.status >= 0) {
-              this.getbannerList()
-              this.xModal1 = false
-            } else {
-              this.$Message.warning(res.content);
-              this.xModal1 = false
-            }
-          })
-          .catch(() => {});
-      }else{this.$Message.warning("图片必须上传");} 
-    },
-    isok2(){
-      if (this.imgmodels&&this.xmodel[0]&&this.xmodel[1]&&this.xmodel[2]) {
-          let url ="/admin/common/commoditytype.ashx?action=edit"
-         this.$axios.post(url,this.$qs.stringify({maintitle:this.xmodel[1],vicetitle:this.xmodel[2], Picture: this.imgmodels,urllink:this.xmodel[0],id: this.goodsList[this.goodsindex].id, }))
-          .then(res => {
-            if (res.status >= 0) {
-              this.getgoodsList()
-              this.xModal2 = false
-            } else {
-              this.$Message.warning(res.content);
-              this.xModal2 = false
-            }
-          })
-          .catch(() => {});
-      }else{this.$Message.warning("数据不能为空");} 
-    },
-    isok3(){
-      if (this.imgmodels) {
-          let url ="/admin/common/advertisingposition.ashx?action=edit"
-         this.$axios.post(url,this.$qs.stringify({ picture: this.imgmodels,urllink:this.xmodel[0],id: this.advertising.id, }))
-          .then(res => {
-            if (res.status >= 0) {
-              this.getadvertising()
-              this.xModal3 = false
-            } else {
-              this.$Message.warning(res.content);
-              this.xModal3 = false
-            }
-          })
-          .catch(() => {});
-      }else{this.$Message.warning("图片必须上传");} 
-    },
-    getotheredit(){
-      let arr =[]
-      this.otherList.parentcategory.forEach(item=>{
-        if (item.isdisplay) {
-         arr.push(item.guid) 
-        }
-      })
-          let url ="/admin/common/Other.ashx?action=edit"
-          let prima = this.otherList
-          prima.tipsLabel = JSON.stringify(prima.tipsLabel)
-           prima.parentcategory = null
-         prima.parentcategoryid = JSON.stringify(arr)
-         this.$axios.post(url,this.$qs.stringify(prima))
-          .then(res => {
-            if (res.status >= 0) {
-              this.getother()
-            } else {
-              this.$Message.warning(res.content);
-            }
-          })
-          .catch(() => {});
-    },
-    closeotheredit(){
-        this.isedit=false
-        this.editindex= 0
-         this.getother()
-    },
-    editindexs(i){
-      this.editindex = i
-       this.isedit=true
-    },
-    changedisplay(i){
-      let num = 0
-      this.otherList.parentcategory.forEach(item=>{
-        if(item.isdisplay){
-          num++
-        }
-      })
-      if(num>=6&&!this.otherList.parentcategory[i].isdisplay){
-        return false
-      }else{
-        this.otherList.parentcategory[i].isdisplay = !this.otherList.parentcategory[i].isdisplay
-      }
-    },
-    addimg(i) {
-      this.imgnumber = i
-      this.$refs.uploadfiles.click();
-      this.$refs.uploadfiles.value = ''
-    },
-     //文件流上传图片
-      fileChange(event) {
-  
-      if (!event.target.files[0].size) return;
-      let files = event.target.files;
-
-      // 批量上传
-       let formData = new FormData()
-      for (let i = 0; i < files.length; i++) {
-        // 单张上传
-        formData.append("file"+i,files[i])
-      } 
-       this.$Loading.start();
-        this.$axios
-          ({
-           url: "/admin/common/upload_ajax.ashx?action=UpLoadFiles",
-           data: formData, method: 'post',
-           headers: { 
-          'Content-Type': 'multipart/form-data'
-         }})
-          
-          .then(res => {
-            if (res.status > 0) {
-               this.$Loading.finish();
-               if (this.imgnumber == 0) {
-                 this.imgmodels = res.data[0];
-              }
-              if (this.imgnumber === 1) {
-                this.otherList.activitycommodityurl = res.data[0]
-              }
-              if (this.imgnumber === 2) {
-                this.otherList.discouncommodityturl = res.data[0]
-              }
-            } else {
-               this.$Loading.error();
-              that.$Message.warning(res.content);
-            }
-          })
-          .catch(() => {});
-  
-    },
-    //base64上传图片
-    fileChanges(event) {
-      if (!event.target.files[0].size) return;
-      let file = event.target.files[0];
-      this.imgmodel = [];
-      this.fileAdd(file);
-      setTimeout(() => {
-        this.$Loading.start();
-        this.$axios
-          .post(
-            "/admin/common/upload_ajax.ashx?action=UpLoadFile",
-            this.$qs.stringify({ imglist: JSON.stringify(this.imgmodel) })
-          )
-          .then(res => {
-            if (res.status >= 0) {
-              
-               this.$Loading.finish();
-              if (this.imgnumber == 0) {
-                 this.imgmodels = res.data[0];
-              }
-              if (this.imgnumber === 1) {
-                this.otherList.activitycommodityurl = res.data[0]
-              }
-              if (this.imgnumber === 2) {
-                this.otherList.discouncommodityturl = res.data[0]
-              }
-            } else {
-               this.$Loading.error();
-              this.$Message.warning("图片上传失败");
-            }
-          })
-          .catch(() => {
-             this.$Loading.error();
-            this.$Message.warning("图片上传失败");});
-      },200);
-    },
-        // 单张上传
-    fileAdd(file) {
-      // console.log(file);
-      let type = file.type; //文件的类型，判断是否是图片
-      let size = file.size; //文件的大小，判断图片的大小
-      if (this.imgData.accept.indexOf(type) === -1) {
-        this.$Message.warning("请选择我们支持的图片格式！");
-        return false;
-      }
-      if (size > 3145728) {
-        this.$Message.warning("请选择3M以内的图片！");
-        return false;
-      }
-      let that = this;
-      // 总大小
-      this.size = this.size + file.size;
-      let reader = new FileReader();
-      // 调用reader.readAsDataURL()方法，把图片转成base64
-      reader.readAsDataURL(file);
-      // 监听reader对象的onload事件，当图片加载完成时，把base64编码賦值给预览图片
-      reader.onload = function() {
-        file.src = this.result;
-        // console.log(this); 这里的this是FileReader对象
-        // 再把file对象添加到imgList数组
-        that.imgmodel.push(this.result) ;
-      };
-    },
+    //商品分类初始化
     getgoodsList(){
         this.$axios
           .post("/admin/common/commoditytype.ashx?action=selectlist")
@@ -554,6 +311,7 @@ export default {
           })
           .catch(() => {});
     },
+    //广告位初始化
     getadvertising(){
         this.$axios
           .post("/admin/common/advertisingposition.ashx?action=selectlist")
@@ -566,41 +324,233 @@ export default {
           })
           .catch(() => {});
     },
-    getother(){
-        this.$axios
-          .post("/admin/common/Other.ashx?action=selectlist")
+        //其他初始化
+        getother: function () {
+            this.$axios
+                .post("/admin/common/Other.ashx?action=selectlist")
+                .then(res => {
+                    if (res.status >= 0) {
+                        this.otherList = res.item[0];
+                        this.otherList.activitycommodityurl = this.otherList.activitycommodityurl.replace(/,/, "");
+                        this.otherList.discouncommodityturl = this.otherList.discouncommodityturl.replace(/,/, "");
+                        if (this.tvalue == 0) {
+                            this.isopen = Boolean(this.otherList.isbanner === "1")
+                        } else if (this.tvalue == 1) {
+                            this.isopen = Boolean(this.otherList.iscommoditytype === "1")
+                        } else {
+                            this.isopen = Boolean(this.otherList.isadvertisingposition === "1")
+                        }
+
+                        this.isedit = false;
+                        this.editindex = 0
+                    } else {
+                        this.$Message.warning(res.content);
+                    }
+                })
+                .catch(() => {
+                });
+        },
+   //新增,编辑banner弹窗
+    showModal(i){
+      if (i==="add") {
+         this.bannerindex = this.bannerList.length;
+        this.imgmodels = "";
+        this.xmodel[0] = ""
+         }else{
+         this.bannerindex = i;
+         this.imgmodels = this.bannerList[i].bannerpicture;
+         this.xmodel[0] = this.bannerList[i].urllink
+         }
+      this.xModal1 = true
+    },
+    //删除banner
+    removebanner(i){
+        this.$axios.post("/admin/common/banner.ashx?action=delete",this.$qs.stringify({ id: this.bannerList[i].id }))
           .then(res => {
             if (res.status >= 0) {
-              this.otherList = res.item[0];
-              this.otherList.activitycommodityurl=this.otherList.activitycommodityurl.replace(/,/,"")
-              this.otherList.discouncommodityturl=this.otherList.discouncommodityturl.replace(/,/,"")
-              if (this.tvalue==0) {
-                 this.isopen = Boolean(this.otherList.isbanner==="1")
-              }else if (this.tvalue==1) {
-                 this.isopen = Boolean(this.otherList.iscommoditytype==="1")
-              }else{
-                 this.isopen = Boolean(this.otherList.isadvertisingposition==="1")
-              }
+              this.getbannerList()
+            } else {
+              this.$Message.warning(res.content);
               
-                this.isedit=false
-              this.editindex= 0
+            }
+          })
+          .catch(() => {}); 
+    },
+    //banner排序
+    setsort(i){
+      this.$axios.post("/admin/common/banner.ashx?action=editsort",this.$qs.stringify({ id: this.bannerList[i].id,xgid:this.model[i] }))
+          .then(res => {
+            if (res.status >= 0) {
+              this.getbannerList()
+            } else {
+              this.$Message.warning(res.content); 
+            }
+          })
+          .catch(() => {}); 
+    },
+    //新增,编辑banner
+    isok1(){
+      if (this.imgmodels) {
+          let url ="";
+          let parse;
+          if (this.bannerindex === this.bannerList.length) {
+            url = "/admin/common/banner.ashx?action=add";
+            parse = { bannerpicture: this.imgmodels,urllink:this.xmodel[0],id: "", }
+          }else{url = "/admin/common/banner.ashx?action=edit";
+           parse = { bannerpicture: this.imgmodels,urllink:this.xmodel[0],id: this.bannerList[this.bannerindex].id, }
+          }
+         this.$axios.post(url,this.$qs.stringify(parse))
+          .then(res => {
+            if (res.status >= 0) {
+              this.getbannerList();
+              this.xModal1 = false
+            } else {
+              this.$Message.warning(res.content);
+              this.xModal1 = false
+            }
+          })
+          .catch(() => {});
+      }else{this.$Message.warning("图片必须上传");} 
+    },
+    //编辑商品分类
+    isok2(){
+      if (this.imgmodels&&this.xmodel[0]&&this.xmodel[1]&&this.xmodel[2]) {
+          let url ="/admin/common/commoditytype.ashx?action=edit";
+         this.$axios.post(url,this.$qs.stringify({maintitle:this.xmodel[1],vicetitle:this.xmodel[2], Picture: this.imgmodels,urllink:this.xmodel[0],id: this.goodsList[this.goodsindex].id, }))
+          .then(res => {
+            if (res.status >= 0) {
+              this.getgoodsList();
+              this.xModal2 = false
+            } else {
+              this.$Message.warning(res.content);
+              this.xModal2 = false
+            }
+          })
+          .catch(() => {});
+      }else{this.$Message.warning("数据不能为空");} 
+    },
+    //编辑广告位
+    isok3(){
+      if (this.imgmodels) {
+          let url ="/admin/common/advertisingposition.ashx?action=edit";
+         this.$axios.post(url,this.$qs.stringify({ picture: this.imgmodels,urllink:this.xmodel[0],id: this.advertising.id, }))
+          .then(res => {
+            if (res.status >= 0) {
+              this.getadvertising();
+              this.xModal3 = false
+            } else {
+              this.$Message.warning(res.content);
+              this.xModal3 = false
+            }
+          })
+          .catch(() => {});
+      }else{this.$Message.warning("图片必须上传");} 
+    },
+    //编辑其他信息
+    getotheredit(){
+      let arr =[];
+      this.otherList.parentcategory.forEach(item=>{
+        if (item.isdisplay) {
+         arr.push(item.guid) 
+        }
+      });
+          let url ="/admin/common/Other.ashx?action=edit";
+          let prima = this.otherList;
+          prima.tipsLabel = JSON.stringify(prima.tipsLabel);
+           prima.parentcategory = null;
+         prima.parentcategoryid = JSON.stringify(arr);
+         this.$axios.post(url,this.$qs.stringify(prima))
+          .then(res => {
+            if (res.status >= 0) {
+              this.getother()
             } else {
               this.$Message.warning(res.content);
             }
           })
           .catch(() => {});
     },
+    //关闭编辑其他信息
+    closeotheredit(){
+        this.isedit=false;
+        this.editindex= 0;
+         this.getother()
+    },
+    editindexs(i){
+      this.editindex = i;
+       this.isedit=true
+    },
+    //修改导航展示
+    changedisplay(i){
+      let num = 0;
+      this.otherList.parentcategory.forEach(item=>{
+        if(item.isdisplay){
+          num++
+        }
+      });
+      if(num>=6&&!this.otherList.parentcategory[i].isdisplay){
+        return false
+      }else{
+        this.otherList.parentcategory[i].isdisplay = !this.otherList.parentcategory[i].isdisplay
+      }
+    },
+    addimg(i) {
+      this.imgnumber = i;
+      this.$refs.uploadfiles.click();
+      this.$refs.uploadfiles.value = ''
+    },
+     //文件流上传图片
+      fileChange(event) {
+  
+      if (!event.target.files[0].size) return;
+      let files = event.target.files;
+
+      // 批量上传
+       let formData = new FormData();
+      for (let i = 0; i < files.length; i++) {
+        // 单张上传
+        formData.append("file"+i,files[i])
+      } 
+       this.$Loading.start();
+        this.$axios
+          ({
+           url: "/admin/common/upload_ajax.ashx?action=UpLoadFiles",
+           data: formData, method: 'post',
+           headers: { 
+          'Content-Type': 'multipart/form-data'
+         }})
+          
+          .then(res => {
+            if (res.status > 0) {
+               this.$Loading.finish();
+               if (this.imgnumber === 0) {
+                 this.imgmodels = res.data[0];
+              }
+              if (this.imgnumber === 1) {
+                this.otherList.activitycommodityurl = res.data[0]
+              }
+              if (this.imgnumber === 2) {
+                this.otherList.discouncommodityturl = res.data[0]
+              }
+            } else {
+               this.$Loading.error();
+              that.$Message.warning(res.content);
+            }
+          })
+          .catch(() => {});
+  
+    },
+   //编辑商品分类初始化
     showModal2(i){
-      this.goodsindex = i
-      this.xModal2 = true
-      this.imgmodels = ""
-      this.xmodel = []
+      this.goodsindex = i;
+      this.xModal2 = true;
+      this.imgmodels = "";
+      this.xmodel = [];
        this.$axios.post("/admin/common/commoditytype.ashx?action=selectdetails",this.$qs.stringify({ id: this.goodsList[i].id }))
           .then(res => {
             if (res.status >= 0) {
-              this.xmodel[0]  = res.item[0].urllink
-              this.xmodel[1]  = res.item[0].maintitle
-              this.xmodel[2]  = res.item[0].vicetitle
+              this.xmodel[0]  = res.item[0].urllink;
+              this.xmodel[1]  = res.item[0].maintitle;
+              this.xmodel[2]  = res.item[0].vicetitle;
               this.imgmodels = res.item[0].Picture
             } else {
               this.$Message.warning(res.content); 
@@ -608,26 +558,27 @@ export default {
           })
           .catch(() => {}); 
     },
+    //编辑广告位初始化
     showModal3(){
-      this.xModal3 = true
-      this.imgmodels = this.advertising.picture
+      this.xModal3 = true;
+      this.imgmodels = this.advertising.picture;
       this.xmodel[0] = this.advertising.urllink
     },
     },
     watch: {
     tvalue: function() {
      if (this.tvalue===0) {
-        this.imgnumber = 0
-       this.getbannerList()
+        this.imgnumber = 0;
+       this.getbannerList();
        this.isopen =  Boolean(this.otherList.isbanner==="1")
    
      }else if (this.tvalue===1) {
-        this.imgnumber = 0
-       this.getgoodsList()
+        this.imgnumber = 0;
+       this.getgoodsList();
        this.isopen = Boolean(this.otherList.iscommoditytype==="1")
      }else if (this.tvalue===2) {
-       this.imgnumber = 0
-       this.getadvertising()
+       this.imgnumber = 0;
+       this.getadvertising();
        this.isopen = Boolean(this.otherList.isadvertisingposition==="1")
      }else if (this.tvalue===3) {
        this.getother()
@@ -689,7 +640,7 @@ export default {
 .s2imgbox1{display: inline-block;width: 354px;margin-right: 30px;border: 1px solid #f0f0f0;margin-top: 20px;}
 .s2imgbox2{width: 690px;display: inline-block;vertical-align: top;margin-top: 20px;}
 .s2imgbox2>div{display: inline-block;border: 1px solid #f0f0f0;margin-right: 30px;width: 314px;margin-bottom: 30px;}
-.bgbox2{background:#f6f6f6 ;height: 530px;width: 2200px;position: absolute;top: 270px;left: -500px;z-index: -1;position: relative;}
+.bgbox2{background:#f6f6f6 ;height: 530px;width: 2200px;top: 270px;left: -500px;z-index: -1;position: relative;}
 .imgbox1{background: #f2f3f8;width: 352px;height: 559px;position: relative;}
 .imgbox2{background-image: url(../assets/imgs/b-bg2_.png);background-size: cover;width: 312px;height: 240px;position: relative;}
 

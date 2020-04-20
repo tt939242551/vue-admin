@@ -146,8 +146,8 @@ export default {
     },
     beforeRouteEnter (to, from, next) {
       next(vm => {
-      vm.tvalue = 0
-      vm.navstatus = 0
+      vm.tvalue = 0;
+      vm.navstatus = 0;
        if (from.name=='login') {
           location.reload() 
       } 
@@ -155,38 +155,44 @@ export default {
     },
     mounted(){
      let base = new Date();
-     this.$set(this.value2,1,[base.getFullYear(), base.getMonth() + 1, base.getDate()].join('-'))
-     this.setvalue1()
+     this.$set(this.value2,1,[base.getFullYear(), base.getMonth() + 1, base.getDate()].join('-'));
+     this.setvalue1();
      this.init();
      this.getsmu();
     },
     methods:{
+        //设置图表显示天数
         setdays(i){
-           this.days = i 
-           this.setvalue1()
+           this.days = i;
+           this.setvalue1();
            this.init();
         },
+        //根据天数生成时间段
         setvalue1(){
           let base = new Date();
-          this.$set(this.value1,1,[base.getFullYear(), base.getMonth() + 1, base.getDate()].join('-'))
+          this.$set(this.value1,1,[base.getFullYear(), base.getMonth() + 1, base.getDate()].join('-'));
           let nowday = base.setDate(base.getDate() - this.days);
-          let now = new Date(nowday)
+          let now = new Date(nowday);
           this.$set(this.value1,0,[now.getFullYear(), now.getMonth() + 1, now.getDate()].join('-'))
         },
+        //选择时间段
         setvalue(a){
            this.value1 = a
         },
+        //总的统计选择时间段
         setvalue2(a){
            this.value2 = a
         },
+        //根据时间段获取天数
         setdate(){
-           let daystime = new Date(this.value1[1]) - new Date(this.value1[0])
-         this.days = Math.ceil(daystime/(24 * 3600 * 1000))
+           let daystime = new Date(this.value1[1]) - new Date(this.value1[0]);
+         this.days = Math.ceil(daystime/(24 * 3600 * 1000));
          this.getdays();
         },
+       // 初始化数据
        init(){
-            let days = this.days
-           this.date = []
+            let days = this.days;
+           this.date = [];
             let base = new Date(this.value1[1]);
             let oneDay = 24 * 3600 * 1000;
                 for (let i = 0; i < days; i++) {
@@ -194,22 +200,22 @@ export default {
                      this.date.unshift([now.getFullYear(), now.getMonth() + 1, now.getDate()].join('-')); 
                 } 
         this.$axios.post(
- "/common/statistics.ashx",
+            "/common/statistics.ashx",
             this.$qs.stringify({ start_date: this.value1[0],end_date: this.value1[1],type:10})
           )
           .then(res => {
             if (res.status > 0) {
-               this.data1 = res 
+               this.data1 = res;
                for(let i=0;i<this.days;i++){
                    if (res.list[this.days-i-1]) {
-                       this.sdata[0].data[i]=res.list[this.days-i-1].profits
-                       this.sdata[1].data[i]=res.list[this.days-i-1].pv 
-                        this.sdata[2].data[i]=res.list[this.days-i-1].orders 
+                       this.sdata[0].data[i]=res.list[this.days-i-1].profits;
+                       this.sdata[1].data[i]=res.list[this.days-i-1].pv;
+                        this.sdata[2].data[i]=res.list[this.days-i-1].orders;
                          this.sdata[3].data[i]=res.list[this.days-i-1].users  
                    }else{
-                        this.sdata[0].data[i]=0 
-                       this.sdata[1].data[i]=0
-                        this.sdata[2].data[i]=0 
+                        this.sdata[0].data[i]=0;
+                       this.sdata[1].data[i]=0;
+                        this.sdata[2].data[i]=0;
                          this.sdata[3].data[i]=0 
                    }   
                } 
@@ -226,9 +232,10 @@ export default {
           })
           .catch(() => {});
         },
+        //获取对应天数折线图数据
         getdays(){
-            let days = this.days
-           this.date = []
+            let days = this.days;
+           this.date = [];
             let base = new Date(this.value1[1]);
             let oneDay = 24 * 3600 * 1000;
                 for (let i = 0; i < days; i++) {
@@ -244,14 +251,14 @@ export default {
             if (res.status > 0) {
                for(let i=0;i<this.days;i++){
                    if (res.list[this.days-i-1]) {
-                       this.sdata[0].data[i]=res.list[this.days-i-1].profits
-                       this.sdata[1].data[i]=res.list[this.days-i-1].pv 
-                        this.sdata[2].data[i]=res.list[this.days-i-1].orders 
+                       this.sdata[0].data[i]=res.list[this.days-i-1].profits;
+                       this.sdata[1].data[i]=res.list[this.days-i-1].pv;
+                        this.sdata[2].data[i]=res.list[this.days-i-1].orders;
                          this.sdata[3].data[i]=res.list[this.days-i-1].users  
                    }else{
-                        this.sdata[0].data[i]=0 
-                       this.sdata[1].data[i]=0
-                        this.sdata[2].data[i]=0 
+                        this.sdata[0].data[i]=0;
+                       this.sdata[1].data[i]=0;
+                        this.sdata[2].data[i]=0;
                          this.sdata[3].data[i]=0 
                    }   
                } 
@@ -262,6 +269,7 @@ export default {
           })
           .catch(() => {});
         },
+ //获取对应天数总的统计的数据
     getsmu(){
          this.$axios
           .post(
@@ -277,6 +285,7 @@ export default {
           })
           .catch(() => {});
         },
+  //生成折线图
     getLine() {
       let that = this;
       let myChart = echarts.init(this.$refs.myEchartLine);
@@ -316,11 +325,12 @@ export default {
             type: 'value'
         },
         series: this.sdata[this.navstatus]
-        }
+        };
       myChart.setOption(this.msg);
     },
+    //改变折线图显示内容
     changeline(i){
-      this.navstatus = i
+      this.navstatus = i;
        this.getLine()
     }
     }

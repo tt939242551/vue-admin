@@ -343,41 +343,41 @@ export default {
     },
      beforeRouteEnter (to, from, next) {
       next(vm => {
-       vm.tvalue1 = 0
-       vm.tvalue2 = 0
+       vm.tvalue1 = 0;
+       vm.tvalue2 = 0;
       vm.activityinit()
      })
     },
     methods:{
       //开启关闭2级子栏目
       switchsth(i){
-            let url = ""
-            let parme = {}
-            parme.id =  this.tabs[this.tvalue1].id
+            let url = "";
+            let parme = {};
+            parme.id =  this.tabs[this.tvalue1].id;
              if (this.tvalue2===1) {
-              url = "/admin/common/activity.ashx?action=editisopenbanner"
+              url = "/admin/common/activity.ashx?action=editisopenbanner";
                parme.isopenbanner = i
             }else if (this.tvalue2===2) {
-              url = "/admin/common/activity.ashx?action=editisbrand"
+              url = "/admin/common/activity.ashx?action=editisbrand";
                parme.isbrand = i
             }else if (this.tvalue2===3) {
-              url = "/admin/common/activity.ashx?action=editisactivity"
+              url = "/admin/common/activity.ashx?action=editisactivity";
                parme.isactivity = i
             }else if (this.tvalue2===4) {
-              url = "/admin/common/activity.ashx?action=editisdiscount"
+              url = "/admin/common/activity.ashx?action=editisdiscount";
              parme.isdiscount = i
             }else if (this.tvalue2===5) {
-              url = "/admin/common/activity.ashx?action=editisadvertisement1"
+              url = "/admin/common/activity.ashx?action=editisadvertisement1";
                parme.isadvertisement1 = i
             }else if (this.tvalue2===6) {
-              url = "/admin/common/activity.ashx?action=editisadvertisement2"
+              url = "/admin/common/activity.ashx?action=editisadvertisement2";
                parme.isadvertisement2 = i
             }
         this.$axios.post(url,this.$qs.stringify(parme))
           .then(res => {
             if (res.status > 0) {
-              this.activityinit()
-              let str = i?"已开启":"已关闭"
+              this.activityinit();
+              let str = i?"已开启":"已关闭";
               this.$Message.success(str+this.tabs2[this.tvalue2]); 
 
             } else {
@@ -388,11 +388,11 @@ export default {
         },
           //开启关闭活动推荐板块
         switchsthactivity(i){
-         let url = "/admin/common/activity.ashx?action=editisactivitys"
+         let url = "/admin/common/activity.ashx?action=editisactivitys";
         this.$axios.post(url,this.$qs.stringify({isactivitys:i}))
           .then(res => {
             if (res.status > 0) {
-              let str = i?"已开启":"已关闭"
+              let str = i?"已开启":"已关闭";
               this.$Message.success(str+"活动推荐板块"); 
             } else {
               this.$Message.warning(res.content); 
@@ -405,7 +405,7 @@ export default {
            this.$axios.post("/admin/common/activity.ashx?action=selectlist")
           .then(res => {
             if (res.status >= 0) {
-              this.tabs = res.item
+              this.tabs = res.item;
               this.isopens = res.isactivity
               
             } else {
@@ -422,10 +422,10 @@ export default {
       //新增,修改活动弹窗
       addactiv(i){
         if (i==='add') {
-           this.xModal1 = true
+           this.xModal1 = true;
           this.Modal[0]=""
         }else{
-          this.xModal1s = true
+          this.xModal1s = true;
           this.Modal[0]= this.tabs[i].activityname
         }
        
@@ -436,7 +436,7 @@ export default {
         this.$axios.post("/admin/common/activity.ashx?action=add",this.$qs.stringify({ activityname: this.Modal[0] }))
           .then(res => {
             if (res.status > 0) {
-              this.xModal1 = false
+              this.xModal1 = false;
               this.activityinit() 
             } else {
               this.$Message.warning(res.content);
@@ -451,7 +451,7 @@ export default {
         this.$axios.post("/admin/common/activity.ashx?action=addinformation",this.$qs.stringify({ activityname: this.Modal[0] ,id: this.tabs[this.tvalue1].id}))
           .then(res => {
             if (res.status > 0) {
-              this.xModal1s = false
+              this.xModal1s = false;
               this.activityinit() 
             } else {
               this.$Message.warning(res.content);
@@ -466,7 +466,7 @@ export default {
         this.$axios.post("/admin/common/activity.ashx?action=addinformation",this.$qs.stringify({ activitytitle: this.Modal[1],activityinformation: this.Modal[2],activityurl: this.Modal[0],activitypicture: this.imgmodels,id: this.tabs[this.tvalue1].id}))
           .then(res => {
             if (res.status > 0) {
-              this.xModal2 = false
+              this.xModal2 = false;
               this.activityinit() 
             } else {
               this.$Message.warning(res.content);
@@ -477,14 +477,14 @@ export default {
       },
       //删除活动
       removeactivity(){
-         let arr = []
-            arr.push(this.tabs[this.tvalue1].id)
+         let arr = [];
+            arr.push(this.tabs[this.tvalue1].id);
          this.$axios
           .post("/admin/common/activity.ashx?action=delete",this.$qs.stringify({ids: JSON.stringify(arr)}))
           .then(res => {
             if (res.status >= 0) {
-              this.activityinit()
-                this.xModal=false
+              this.activityinit();
+                this.xModal=false;
                 this.tvalue1 = 0
             } else {
               this.$Message.warning(res.content);
@@ -494,15 +494,15 @@ export default {
       },
       //编辑活动信息初始化
       eitactivity(){
-          this.xModal2 = true
-          this.Modal[0] = this.tabs[this.tvalue1].activityurl
-          this.Modal[1] = this.tabs[this.tvalue1].activitytitle
-          this.Modal[2] = this.tabs[this.tvalue1].activityinformation
+          this.xModal2 = true;
+          this.Modal[0] = this.tabs[this.tvalue1].activityurl;
+          this.Modal[1] = this.tabs[this.tvalue1].activitytitle;
+          this.Modal[2] = this.tabs[this.tvalue1].activityinformation;
           this.imgmodels = this.tabs[this.tvalue1].activitypicture
       },
       //切换活动
       getactivityls(i){
-        this.tvalue1=i
+        this.tvalue1=i;
        this.tvalue2 = 0
       },
 
@@ -531,12 +531,12 @@ export default {
       //新增,修改Banner初始化
      showModal(i){
       if (i==="add") {
-         this.bannerindex = this.bannerList.length
-         this.imgmodels = ""
+         this.bannerindex = this.bannerList.length;
+         this.imgmodels = "";
          this.Modal[0] = ""
          }else{
-         this.bannerindex = i
-         this.imgmodels = this.bannerList[i].bannerpicture
+         this.bannerindex = i;
+         this.imgmodels = this.bannerList[i].bannerpicture;
          this.Modal[0] = this.bannerList[i].urllink?this.bannerList[i].urllink:""
          }
       this.xModal3 = true
@@ -544,18 +544,18 @@ export default {
      //新增,修改Banner
     isok3(){
       if (this.imgmodels) {
-          let url =""
-          let parem ={}
+          let url ="";
+          let parem ={};
           if (this.bannerindex === this.bannerList.length) {
-            url = "/admin/common/banner.ashx?action=add"
+            url = "/admin/common/banner.ashx?action=add";
             parem = { bannerpicture: this.imgmodels,urllink:this.Modal[0],typeguid: this.tabs[this.tvalue1].guid }
-          }else{url = "/admin/common/banner.ashx?action=edit"
+          }else{url = "/admin/common/banner.ashx?action=edit";
            parem =  { bannerpicture: this.imgmodels,urllink:this.Modal[0],id: this.bannerList[this.bannerindex].id }
           }
          this.$axios.post(url,this.$qs.stringify(parem))
           .then(res => {
             if (res.status >= 0) {
-              this.getbannerList()
+              this.getbannerList();
               this.xModal3 = false
             } else {
               this.$Message.warning(res.content);
@@ -620,12 +620,12 @@ export default {
     //编辑,新增品牌弹窗
      showModal1(i){
       if (i==="add") {
-         this.brandindex = this.brandList.length?this.brandList.length: 0
-         this.Modal[0] = ""
-         this.Modal[1] = ""
+         this.brandindex = this.brandList.length?this.brandList.length: 0;
+         this.Modal[0] = "";
+         this.Modal[1] = "";
          this.getbrandListall()
          }else{
-         this.brandindex = i
+         this.brandindex = i;
          this.editbrandinit()
         
          }
@@ -634,18 +634,18 @@ export default {
     //编辑,新增品牌
     isok4(){
       if (this.Modal[0]&&this.Modal[1]) {
-          let url =""
-          let parem ={}
+          let url ="";
+          let parem ={};
           if (this.brandindex === this.brandList.length) {
-            url = "/admin/common/activity.ashx?action=addbrandrecommend"
+            url = "/admin/common/activity.ashx?action=addbrandrecommend";
             parem = { generalattributeid: this.Modal[0],brandurl:this.Modal[1],typeguid: this.tabs[this.tvalue1].guid }
-          }else{url = "/admin/common/activity.ashx?action=editbrandrecommend"
+          }else{url = "/admin/common/activity.ashx?action=editbrandrecommend";
            parem =  { generalattributeid: this.Modal[0],brandurl:this.Modal[1],id: this.brandList[this.brandindex].id }
           }
          this.$axios.post(url,this.$qs.stringify(parem))
           .then(res => {
             if (res.status >= 0) {
-              this.getbrandList()
+              this.getbrandList();
               this.xModal4 = false
             } else {
               this.$Message.warning(res.content);
@@ -661,7 +661,7 @@ export default {
           .then(res => {
             if (res.status >= 0) {
               this.brandallList = res.item[0].item[0].item;
-              this.Modal[1] = res.item[0].brandurl
+              this.Modal[1] = res.item[0].brandurl;
               this.brandallList.forEach(item=>{
                 if (item.isselect) {
                   this.Modal[0] = item.guid
@@ -704,7 +704,7 @@ export default {
         this.$axios.post("/admin/common/activity.ashx?action=deletebrandrecommend",this.$qs.stringify({ emptys: "清空" ,typeguid: this.tabs[this.tvalue1].guid}))
           .then(res => {
             if (res.status >= 0) {
-              this.getbrandList()
+              this.getbrandList();
               this.xModal5 = false
             } else {
               this.$Message.warning(res.content);
@@ -741,7 +741,7 @@ export default {
                      if (item.isselect) {
                        this.$set(this.xmodel,i,item.id)
                         }
-                  })
+                  });
                 if(itmes.commoditypictures1){ 
                    itmes.commoditypictures1 = itmes.commoditypictures1.match(/https:\/\/oss.bogole.com\/project\/code\/public\/e19102801\/upfile\/20\d{6,30}\.[a-z]{3,4}/)[0] 
                  }
@@ -754,15 +754,15 @@ export default {
       },
    //新增,修改活动商品弹窗
     showModal2(i){
-         this.Modal[0] = ""
-         this.Modal[1] = ""
-         this.Modal[2] = ""
-         this.Modal[3] = ""
+         this.Modal[0] = "";
+         this.Modal[1] = "";
+         this.Modal[2] = "";
+         this.Modal[3] = "";
       if (i==="add") {
-         this.goodsindex = this.goodsList.length?this.goodsList.length: 0
+         this.goodsindex = this.goodsList.length?this.goodsList.length: 0;
          this.getgoodsListall()
          }else{
-         this.goodsindex = i
+         this.goodsindex = i;
          this.editgoodsinit()
         
          }
@@ -771,18 +771,18 @@ export default {
     //新增,修改活动商品
     isok5(){
       if (this.commodity.length) {
-          let url =""
-          let parem ={}
+          let url ="";
+          let parem ={};
           if (this.goodsindex === this.goodsList.length) {
-            url = "/admin/common/activity.ashx?action=addactivecommodities"
+            url = "/admin/common/activity.ashx?action=addactivecommodities";
             parem = {generalattributeid:this.Modal[0], parentcategoryid: this.Modal[1],categoryid:this.Modal[2],typeguid: this.tabs[this.tvalue1].guid ,commodityguid:this.Modal[3]}
-          }else{url = "/admin/common/activity.ashx?action=editactivecommodities"
+          }else{url = "/admin/common/activity.ashx?action=editactivecommodities";
            parem =  { commodityguid: this.Modal[3],id:this.goodsList[this.goodsindex].id}
           }
          this.$axios.post(url,this.$qs.stringify(parem))
           .then(res => {
             if (res.status >= 0) {
-              this.getgoodsList()
+              this.getgoodsList();
               this.xModal6 = false
             } else {
               this.$Message.warning(res.content);
@@ -797,25 +797,25 @@ export default {
           .post("/admin/common/activity.ashx?action=editactivecommoditiesinit",this.$qs.stringify({ id: this.goodsList[this.goodsindex].id }))
           .then(res => {
             if (res.status >= 0) {
-              this.generalattribute = res.generalattribute[0].item
+              this.generalattribute = res.generalattribute[0].item;
               this.generalattribute.forEach(i=>{
                 if (i.isselect) {
                   this.Modal[0] = i.guid
                 }
-              })
-             this.parentcategory = res.parentcategory
+              });
+             this.parentcategory = res.parentcategory;
               this.parentcategory.forEach(item=>{
                 if (item.isselect) {
                   this.Modal[1] = item.guid
                 }
-              })
-              this.category = res.category
+              });
+              this.category = res.category;
               this.category.forEach(item=>{
                 if (item.isselect) {
                   this.Modal[2] = item.guid
                 }
-              })
-              this.commodity = res.commodity
+              });
+              this.commodity = res.commodity;
               this.commodity.forEach(item=>{
                 if (item.isselect) {
                   this.Modal[3] = item.guid
@@ -833,7 +833,7 @@ export default {
           .post("/admin/common/activity.ashx?action=addactivecommoditiesinit")
           .then(res => {
             if (res.status >= 0) {
-             this.generalattribute = res.generalattribute[0].item
+             this.generalattribute = res.generalattribute[0].item;
              this.parentcategory = res.parentcategory
             } else {
               this.$Message.warning(res.content);
@@ -858,7 +858,7 @@ export default {
         this.$axios.post("/admin/common/activity.ashx?action=deleteactivecommodities",this.$qs.stringify({ id: "清空" ,typeguid: this.tabs[this.tvalue1].guid}))
           .then(res => {
             if (res.status >= 0) {
-              this.getgoodsList()
+              this.getgoodsList();
               this.xModal7 = false
             } else {
               this.$Message.warning(res.content);
@@ -885,14 +885,14 @@ export default {
     //选择类别获取单品
     getCategory(guid) {
       this.Modal[2] = "";
-      this.getcommodityList()
+      this.getcommodityList();
        if (guid) {
-         let id 
+         let id;
          this.parentcategory.forEach(item=>{
            if (item.guid === guid) {
              id = item.id
            }
-         })
+         });
         this.$axios
           .post(
             "/admin/common/category.ashx?action=selectby_parentid",
@@ -945,23 +945,23 @@ export default {
       },
     //广告位1弹窗  
     showModal3(i){
-       this.advertisingindex1 = i
-       this.imgmodels = this.advertisingList1[this.advertisingindex1].picture
-       this.Modal[0] = this.advertisingList1[this.advertisingindex1].urllink 
+       this.advertisingindex1 = i;
+       this.imgmodels = this.advertisingList1[this.advertisingindex1].picture;
+       this.Modal[0] = this.advertisingList1[this.advertisingindex1].urllink;
       this.xModal8 = true
     },
    //编辑广告位1
      isok6(){
       if (this.imgmodels) {
-          let url =""
-          let parem ={}
-           url = "/admin/common/activity.ashx?action=editadvertisingposition"
-           parem =  { picture: this.imgmodels,urllink:this.Modal[0],id: this.advertisingList1[this.advertisingindex1].id }
+          let url ="";
+          let parem ={};
+           url = "/admin/common/activity.ashx?action=editadvertisingposition";
+           parem =  { picture: this.imgmodels,urllink:this.Modal[0],id: this.advertisingList1[this.advertisingindex1].id };
           
          this.$axios.post(url,this.$qs.stringify(parem))
           .then(res => {
             if (res.status >= 0) {
-              this.getadvertisingList1()
+              this.getadvertisingList1();
               this.xModal8 = false
             } else {
               this.$Message.warning(res.content);
@@ -986,16 +986,16 @@ export default {
       },
     //广告位2弹窗  
      showModal4(i){
-       this.advertisingindex2 = i
+       this.advertisingindex2 = i;
        if (this.advertisingList2.length) {
-          this.imgmodels = this.advertisingList2[this.advertisingindex2].picture
-       this.Modal[0] = this.advertisingList2[this.advertisingindex2].urllink
-        this.Modal[1] = this.advertisingList2[this.advertisingindex2].maintitle
+          this.imgmodels = this.advertisingList2[this.advertisingindex2].picture;
+       this.Modal[0] = this.advertisingList2[this.advertisingindex2].urllink;
+        this.Modal[1] = this.advertisingList2[this.advertisingindex2].maintitle;
         this.Modal[2] = this.advertisingList2[this.advertisingindex2].vicetitle
        }else{
-         this.Modal[0] = ""
-         this.Modal[1] = ""
-         this.Modal[2] = ""
+         this.Modal[0] = "";
+         this.Modal[1] = "";
+         this.Modal[2] = "";
          this.imgmodels = ""
        }
       
@@ -1004,19 +1004,19 @@ export default {
     //编辑广告位2
      isok7(){
       if (this.imgmodels) {
-          let url =""
-          let parem ={}
-           let id = ""
+          let url ="";
+          let parem ={};
+           let id = "";
           if (this.advertisingList2[this.advertisingindex2]) {
             id = this.advertisingList2[this.advertisingindex2].id
           }
-           url = "/admin/common/activity.ashx?action=editadvertisingposition"
-           parem =  { picture: this.imgmodels,urllink:this.Modal[0],id,maintitle:this.Modal[1],vicetitle:this.Modal[2], }
+           url = "/admin/common/activity.ashx?action=editadvertisingposition";
+           parem =  { picture: this.imgmodels,urllink:this.Modal[0],id,maintitle:this.Modal[1],vicetitle:this.Modal[2], };
           
          this.$axios.post(url,this.$qs.stringify(parem))
           .then(res => {
             if (res.status >= 0) {
-              this.getadvertisingList2()
+              this.getadvertisingList2();
               this.xModal9 = false
             } else {
               this.$Message.warning(res.content);
@@ -1038,7 +1038,7 @@ export default {
       if (!event.target.files[0].size) return;
       let files = event.target.files;
       // 批量上传
-       let formData = new FormData()
+       let formData = new FormData();
       for (let i = 0; i < files.length; i++) {
         // 单张上传
         formData.append("file"+i,files[i])
@@ -1064,85 +1064,29 @@ export default {
           .catch(() => {});
   
     },
-    //base64上传图片
-    fileChanges(event) {
-      if (!event.target.files[0].size) return;
-      let file = event.target.files[0];
-      this.imgmodel = [];
-      this.fileAdd(file);
-      setTimeout(() => {
-        this.$Loading.start();
-        this.$axios
-          .post(
-            "/admin/common/upload_ajax.ashx?action=UpLoadFile",
-            this.$qs.stringify({ imglist: JSON.stringify(this.imgmodel) })
-          )
-          .then(res => {
-            if (res.status >= 0) {
-               this.$Loading.finish();
-              this.imgmodels = res.data[0];
-              
-            } else {
-               this.$Loading.error();
-              this.$Message.warning("图片上传失败");
-            }
-          })
-          .catch(() => {
-             this.$Loading.error();
-            this.$Message.warning("图片上传失败");
-            });
-      }, 100);
-    },
-    // 图片转base64
-    fileAdd(file) {
-      // console.log(file);
-      let type = file.type; //文件的类型，判断是否是图片
-      let size = file.size; //文件的大小，判断图片的大小
-      if (this.imgData.accept.indexOf(type) === -1) {
-        this.$Message.warning("请选择我们支持的图片格式！");
-        return false;
-      }
-      if (size > 3145728) {
-        this.$Message.warning("请选择3M以内的图片！");
-        return false;
-      }
-      let that = this;
-      // 总大小
-      this.size = this.size + file.size;
-      let reader = new FileReader();
-      // 调用reader.readAsDataURL()方法，把图片转成base64
-      reader.readAsDataURL(file);
-      // 监听reader对象的onload事件，当图片加载完成时，把base64编码賦值给预览图片
-      reader.onload = function() {
-        file.src = this.result;
-        // console.log(this); 这里的this是FileReader对象
-        // 再把file对象添加到imgList数组
-        that.imgmodel.push(this.result) ;
-      };
-    }, 
     },
     watch: {
     //监听2级导航变化调不同初始化函数
     tvalue2: function() {
-      this.xmodel = []
+      this.xmodel = [];
      if (this.tvalue2===0) {
        this.activityinit()
      }else if (this.tvalue2===1) {
-        this.getbannerList()
+        this.getbannerList();
         this.isopen = this.tabs[this.tvalue1].isopenbanner
      }else if (this.tvalue2===2) {
-       this.getbrandList()
+       this.getbrandList();
        this.isopen = this.tabs[this.tvalue1].isbrand
      }else if (this.tvalue2===3) {
-      this.getgoodsList()
+      this.getgoodsList();
       this.isopen = this.tabs[this.tvalue1].isactivity
      }else if (this.tvalue2===4) {
       
      }else if (this.tvalue2===5) {
-      this.getadvertisingList1()
+      this.getadvertisingList1();
       this.isopen = this.tabs[this.tvalue1].isadvertisement1
      }else if (this.tvalue2===6) {
-      this.getadvertisingList2()
+      this.getadvertisingList2();
       this.isopen = this.tabs[this.tvalue1].isadvertisement2
      }
     },
@@ -1217,7 +1161,7 @@ export default {
 .itembox p{font-size: 14px;color: #2f2f2f;padding: 0 10px;height: 42px;overflow: hidden;}
 .itemtab{position: absolute;top: 0;left: 0;background: #191919;color: #fff;padding: 3px 12px;border-bottom-right-radius: 10px }
 .itemnum{border-top: 1px solid #c69c6d;padding-top: 4px;margin: 10px 10px;display: inline-block;padding-right: 4px;}
-.itembox1{border:none;margin-top: 10px;margin: 0 auto;background: #fff;border-bottom: 1px solid #f0f0f0}
+.itembox1{border:none;margin: 0 auto;background: #fff;border-bottom: 1px solid #f0f0f0}
 .itembox.itembox1 .lastnum{color: #9c9c9c;font-weight: 500;text-decoration:line-through;font-family: Microsoft YaHei}
  .imglistbox1.imglistbox2 .imgbox1>p{padding: 12px ;}
  /* 广告位 */

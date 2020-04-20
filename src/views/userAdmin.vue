@@ -3,25 +3,6 @@
        <div id="topbar">
               <Button type="primary" class="btn1" @click="show('add')" ><Icon size="16" style="transform: translateY(-2px)" type="md-add" />新增</Button>
                 <div class="inputbox"><Input size="small" @on-search="getselectlist(1)"  search class="topsearch"  v-model="models"  enter-button="搜索" placeholder="搜索" /></div>
-       
-        <!--  <p class="title">
-            <span>性别</span>
-              <Select
-               size="small"
-              v-model="models[0]"
-              @on-change="getselectlist(1)"
-              style="width:120px;margin-right: 30px;"
-              placeholder="请选择性别"
-            >
-              <Option value="男">男</Option>
-              <Option value="女">女</Option>
-              <Option value="">不限</Option>
-            </Select>
-            <span>注册时间</span>
-            <DatePicker size="small" type="daterange"  @on-change="gettime"  :value="models[1]" split-panels placeholder="请选择时间" style="width: 200px"></DatePicker>
-         </p>
-      
-        <span @click="tableToExcel" class="outup">导出<img src="../assets/imgs/bg06.png" alt=""></span> -->
       </div> 
     <div class="tabbox">
         <Table stripe   :columns="columns1" :data="data1"  @on-selection-change="selectionChange" >
@@ -162,24 +143,22 @@ export default {
     },
     beforeRouteEnter (to, from, next) {
       next(vm => {
-        vm.modal2 = false
-      vm.getselectlist()
+        vm.modal2 = false;
+      vm.getselectlist();
       vm.getitemrole()
      })
     },
     methods:{
+      //初始化
      getselectlist(n){
        if (n) {
          this.page = n
        }else{ this.page = 1}
-       let url = "/admin/common/user.ashx?action=selectlist_user"
-       let params={page:this.page,pageSize:this.pageSize,user_name:this.models}
+       let url = "/admin/common/user.ashx?action=selectlist_user";
+       let params={page:this.page,pageSize:this.pageSize,user_name:this.models};
        this.$axios.post(url,this.$qs.stringify(params)).then(res=>{
          if (res.status>=0) {
-            this.data1 = res.item
-         /*    this.data1.forEach(i=>{
-              i.newdate = i.newdate.match(/20\d{2}\/\d{1,2}\/\d{1,2}/)[0]
-            }) */
+            this.data1 = res.item;
             this.total = res.totalCount
  
          }else{
@@ -195,9 +174,10 @@ export default {
               
          } )
     },
+    //获取用户类型下拉数据
     getitemrole(){
        this.$axios.post('/admin/common/user.ashx?action=selectmanager_role').then(res=>{   
-                         window.console.log(res)  
+                         window.console.log(res);
                     if (res.status == 1) {
                    
                       this.itemrole = res.itemrole
@@ -207,66 +187,67 @@ export default {
                         }
                     }).catch()
     },
+    //分页
     getlist(index) {
-      this.page = index
+      this.page = index;
       this.getselectlist(index)
     },
+    //修改密码
     editpassword(){
-      this.isedit = true
-       this.$set(this.formDate,2,'')
+      this.isedit = true;
+       this.$set(this.formDate,2,'');
         this.$set(this.formDate,3,'')
     },
+    //新增,编辑用户初始化
     show(i){
-     
-      this.isedit = false
-      this.index = i
+
+      this.isedit = false;
+      this.index = i;
       if (i==='add') {
         this.formDate = []
       }else{
          this.$axios.post('/admin/common/user.ashx?action=select_details',this.$qs.stringify({id:this.data1[i].id})).then(res=>{     
                     if (res.status === 1) {
-                      let msg = res.item[0]
+                      let msg = res.item[0];
                       msg.itemrole.forEach(item=>{
                         if (item.isselect) {
                           this.$set(this.formDate,0,item.id)
                         }
-                      })
-                        this.$set(this.formDate,1,msg.user_name)
-                        this.$set(this.formDate,2,msg.password)
-                        
-                       this.$set(this.formDate,4,msg.real_name)
-                       this.$set(this.formDate,5,msg.telephone)
+                      });
+                        this.$set(this.formDate,1,msg.user_name);
+                        this.$set(this.formDate,2,msg.password);   
+                       this.$set(this.formDate,4,msg.real_name);
+                       this.$set(this.formDate,5,msg.telephone);
                        this.$set(this.formDate,6,msg.email)
                         } else {
                     this.$Message.error(res.content);
                         }
                     }).catch()
       }
-       this.modal2 = true
-      
+       this.modal2 = true  
     },
+    //新增,编辑用户初
       adduser(){
            if (this.index==='add'||this.isedit) {
               if (!this.isok1) {
-                 this.$Message.error("两次输入密码不一致")
+                 this.$Message.error("两次输入密码不一致");
                  return false
               }
            }
            if (this.formDate[0]&&this.formDate[1]&&this.formDate[2]) {
-              let addparme = null 
-              let url = ''
+              let addparme = null;
+              let url = '';
               if(this.index==="add"){
-                url = '/admin/common/user.ashx?action=insert_user'
+                url = '/admin/common/user.ashx?action=insert_user';
                 addparme = {user_name:this.formDate[1],role_id:this.formDate[0],password:this.formDate[2],password2:this.formDate[3],real_name:this.formDate[4],telephone:this.formDate[5],email:this.formDate[6]}
               } else{
-                  url = '/admin/common/user.ashx?action=edit_user'
+                  url = '/admin/common/user.ashx?action=edit_user';
                   addparme = {id:this.data1[this.index].id,user_name:this.formDate[1],role_id:this.formDate[0],newPassword1:this.formDate[3],newPassword2:this.formDate[3],RealName:this.formDate[4],Telephone:this.formDate[5],Email:this.formDate[6]}
-              }
-               
+              }  
                this.$axios.post(url,this.$qs.stringify(addparme)).then(res=>{     
                     if (res.status === 1) {
-                        this.models = ''
-                        this.getselectlist()
+                        this.models = '';
+                        this.getselectlist();
                         this.modal2 = false
                         } else {
                     this.$Message.error(res.content);
@@ -274,13 +255,15 @@ export default {
                     }).catch()
            }else{this.$Message.error("请填写所有必填信息")}
       },
+      //删除用户弹窗
       moveuser(i){
-        this.index = i
+        this.index = i;
         this.modal0 = true
       },
+      //删除用户 
      movelist(){
-      let url = "/admin/common/user.ashx?action=delete_user"
-      let arr = [this.data1[this.index].id]
+      let url = "/admin/common/user.ashx?action=delete_user";
+      let arr = [this.data1[this.index].id];
        this.$axios.post(url,this.$qs.stringify({ids: JSON.stringify(arr)})).then(res=>{
          if (res.status>=0) {
             this.getselectlist(this.page);
@@ -288,9 +271,10 @@ export default {
            this.$Message.warning(res.content); 
          }
        }).catch(()=>{
-         } )
+         } );
       this.modal0 = false
     },
+    //批量删除用户
       removeList() {
       this.$axios
         .post(
@@ -307,15 +291,12 @@ export default {
         .catch(() => {});
          this.modal1 = false
     },
+    //密码检查
     chackpassword(){
-      if (this.formDate[2]===this.formDate[3]) {
-        this.isok1 = true
-      }else{
-         this.isok1 = false
-       // this.$Message.error("两次输入密码不一致")
-      }
+      this.isok1 = this.formDate[2] === this.formDate[3];
     },
-     selectionChange(a) {
+    //用户多选
+    selectionChange(a) {
       this.isCheck = [];
       a.forEach(item => {
         if (this.isCheck.indexOf(item.id) < 0) {
@@ -323,7 +304,7 @@ export default {
         }
       });
     },
-     tableToExcel(){
+/* tableToExcel(){
       //要导出的json数据
       let url = "/admin/common/tb_user.ashx?action=export"
        let arr = [];
@@ -366,7 +347,7 @@ export default {
          } )
       
      },
-     base64 (s) { return window.btoa(unescape(encodeURIComponent(s))) }
+     base64 (s) { return window.btoa(unescape(encodeURIComponent(s))) } */
     }
 }
 </script>
@@ -401,7 +382,6 @@ export default {
   margin: 20px 0 0;
  background: #fff;
  border-bottom: 1px solid #dcdee2;
- 
 }
 .outup{color: #c69c6d;float: right;vertical-align: middle;line-height: 40px;cursor: pointer;}
 .outup img {transform: translateY(4px);margin-left: 8px;}

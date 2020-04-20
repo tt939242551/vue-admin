@@ -305,8 +305,8 @@ export default {
     //前置路由守卫,初始化页面
    beforeRouteEnter (to, from, next) {
       next(vm => {
-       vm.tvalue1 = 0
-       vm.tvalue2 = 0
+       vm.tvalue1 = 0;
+       vm.tvalue2 = 0;
       vm.brandinit()
      })
     },
@@ -314,56 +314,57 @@ export default {
      // this.brandinit()
       },
     methods:{
-       //开启关闭2级子栏目
-        switchsth(i){
-          if (this.tvalue2===0&&this.ishomecount>9&&i) {
-            this.xModal9 = true
-            return false
+        //开启关闭2级子栏目
+        switchsth: function (i) {
+            if (this.tvalue2 === 0 && this.ishomecount > 9 && i) {
+                this.xModal9 = true;
+                return false
             }
-            let url = ""
-            let parme = {}
-            parme.id =  this.brand.id
-            if (this.tvalue2===0) {
-               url = "/admin/common/brandrecommendation.ashx?action=editishome" 
-               parme.ishome = i
-            }else if (this.tvalue2===1) {
-              url = "/admin/common/brandrecommendation.ashx?action=editisbanner"
-               parme.isbanner = i
-            }else if (this.tvalue2===2) {
-              url = "/admin/common/brandrecommendation.ashx?action=editisbrandup"
-               parme.isbrandup = i
-            }else if (this.tvalue2===3) {
-              url = "/admin/common/brandrecommendation.ashx?action=editisadvertisingposition"
-               parme.isadvertisingposition = i
-            }else if (this.tvalue2===4) {
-              url = "/admin/common/brandrecommendation.ashx?action=editisbrandseries"
-               parme.isbrandseries = i
-            }else if (this.tvalue2===5) {
-              url = "/admin/common/brandrecommendation.ashx?action=editisotherbrand"
-               parme.isotherbrand = i
+            let url = "";
+            let parme = {};
+            parme.id = this.brand.id;
+            if (this.tvalue2 === 0) {
+                url = "/admin/common/brandrecommendation.ashx?action=editishome";
+                parme.ishome = i
+            } else if (this.tvalue2 === 1) {
+                url = "/admin/common/brandrecommendation.ashx?action=editisbanner";
+                parme.isbanner = i
+            } else if (this.tvalue2 === 2) {
+                url = "/admin/common/brandrecommendation.ashx?action=editisbrandup";
+                parme.isbrandup = i
+            } else if (this.tvalue2 === 3) {
+                url = "/admin/common/brandrecommendation.ashx?action=editisadvertisingposition";
+                parme.isadvertisingposition = i
+            } else if (this.tvalue2 === 4) {
+                url = "/admin/common/brandrecommendation.ashx?action=editisbrandseries";
+                parme.isbrandseries = i
+            } else if (this.tvalue2 === 5) {
+                url = "/admin/common/brandrecommendation.ashx?action=editisotherbrand";
+                parme.isotherbrand = i
             }
-        this.$axios.post(url,this.$qs.stringify(parme))
-          .then(res => {
-            if (res.status > 0) {
-              let str = i?"已开启":"已关闭"
-              this.getbrandinit()
-              this.$Message.success(str+this.tabs2[this.tvalue2]); 
-              if (this.navValue===0&&this.tvalue2==0) {
-               this.getnavlist()
-              }
-            } else {
-              this.$Message.warning(res.content); 
-            }
-          })
-          .catch(() => {}); 
+            this.$axios.post(url, this.$qs.stringify(parme))
+                .then(res => {
+                    if (res.status > 0) {
+                        let str = i ? "已开启" : "已关闭";
+                        this.getbrandinit();
+                        this.$Message.success(str + this.tabs2[this.tvalue2]);
+                        if (this.navValue === 0 && this.tvalue2 === 0) {
+                            this.getnavlist()
+                        }
+                    } else {
+                        this.$Message.warning(res.content);
+                    }
+                })
+                .catch(() => {
+                });
         },
      //开启关闭品牌推荐板块
       switchsthbrand(i){
-         let url = "/admin/common/brandrecommendation.ashx?action=editisbrandrecommendation"
+         let url = "/admin/common/brandrecommendation.ashx?action=editisbrandrecommendation";
         this.$axios.post(url,this.$qs.stringify({isbrandrecommendation:i}))
           .then(res => {
             if (res.status > 0) {
-              let str = i?"已开启":"已关闭"
+              let str = i?"已开启":"已关闭";
               this.$Message.success(str+"品牌推荐板块"); 
             } else {
               this.$Message.warning(res.content); 
@@ -385,11 +386,11 @@ export default {
      },  
       //品牌推荐初始化  获取所有品牌
       brandinit(){
-           this.navValue = -1
+           this.navValue = -1;
            this.$axios.post("/admin/common/brandrecommendation.ashx?action=generalattributeselectlist",this.$qs.stringify({ ishome: false }))
           .then(res => {
             if (res.status >= 0) {
-              this.tabs = res.item
+              this.tabs = res.item;
               this.getbrandinit()
             } else {
                if (res.status==-1008) {
@@ -404,13 +405,13 @@ export default {
       },
       //品牌推荐初始化
       getbrandinit(){
-         this.xModal9=false
+         this.xModal9=false;
           this.$axios.post("/admin/common/brandrecommendation.ashx?action=selectlist",this.$qs.stringify({ brandid: this.tabs[this.tvalue1].guid }))
           .then(res => {
             if (res.status > 0) {
-             this.brand = res.item[0]
-             this.isopens = res.isbrandrecommendation
-             this.ishomecount = res.ishomecount
+             this.brand = res.item[0];
+             this.isopens = res.isbrandrecommendation;
+             this.ishomecount = res.ishomecount;
              if (this.tvalue2===0) {
                 this.isopen =  this.brand.ishome
              }
@@ -426,7 +427,7 @@ export default {
           .then(res => {
             if (res.status >= 0) {
               if ( res.item.length>0) {
-                this.tabs = res.item 
+                this.tabs = res.item;
                  if ( this.navValue===0) {
                      this.tabs.forEach((itmes,i)=>{
                    itmes.sort.forEach((item,j)=>{
@@ -436,8 +437,8 @@ export default {
                     })
                    })
                  }
-                this.tvalue1 = 0 
-                this.tvalue2 = 0 
+                this.tvalue1 = 0;
+                this.tvalue2 = 0;
                 this.getbrandinit()
               }else{
                   for(let i = 0;i<this.tabs.length;i++){ this.$set(this.tabs,i,"") }
@@ -451,7 +452,7 @@ export default {
       },
       //按字母获取品牌
       getnavls(i){
-          this.navValue = i
+          this.navValue = i;
           this.getnavlist() 
       },
      //品牌信息修改
@@ -460,7 +461,7 @@ export default {
         this.$axios.post("/admin/common/brandrecommendation.ashx?action=edit",this.$qs.stringify({ brandintroduction: this.Modal[1],id: this.brand.id}))
           .then(res => {
             if (res.status > 0) {
-              this.xModal2 = false
+              this.xModal2 = false;
                this.getbrandinit()
             } else {
               this.$Message.warning(res.content);
@@ -471,14 +472,14 @@ export default {
       },
       //编辑品牌信息弹窗
       eitactivity(){
-          this.xModal2 = true
-          this.Modal[0] = this.tabs[this.tvalue1].title
+          this.xModal2 = true;
+          this.Modal[0] = this.tabs[this.tvalue1].title;
           this.Modal[1] = this.brand.brandintroduction
       },
       //品牌切换
       getactivityls(i){
-         this.tvalue1=i 
-         this.tvalue2 = 0
+         this.tvalue1=i;
+         this.tvalue2 = 0;
          this.getbrandinit()
          }, 
     //Banner
@@ -506,12 +507,12 @@ export default {
      //新增,修改Banner初始化
      showModal(i){
       if (i==="add") {
-         this.bannerindex = this.bannerList.length
-         this.imgmodels = ""
+         this.bannerindex = this.bannerList.length;
+         this.imgmodels = "";
          this.Modal[0] = ""
          }else{
-         this.bannerindex = i
-         this.imgmodels = this.bannerList[i].bannerpicture
+         this.bannerindex = i;
+         this.imgmodels = this.bannerList[i].bannerpicture;
          this.Modal[0] = this.bannerList[i].urllink?this.bannerList[i].urllink:""
          }
       this.xModal3 = true
@@ -519,18 +520,18 @@ export default {
     //新增,修改Banner
     isok3(){
       if (this.imgmodels) {
-          let url =""
-          let parem ={}
+          let url ="";
+          let parem ={};
           if (this.bannerindex === this.bannerList.length) {
-            url = "/admin/common/banner.ashx?action=add"
+            url = "/admin/common/banner.ashx?action=add";
             parem = { bannerpicture: this.imgmodels,urllink:this.Modal[0],typeguid: this.brand.guid }
-          }else{url = "/admin/common/banner.ashx?action=edit"
+          }else{url = "/admin/common/banner.ashx?action=edit";
            parem =  { bannerpicture: this.imgmodels,urllink:this.Modal[0],id: this.bannerList[this.bannerindex].id }
           }
          this.$axios.post(url,this.$qs.stringify(parem))
           .then(res => {
             if (res.status >= 0) {
-              this.getbannerList()
+              this.getbannerList();
               this.xModal3 = false
             } else {
               this.$Message.warning(res.content);
@@ -569,24 +570,24 @@ export default {
     },
    
    // 品牌上新
-    //品牌上新商品初始化  
+    //品牌上新商品初始化
     getgoodsList(){
-         this.goodsList=[]
-         this.xmodel=[]
+         this.goodsList=[];
+         this.xmodel=[];
          this.$axios
           .post("/admin/common/brandrecommendation.ashx?action=selectlistbrandrecommendcommodity",this.$qs.stringify({ typeguid: this.brand.guid ,typeid:this.typeid}))
           .then(res => {
             if (res.status >= 0) {
               this.goodsList = res.item;
-              this.goodsList.forEach((itmes,i)=>{ 
+              this.goodsList.forEach((itmes,i)=>{
                   itmes.sort.forEach((item,j)=>{
                      if (item.isselect) {
                          // this.$set(this.xmodel,i,item.id)
                          this.xmodel[i] = item.id
                         }
-                  })
-             if(itmes.commoditypictures1){ 
-                  itmes.commoditypictures1 = itmes.commoditypictures1.match(/https:\/\/oss.bogole.com\/project\/code\/public\/e19102801\/upfile\/20\d{6,30}\.[a-z]{3,4}/)[0] 
+                  });
+             if(itmes.commoditypictures1){
+                  itmes.commoditypictures1 = itmes.commoditypictures1.match(/https:\/\/oss.bogole.com\/project\/code\/public\/e19102801\/upfile\/20\d{6,30}\.[a-z]{3,4}/)[0]
                  }
               })
             } else {
@@ -598,15 +599,15 @@ export default {
    //编辑,新增品牌上新弹窗
     showModal2(i){
       if (i==="add") {
-         this.goodsindex = this.goodsList.length?this.goodsList.length: 0
-         this.Modal[0] = this.tabs[this.tvalue1].guid
-         this.Modal[1] = ""
-         this.Modal[2] = ""
-         this.Modal[3] = ""
-         this.getgoodsListall()
+         this.goodsindex = this.goodsList.length?this.goodsList.length: 0;
+         this.Modal[0] = this.tabs[this.tvalue1].guid;
+         this.Modal[1] = "";
+         this.Modal[2] = "";
+         this.Modal[3] = "";
+         this.getgoodsListall();
          this.getcommodityList()
          }else{
-         this.goodsindex = i
+         this.goodsindex = i;
          this.editgoodsinit()
          }
       this.xModal6 = true
@@ -614,18 +615,18 @@ export default {
     //编辑,新增品牌上新商品
     isok5(){
       if (this.commodity.length) {
-          let url =""
-          let parem ={}
+          let url ="";
+          let parem ={};
           if (this.goodsindex === this.goodsList.length) {
-            url = "/admin/common/brandrecommendation.ashx?action=addbrandrecommendcommodity"
+            url = "/admin/common/brandrecommendation.ashx?action=addbrandrecommendcommodity";
             parem = {generalattributeid:this.tabs[this.tvalue1].guid, parentcategoryid: this.Modal[1],categoryid:this.Modal[2],typeguid: this.brand.guid ,commodityguid:this.Modal[3],typeid:this.typeid}
-          }else{url = "/admin/common/brandrecommendation.ashx?action=editbrandrecommendcommodity"
+          }else{url = "/admin/common/brandrecommendation.ashx?action=editbrandrecommendcommodity";
            parem =  { commodityguid: this.Modal[3],id:this.brand.id}
           }
          this.$axios.post(url,this.$qs.stringify(parem))
           .then(res => {
             if (res.status > 0) {
-              this.getgoodsList()
+              this.getgoodsList();
               this.xModal6 = false
             } else {
               this.$Message.warning(res.content);
@@ -641,21 +642,21 @@ export default {
           .post("/admin/common/brandrecommendation.ashx?action=editbrandrecommendcommodityinit",this.$qs.stringify({ id: this.goodsList[this.goodsindex].id }))
           .then(res => {
             if (res.status >= 0) {
-              this.generalattribute = res.generalattribute[0].item
-              this.Modal[0] = this.brand.guid
-             this.parentcategory = res.parentcategory
+              this.generalattribute = res.generalattribute[0].item;
+              this.Modal[0] = this.brand.guid;
+             this.parentcategory = res.parentcategory;
               this.parentcategory.forEach(item=>{
                 if (item.isselect) {
                   this.Modal[1] = item.guid
                 }
-              })
-              this.category = res.category
+              });
+              this.category = res.category;
               this.category.forEach(item=>{
                 if (item.isselect) {
                   this.Modal[2] = item.guid
                 }
-              })
-              this.commodity = res.commodity
+              });
+              this.commodity = res.commodity;
               this.commodity.forEach(item=>{
                 if (item.isselect) {
                   this.Modal[3] = item.guid
@@ -673,7 +674,7 @@ export default {
           .post("/admin/common/brandrecommendation.ashx?action=addactivecommoditiesinit",this.$qs.stringify({ brandid: this.tabs[this.tvalue1].guid}))
           .then(res => {
             if (res.status >= 0) {
-             this.generalattribute = res.generalattribute[0].item
+             this.generalattribute = res.generalattribute[0].item;
              this.parentcategory = res.parentcategory
             } else {
               this.$Message.warning(res.content);
@@ -698,7 +699,7 @@ export default {
         this.$axios.post("/admin/common/brandrecommendation.ashx?action=deletebrandrecommendcommodity",this.$qs.stringify({ id: "清空" ,typeguid: this.brand.guid,typeid:this.typeid}))
           .then(res => {
             if (res.status >= 0) {
-              this.getgoodsList()
+              this.getgoodsList();
               this.xModal7 = false
             } else {
               this.$Message.warning(res.content);
@@ -725,14 +726,14 @@ export default {
      //选择类别获取单品
     getCategory(guid) {
       this.Modal[2] = "";
-      this.getcommodityList()
+      this.getcommodityList();
        if (guid) {
-          let id 
+          let id;
          this.parentcategory.forEach(item=>{
            if (item.guid === guid) {
              id = item.id
            }
-         })
+         });
         this.$axios
           .post(
             "/admin/common/category.ashx?action=selectby_parentid",
@@ -783,10 +784,10 @@ export default {
     //广告位弹窗  
     showModal3(){
         if (this.advertising) {
-           this.imgmodels = this.advertising.picture
+           this.imgmodels = this.advertising.picture;
            this.$set(this.Modal,0,this.advertising.urllink) 
         }else{
-          this.imgmodels =""
+          this.imgmodels ="";
           this.Modal[0] = ""
         }
       this.xModal8 = true
@@ -794,15 +795,15 @@ export default {
    //编辑广告位
      isok6(){
       if (this.imgmodels) {
-          let url =""
-          let parem ={}
-           url = "/admin/common/activity.ashx?action=editadvertisingposition"
-           parem =  { picture: this.imgmodels,urllink:this.Modal[0],id: this.advertising.id }
+          let url ="";
+          let parem ={};
+           url = "/admin/common/activity.ashx?action=editadvertisingposition";
+           parem =  { picture: this.imgmodels,urllink:this.Modal[0],id: this.advertising.id };
           
          this.$axios.post(url,this.$qs.stringify(parem))
           .then(res => {
             if (res.status >= 0) {
-              this.getadvertising()
+              this.getadvertising();
               this.xModal8 = false
             } else {
               this.$Message.warning(res.content);
@@ -836,12 +837,12 @@ export default {
       //编辑,新增其他品牌弹窗
      showModal1(i){
       if (i==="add") {
-         this.brandindex = this.brandList.length?this.brandList.length: 0
-         this.Modal[0] = ""
-         this.Modal[1] = ""
+         this.brandindex = this.brandList.length?this.brandList.length: 0;
+         this.Modal[0] = "";
+         this.Modal[1] = "";
          this.getbrandListall()
          }else{
-         this.brandindex = i
+         this.brandindex = i;
          this.editbrandinit()
          }
       this.xModal4 = true
@@ -849,18 +850,18 @@ export default {
      //编辑,新增其他品牌
     isok4(){
       if (this.Modal[0]&&this.Modal[1]) {
-          let url =""
-          let parem ={}
+          let url ="";
+          let parem ={};
           if (this.brandindex === this.brandList.length) {
-            url = "/admin/common/activity.ashx?action=addbrandrecommend"
+            url = "/admin/common/activity.ashx?action=addbrandrecommend";
             parem = { generalattributeid: this.Modal[0],brandurl:this.Modal[1],typeguid: this.brand.guid }
-          }else{url = "/admin/common/activity.ashx?action=editbrandrecommend"
+          }else{url = "/admin/common/activity.ashx?action=editbrandrecommend";
            parem =  { generalattributeid: this.Modal[0],brandurl:this.Modal[1],id: this.brandList[this.brandindex].id }
           }
          this.$axios.post(url,this.$qs.stringify(parem))
           .then(res => {
             if (res.status >= 0) {
-              this.getbrandList()
+              this.getbrandList();
               this.xModal4 = false
             } else {
               this.$Message.warning(res.content);
@@ -876,7 +877,7 @@ export default {
           .then(res => {
             if (res.status >= 0) {
               this.brandallList = res.item[0].item[0].item;
-              this.Modal[1] = res.item[0].brandurl
+              this.Modal[1] = res.item[0].brandurl;
               this.brandallList.forEach(item=>{
                 if (item.isselect) {
                   this.Modal[0] = item.guid
@@ -918,7 +919,7 @@ export default {
         this.$axios.post("/admin/common/activity.ashx?action=deletebrandrecommend",this.$qs.stringify({ emptys: "清空" ,typeguid: this.brand.guid}))
           .then(res => {
             if (res.status >= 0) {
-              this.getbrandList()
+              this.getbrandList();
               this.xModal5 = false
             } else {
               this.$Message.warning(res.content);
@@ -955,7 +956,7 @@ export default {
       let files = event.target.files;
 
       // 批量上传
-       let formData = new FormData()
+       let formData = new FormData();
       for (let i = 0; i < files.length; i++) {
         // 单张上传
         formData.append("file"+i,files[i])
@@ -981,88 +982,32 @@ export default {
           .catch(() => {});
   
     },
-    //base64上传图片
-    fileChanges(event) {
-      if (!event.target.files[0].size) return;
-      let file = event.target.files[0];
-      this.imgmodel = [];
-      this.fileAdd(file);
-      setTimeout(() => {
-        this.$Loading.start();
-        this.$axios
-          .post(
-            "/admin/common/upload_ajax.ashx?action=UpLoadFile",
-            this.$qs.stringify({ imglist: JSON.stringify(this.imgmodel) })
-          )
-          .then(res => {
-            if (res.status >= 0) {
-               this.$Loading.finish();
-              this.imgmodels = res.data[0];
-              
-            } else {
-               this.$Loading.error();
-              this.$Message.warning("图片上传失败");
-            }
-          })
-          .catch(() => {
-             this.$Loading.error();
-            this.$Message.warning("图片上传失败");
-            });
-      }, 100);
-    },
-    // 图片文件转base64
-    fileAdd(file) {
-      // console.log(file);
-      let type = file.type; //文件的类型，判断是否是图片
-      let size = file.size; //文件的大小，判断图片的大小
-      if (this.imgData.accept.indexOf(type) === -1) {
-        this.$Message.warning("请选择我们支持的图片格式！");
-        return false;
-      }
-      if (size > 3145728) {
-        this.$Message.warning("请选择3M以内的图片！");
-        return false;
-      }
-      let that = this;
-      // 总大小
-      this.size = this.size + file.size;
-      let reader = new FileReader();
-      // 调用reader.readAsDataURL()方法，把图片转成base64
-      reader.readAsDataURL(file);
-      // 监听reader对象的onload事件，当图片加载完成时，把base64编码賦值给预览图片
-      reader.onload = function() {
-        file.src = this.result;
-        // console.log(this); 这里的this是FileReader对象
-        // 再把file对象添加到imgList数组
-        that.imgmodel.push(this.result) ;
-      };
-    }, 
     },
     watch: {
     //监听2级导航变化调不同初始化函数
     tvalue2: function() {
-      this.xmodel = []
+      this.xmodel = [];
      if (this.tvalue2===0) {
-        this.getbrandinit()
+        this.getbrandinit();
         this.isopen = this.brand.ishome
      }else if (this.tvalue2===1) {
-        this.getbannerList()
+        this.getbannerList();
         this.isopen = this.brand.isbanner
      }else if (this.tvalue2===2) {
-        this.typeid = 2
-         this.getgoodsList()
+        this.typeid = 2;
+         this.getgoodsList();
          this.isopen = this.brand.isbrandup
          
      }else if (this.tvalue2===3) {
-        this.getadvertising()
+        this.getadvertising();
         this.isopen = this.brand.isadvertisingposition
      }else if (this.tvalue2===4) {
-       this.typeid = 1
-       this.getgoodsList() 
+       this.typeid = 1;
+       this.getgoodsList();
        this.isopen = this.brand.isbrandseries 
       
      }else if (this.tvalue2===5) {
-      this.getbrandList()
+      this.getbrandList();
       this.isopen = this.brand.isotherbrand
      }
     },
@@ -1146,7 +1091,7 @@ export default {
 .itembox p{font-size: 14px;color: #2f2f2f;padding: 0 10px;height: 42px;overflow: hidden;}
 .itemtab{position: absolute;top: 0;left: 0;background: #191919;color: #fff;padding: 3px 12px;border-bottom-right-radius: 10px }
 .itemnum{border-top: 1px solid #c69c6d;padding-top: 4px;margin: 10px 10px;display: inline-block;padding-right: 5px;}
-.itembox1{border:none;margin-top: 10px;margin: 0 auto;}
+.itembox1{border:none;margin: 0 auto;}
 .itembox.itembox1 .lastnum{color: #9c9c9c;font-weight: 500;text-decoration:line-through;font-family: Microsoft YaHei}
  /* 广告位 */
 .imgbox3,.imgbox3 img{width: 800px;height: 99px;}

@@ -170,8 +170,8 @@ export default {
     //路由守卫初始化数据
    beforeRouteEnter (to, from, next) {
       next(vm => {
-       vm.tvalue = 0
-       vm.getinit()
+       vm.tvalue = 0;
+       vm.getinit();
       vm.getdiscountlist()
      })
     },
@@ -185,8 +185,8 @@ export default {
            this.$axios.post("/admin/common/discount.ashx?action=selectlist")
           .then(res => {
             if (res.status > 0) {
-              this.categoryList = res.discounts
-              this.isopen = res.isdiscount
+              this.categoryList = res.discounts;
+              this.isopen = res.isdiscount;
               if (this.categoryList.length) {
                   this.categoryList.forEach(item=>{
                   item.item.forEach((itmes)=>{ 
@@ -210,12 +210,12 @@ export default {
       //侧边类别  
         //新增编辑类别弹窗
         eaitcategory(i){
-            this.categoryindex = i
+            this.categoryindex = i;
             if (i==="add") {
-               this.Modal[0]=""
+               this.Modal[0]="";
                this.Modal[1]=""
             }else{
-               this.Modal[0]=this.categoryList[i].title
+               this.Modal[0]=this.categoryList[i].title;
                this.Modal[1]=this.categoryList[i].discounturl
             }
              this.xModal1 = true
@@ -225,7 +225,7 @@ export default {
           this.$axios.post("/admin/common/discount.ashx?action=editisdiscount",this.$qs.stringify({isdiscount:i}))
           .then(res => {
             if (res.status > 0) {
-              let str = i?"已开启":"已关闭"
+              let str = i?"已开启":"已关闭";
               this.$Message.success(str+"折扣商品板块"); 
             } else {
               this.$Message.warning(res.content); 
@@ -236,12 +236,12 @@ export default {
          //新增编辑类别
         isok1(){
         if (this.Modal[0]) {
-          let url =""
-          let parem ={}
+          let url ="";
+          let parem ={};
           if (this.categoryindex === "add") {
-            url = "/admin/common/discount.ashx?action=add"
+            url = "/admin/common/discount.ashx?action=add";
             parem = {title: this.Modal[0],typeid:1,parentid:0}
-          }else{url = "/admin/common/discount.ashx?action=edit"
+          }else{url = "/admin/common/discount.ashx?action=edit";
            parem =  { title: this.Modal[0],id:this.categoryList[this.categoryindex].id,}
           }
          this.$axios.post(url,this.$qs.stringify(parem))
@@ -258,8 +258,8 @@ export default {
         },
         //删除类别
         removecategory(i){
-           let arr = []
-            arr.push(this.categoryList[i].id)
+           let arr = [];
+            arr.push(this.categoryList[i].id);
           this.$axios
           .post("/admin/common/discount.ashx?action=delete",this.$qs.stringify({ids: JSON.stringify(arr)}))
           .then(res => {
@@ -274,15 +274,15 @@ export default {
        //折扣商品
         //新增,编辑折扣商品弹窗
         eaitgoods(i){
-            this.goodsindex = i
+            this.goodsindex = i;
             if (i==="add") {
-               this.Modal[0]=""
-               this.Modal[1]=""
-               this.Modal[2]=""
-               this.Modal[3]=""
-               this.Modal[4]=""
-               this.commodity = []
-                this.category=[]
+               this.Modal[0]="";
+               this.Modal[1]="";
+               this.Modal[2]="";
+               this.Modal[3]="";
+               this.Modal[4]="";
+               this.commodity = [];
+                this.category=[];
                this.getaddgoods()
               
             }else{
@@ -296,8 +296,8 @@ export default {
           .post("/admin/common/discount.ashx?action=addinit")
           .then(res => {
             if (res.status >= 0) {
-             this.discountsettings = res.discountsettings
-             this.generalattribute = res.generalattribute[0].item
+             this.discountsettings = res.discountsettings;
+             this.generalattribute = res.generalattribute[0].item;
              this.parentcategory = res.parentcategory
             } else {
               this.$Message.warning(res.content);
@@ -311,31 +311,31 @@ export default {
           .post("/admin/common/discount.ashx?action=editinit",this.$qs.stringify({ id: this.categoryList[this.categoryvalue].item[this.goodsindex].id }))
           .then(res => {
             if (res.status >= 0) {
-              this.generalattribute = res.generalattribute[0].item
+              this.generalattribute = res.generalattribute[0].item;
               this.generalattribute.forEach(i=>{
                 if (i.isselect) {
                   this.Modal[0] = i.guid
                 }
-              })
-             this.parentcategory = res.parentcategory
+              });
+             this.parentcategory = res.parentcategory;
               this.parentcategory.forEach(item=>{
                 if (item.isselect) {
                   this.Modal[1] = item.guid
                 }
-              })
-              this.category = res.category
+              });
+              this.category = res.category;
               this.category.forEach(item=>{
                 if (item.isselect) {
                   this.Modal[2] = item.guid
                 }
-              })
-              this.commodity = res.commodity
+              });
+              this.commodity = res.commodity;
               this.commodity.forEach(item=>{
                 if (item.isselect) {
                   this.Modal[3] = item.guid
                 }
-              })
-             this.discountsettings = res.discountsettings
+              });
+             this.discountsettings = res.discountsettings;
               this.discountsettings.forEach(item=>{
                 if (item.isselect) {
                   this.Modal[4] = item.guid
@@ -351,18 +351,18 @@ export default {
     isok2(){
       if (this.Modal[4]) {
         if (this.Modal[0]||this.Modal[1]) {
-            let url =""
-          let parem ={}
+            let url ="";
+          let parem ={};
           if (this.goodsindex === "add") {
-            url = "/admin/common/discount.ashx?action=add"
+            url = "/admin/common/discount.ashx?action=add";
             parem = { generalattributeid: this.Modal[0],parentcategoryid:this.Modal[1],categoryid:this.Modal[2],typeid: 2 ,commodityid:this.Modal[3],dsid:this.Modal[4],title:this.categoryList[this.categoryvalue].title,parentid:this.categoryList[this.categoryvalue].id}
-          }else{url = "/admin/common/discount.ashx?action=edit"
+          }else{url = "/admin/common/discount.ashx?action=edit";
            parem =  { commodityid: this.Modal[3],dsguid:this.Modal[4],id:this.categoryList[this.categoryvalue].item[this.goodsindex].id,title:this.categoryList[this.categoryvalue].title,parentid:this.categoryList[this.categoryvalue].id}
           }
          this.$axios.post(url,this.$qs.stringify(parem))
           .then(res => {
             if (res.status >= 0) {
-              this.getinit()
+              this.getinit();
               this.xModal2 = false
             } else {
               this.$Message.warning(res.content);
@@ -375,8 +375,8 @@ export default {
        },
        //删除折扣商品
         removegoods(i){
-           let arr = []
-            arr.push(this.categoryList[this.categoryvalue].item[i].id)
+           let arr = [];
+            arr.push(this.categoryList[this.categoryvalue].item[i].id);
           this.$axios
           .post("/admin/common/discount.ashx?action=delete",this.$qs.stringify({ids: JSON.stringify(arr),parentid:this.categoryList[this.categoryvalue].id}))
           .then(res => {
@@ -397,10 +397,10 @@ export default {
           )
           .then(res => {
             if (res.status >= 0) {
-              this.getinit()
+              this.getinit();
               this.xModal3 = false
             } else {
-               this.xModal3 = false
+               this.xModal3 = false;
               this.$Message.warning(res.content);
             }
           })
@@ -409,14 +409,14 @@ export default {
         //选择类别查询单品
       getCategory(guid) {
         this.Modal[2] = "";
-        this.getcommodityList()
+        this.getcommodityList();
         if (guid) {
-           let id 
+           let id;
          this.parentcategory.forEach(item=>{
            if (item.guid === guid) {
              id = item.id
            }
-         })
+         });
         this.$axios
           .post(
             "/admin/common/category.ashx?action=selectby_parentid",
@@ -454,22 +454,22 @@ export default {
     },
     //开启关闭单个商品是否首页展示
     switchsth(i){  
-         let n = 0
-         let goodsList =  this.categoryList[this.categoryvalue].item
+         let n = 0;
+         let goodsList =  this.categoryList[this.categoryvalue].item;
          goodsList.forEach(item=>{
            if (item.isselect) n++ 
-         })
+         });
          if (n>4) {
-          this.getinit()
+          this.getinit();
           this.xModal6 = true
          }else{
-              let parme = {}
-              parme.id =  goodsList[i].id
-              parme.isselect = goodsList[i].isselect
+              let parme = {};
+              parme.id =  goodsList[i].id;
+              parme.isselect = goodsList[i].isselect;
             this.$axios.post("/admin/common/discount.ashx?action=editisselect",this.$qs.stringify(parme))
               .then(res => {
                 if (res.status > 0) {
-                    let str = i?"已开启":"已关闭"
+                    let str = i?"已开启":"已关闭";
                    this.$Message.success(str+"折扣商品板块"); 
                 } else {
                   this.$Message.warning(res.content); 
@@ -495,7 +495,7 @@ export default {
     },
     //新增编辑折扣弹窗
     eaitdiscount(i){
-      this.discountindex = i
+      this.discountindex = i;
       if (i==="add") {
         this.Modal[0]=""
             }else{
@@ -506,18 +506,18 @@ export default {
      //新增,编辑折扣   
      isok3(){
         if (this.Modal[0]>=0.01&&this.Modal[0]<=0.99) {
-          let url =""
-          let parem ={}
+          let url ="";
+          let parem ={};
           if (this.discountindex === "add") {
-            url = "/admin/common/discount.ashx?action=addseting"
+            url = "/admin/common/discount.ashx?action=addseting";
             parem = {discount: this.Modal[0]}
-          }else{url = "/admin/common/discount.ashx?action=editseting"
+          }else{url = "/admin/common/discount.ashx?action=editseting";
            parem =  { discount: this.Modal[0], id:this.discountlist[this.discountindex].id}
           }
          this.$axios.post(url,this.$qs.stringify(parem))
           .then(res => {
             if (res.status > 0) {
-               this.getdiscountlist()
+               this.getdiscountlist();
               this.xModal4 = false
             } else {
               this.$Message.warning(res.content);
@@ -529,8 +529,8 @@ export default {
         },
         //删除折扣
       removediscount(i){
-           let arr = []
-            arr.push(this.discountlist[i].id)
+           let arr = [];
+            arr.push(this.discountlist[i].id);
           this.$axios
           .post("/admin/common/discount.ashx?action=deleteseting",this.$qs.stringify({ids: JSON.stringify(arr)}))
           .then(res => {
@@ -548,7 +548,7 @@ export default {
           .post("/admin/common/discount.ashx?action=deleteseting",this.$qs.stringify({emptys: "清空"}))
           .then(res => {
             if (res.status >= 0) {
-             this.xModal5=false
+             this.xModal5=false;
              this.getdiscountlist()
             } else {
               this.$Message.warning(res.content);
@@ -597,7 +597,7 @@ export default {
 .itembox p{font-size: 14px;color: #2f2f2f;padding: 0 10px;height: 42px;overflow: hidden;}
 .itemtab{position: absolute;top: 0;left: 0;background: #191919;color: #fff;padding: 3px 12px;border-bottom-right-radius: 10px }
 .itemnum{border-top: 1px solid #c69c6d;padding-top: 4px;margin: 10px 10px;display: inline-block;padding-right: 5px;}
-.itembox1{border:none;margin-top: 10px;margin: 0 auto;}
+.itembox1{border:none;margin: 0 auto;}
 .itembox.itembox1 .lastnum{color: #9c9c9c;font-weight: 500;text-decoration:line-through;font-family: Microsoft YaHei}
  /* 折扣设置 */
 .stitle {font-size: 18px;text-align: center; margin: 25px 0;}

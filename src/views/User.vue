@@ -112,22 +112,23 @@ export default {
      })
     },
     methods:{
+      //初始化
      getselectlist(n){
        if (n) {
          this.page = n
        }else{ this.page = 1}
-       let url = "/admin/common/tb_user.ashx?action=selectlist"
+       let url = "/admin/common/tb_user.ashx?action=selectlist";
        let arr = [];
        if (this.models[1]) {
            arr = this.models[1]
        }
-       let params={page:this.page,pageSize:this.pageSize,sex:this.models[0],stardate:arr[0],enddate:arr[1],username:this.models[3]}
+       let params={page:this.page,pageSize:this.pageSize,sex:this.models[0],stardate:arr[0],enddate:arr[1],username:this.models[3]};
        this.$axios.post(url,this.$qs.stringify(params)).then(res=>{
          if (res.status>=0) {
-            this.data1 = res.item
+            this.data1 = res.item;
             this.data1.forEach(i=>{
               i.newdate = i.newdate.match(/20\d{2}\/\d{1,2}\/\d{1,2}/)[0]
-            })
+            });
             this.total = res.totalCount
  
          }else{
@@ -143,36 +144,40 @@ export default {
               
          } )
     },
+    //分页
     getlist(index) {
-      this.page = index
+      this.page = index;
       this.getselectlist(index)
     },
+    //时间段搜索订单
     gettime(t){
-     this.models[1] = t
+     this.models[1] = t;
      this.getselectlist()
     },
+    //查看用户订单
     show(i){
-      let id = this.data1[i].vipid
+      let id = this.data1[i].vipid;
       this.$router.push({ path: 'order', query: { id:id, }})
     },
+    //导出
      tableToExcel(){
       //要导出的json数据
-      let url = "/admin/common/tb_user.ashx?action=export"
+      let url = "/admin/common/tb_user.ashx?action=export";
        let arr = [];
-       let jsonData = []
+       let jsonData = [];
        if (this.models[1]) {
            arr = this.models[1]
        }
-       let params={sex:this.models[0],stardate:arr[0],enddate:arr[1]}
+       let params={sex:this.models[0],stardate:arr[0],enddate:arr[1]};
        let str = '<tr><td>注册时间</td><td>会员ID</td><td>昵称</td><td>性别</td><td>生日</td><td>邮箱</td><td>手机号</td><td>优惠券</td><td>积分</td></tr>';
        this.$axios.post(url,this.$qs.stringify(params)).then(res=>{
          if (res.status>0) {
-            jsonData = res.item
+            jsonData = res.item;
             jsonData.forEach(item=>{
             str+=`<tr><td>${item.newdate + '\t'}</td><td>${item.vipid + '\t'}</td><td>${item.username.trim() + '\t'}</td><td>${item.sex + '\t'}</td><td>${item.birthday + '\t'}</td><td>${item.email + '\t'}</td><td>${item.tel + '\t'}</td><td></td><td>${item.shoppingcount + '\t'}</td></tr>`;     
-            })
+            });
                   //Worksheet名
-          let worksheet = '用户信息'
+          let worksheet = '用户信息';
           let uri = 'data:application/vnd.ms-excel;base64,';
  
       //下载的表格模板数据
@@ -200,11 +205,6 @@ export default {
      },
      base64 (s) { return window.btoa(unescape(encodeURIComponent(s))) }
        
-      
-    
-
-
-
     }
 }
 </script>

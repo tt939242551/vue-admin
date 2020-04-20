@@ -492,8 +492,8 @@ export default {
   components: { Uediter },
   beforeRouteEnter (to, from, next) {
       next(vm => {
-       vm.page =1
-      vm.closegoods()
+       vm.page =1;
+      vm.closegoods();
       vm.getInit();
       vm.getBasicslist()
      })
@@ -501,8 +501,8 @@ export default {
   methods: {
    //初始化
     getInit() {
-      this.smodels=[]
-      this.xModal4 = false
+      this.smodels=[];
+      this.xModal4 = false;
       this.$axios
         .post(
           "/admin/common/Buyer_commodity.ashx?action=selectlist",
@@ -513,11 +513,11 @@ export default {
             this.data1 = res.item;
            // 返回数据格式处理
             this.data1.forEach(i=>{
-             i.setdate = i.setdate.match(/20\d{2}\/\d{1,2}\/\d{1,2}/)[0]
+             i.setdate = i.setdate.match(/20\d{2}\/\d{1,2}\/\d{1,2}/)[0];
               if(i.commoditypictures1){ 
                    i.commoditypictures1 = i.commoditypictures1.match(/https:\/\/oss.bogole.com\/project\/code\/public\/e19102801\/upfile\/20\d{6,30}\.[a-z]{3,4}/)[0] 
                  }
-            })
+            });
             this.total = res.totalCount;
             this.$forceUpdate()
           } else {
@@ -539,7 +539,7 @@ export default {
          )
         .then(res => {
           if (res.status >= 0) {
-            this.parentcategory = res.parentcategory
+            this.parentcategory = res.parentcategory;
             this.generalattribute = res.generalattribute[0].item
           } else {
             this.$Message.warning(res.content);
@@ -549,15 +549,15 @@ export default {
     },
     //选择类别查询单品
     getSingleList(t){
-      this.smodels[2] = ""
-      this.getDatalist()
+      this.smodels[2] = "";
+      this.getDatalist();
        if (t) {
          let id ;
          this.parentcategory.forEach(i=>{
            if (i.title ===t) {
              id = i.id 
            }
-         })
+         });
         this.$axios
           .post(
             "/admin/common/category.ashx?action=selectby_parentid",
@@ -575,7 +575,7 @@ export default {
     },
     //选择品牌,类别,单品查询商品
     getDatalist(){
-      this.page = 1
+      this.page = 1;
       this.$axios
         .post(
           "/admin/common/Buyer_commodity.ashx?action=selectlist",
@@ -585,11 +585,11 @@ export default {
           if (res.status >= 0) {
             this.data1 = res.item;
             this.data1.forEach(i=>{
-             i.setdate = i.setdate.match(/20\d{2}\/\d{1,2}\/\d{1,2}/)[0]
+             i.setdate = i.setdate.match(/20\d{2}\/\d{1,2}\/\d{1,2}/)[0];
               if(i.commoditypictures1){ 
                    i.commoditypictures1 = i.commoditypictures1.match(/https:\/\/oss.bogole.com\/project\/code\/public\/e19102801\/upfile\/20\d{6,30}\.[a-z]{3,4}/)[0] 
                  }
-            })
+            });
             this.total = res.totalCount;
           } else {
             this.$Message.warning(res.content);
@@ -599,8 +599,8 @@ export default {
     },
    //重置搜索条件
     initsmodels(){
-      this.page = 1
-      this.smodels =[]
+      this.page = 1;
+      this.smodels =[];
       this.SingleList =[]
     },
      //选择分页查询商品
@@ -614,11 +614,11 @@ export default {
           if (res.status >= 0) {
             this.data1 = res.item;
             this.data1.forEach(i=>{
-             i.setdate = i.setdate.match(/20\d{2}\/\d{1,2}\/\d{1,2}/)[0]
+             i.setdate = i.setdate.match(/20\d{2}\/\d{1,2}\/\d{1,2}/)[0];
               if(i.commoditypictures1){ 
                    i.commoditypictures1 = i.commoditypictures1.match(/https:\/\/oss.bogole.com\/project\/code\/public\/e19102801\/upfile\/20\d{6,30}\.[a-z]{3,4}/)[0] 
                  }
-            })
+            });
             this.total = res.totalCount;
           } else {
             this.$Message.warning(res.content);
@@ -676,8 +676,8 @@ export default {
     },
     //删除单个商品
     movelist(i){
-      let url = "/admin/common/commodity.ashx?action=delete"
-      let arr = [this.data1[i].id]
+      let url = "/admin/common/commodity.ashx?action=delete";
+      let arr = [this.data1[i].id];
        this.$axios.post(url,this.$qs.stringify({ids: JSON.stringify(arr)})).then(res=>{
          if (res.status>=0) {
             this.getInit();
@@ -701,8 +701,8 @@ export default {
         )
         .then(res => {
           if (res.status >= 0) {
-            this.models[2] = res.item[0].title
-            this.models[9] = res.item[0].number
+            this.models[2] = res.item[0].title;
+            this.models[9] = res.item[0].number;
            
             if (res.item[0].commoditypictures1) {
               this.imgLists =  res.item[0].commoditypictures1.match(/https:\/\/oss.bogole.com\/project\/code\/public\/e19102801\/upfile\/20\d{6,30}\.[a-z]{3,4}/g)
@@ -710,11 +710,11 @@ export default {
             this.mainList = res.parentcategory;
             this.$nextTick(()=>{
                 this.movecolor()
-            })
+            });
             this.category = res.category;
             this.generalattribute = res.generalattribute;
             this.setdate = res.item[0].setdate;
-            this.Code = res.item[0].Code
+            this.Code = res.item[0].Code;
             this.specialList = res.specialattributes;
             if (this.specialList.length>0) {
                  this.specialList.forEach(i => {
@@ -746,17 +746,17 @@ export default {
             this.colorarr = [];
             this.sizearr = [];
 
-            this.colorList =  [{ color: "", remark: "", colorpictures: ""}]
+            this.colorList =  [{ color: "", remark: "", colorpictures: ""}];
             this.mainList.forEach(i => {
               let obj = {};
               if (this.colorarr.indexOf(i.colors) < 0 && i.colors) {
                 this.colorarr.push(i.colors);
                 if (i.colors.indexOf("(")>0) {
-                  let arr = i.colors.replace(/\)$/,'').split("(")
+                  let arr = i.colors.replace(/\)$/,'').split("(");
                    obj.color = arr[0];
                   obj.remark = arr[1]
                 }else{
-                  obj.color = i.colors
+                  obj.color = i.colors;
                   obj.remark = "";
                 }
                 obj.colorpictures = i.colorpictures;
@@ -789,9 +789,9 @@ export default {
             this.getgoodsTotal();
             this.models[8] = res.item[0].Price;
               setTimeout(function(){
-                document.querySelector("#focusinput input").focus()
+                document.querySelector("#focusinput input").focus();
               console.log(document.querySelector("#focusinput input"))
-                },1000)
+                },1000);
              this.content = decodeURIComponent(res.item[0].commoditydetails);  
          } else {
             this.$Message.warning(res.content);
@@ -808,15 +808,15 @@ export default {
     },
     //合并商品详情列表中相同颜色项
     movecolor(){  
-      for(var i=0;i<this.mainList.length;i++ ){
-        let t1 = 'color' + i
-        let t2 = 'color' + (i+1)
-         this.$refs[t1][0].style["border-bottom"] = "1px solid #ccc"
+      for(let i=0; i<this.mainList.length; i++ ){
+        let t1 = 'color' + i;
+        let t2 = 'color' + (i+1);
+         this.$refs[t1][0].style["border-bottom"] = "1px solid #ccc";
          if (this.$refs[t2]&&this.$refs[t2][0]) {
            this.$refs[t2][0].style.color = "#000"
          } 
         if (this.$refs[t2]&&this.$refs[t2][0]&&this.$refs[t1][0].innerText===this.$refs[t2][0].innerText) {
-             this.$refs[t2][0].style.color = "#fff"
+             this.$refs[t2][0].style.color = "#fff";
              this.$refs[t1][0].style["border-bottom"] = "none"
         }
       }
@@ -824,7 +824,7 @@ export default {
     //选择分类获取单品
     getCategory(id) {
       this.categoryItem = [];
-      this.specialmodels = []
+      this.specialmodels = [];
       this.models[1] = "";
       this.models[3] = "";
       this.models[4] = "";
@@ -856,7 +856,7 @@ export default {
             if (res.status >= 0) {
               this.generalattribute = res.generalattribute;
               this.specialList = res.specialattributes;
-               this.bmodels=[]
+               this.bmodels=[];
               this.generalattribute.forEach((i,index) => {
               i.item.forEach(j=>{
                 if (j.isselect) {
@@ -874,14 +874,14 @@ export default {
     //删除尺码
     removeSize(i){
       if (this['disabledGroup'+i].length) {
-        let arr = JSON.parse(JSON.stringify(this['disabledGrouplist'+i]))  
+        let arr = JSON.parse(JSON.stringify(this['disabledGrouplist'+i]));
            arr.forEach((item,index)=>{
           if (this['disabledGroup'+i][0]===item) {
-            this['disabledGrouplist'+i].splice(index,1)
+            this['disabledGrouplist'+i].splice(index,1);
             this['disabledGroup'+i].shift()
           } 
-        })
-        console.log(this['disabledGroup'+i].length)
+        });
+        console.log(this['disabledGroup'+i].length);
         this.removeSize(i)
       }else{ this.creatmainList();}
     },
@@ -889,14 +889,14 @@ export default {
     createList(i) {
       if (this.colorList[i].color) {
          if (this.colorarr.indexOf(this.colorList[i].color) === -1) {
-        this.colorarr.push(this.colorList[i].color)
+        this.colorarr.push(this.colorList[i].color);
         this.creatmainList();
         if (i === this.colorList.length - 1&&this.colorList[i].color) {
           let obj = { color: "", remark: "", colorpictures: "" };
           this.colorList.push(obj);
         }
       }else if (this.colorarr.indexOf(this.colorList[i].color) !== i) {
-         this.colorList[i].color = ""
+         this.colorList[i].color = "";
          this.$Message.warning("该颜色已经存在");
       }
       }
@@ -904,7 +904,7 @@ export default {
     //删除颜色
     removeColorList(i) {
       if (this.colorList[i].color) {
-       let index = this.colorarr.indexOf(this.colorList[i].color)
+       let index = this.colorarr.indexOf(this.colorList[i].color);
         this.colorList.splice(i, 1);
         this.colorarr.splice(index, 1);
           this.creatmainList();
@@ -944,8 +944,8 @@ export default {
             }
           });
       });
-      this.mainList = copymainList
-      console.log(this.mainList)
+      this.mainList = copymainList;
+      console.log(this.mainList);
       this.$nextTick(()=>{
         this.movecolor()
       })
@@ -953,7 +953,7 @@ export default {
     },
     //处理输入数量和价格
     getTotal(i) {
-      if (this.mainList[i].Price<0) this.mainList[i].Price = 0
+      if (this.mainList[i].Price<0) this.mainList[i].Price = 0;
        if (this.mainList[i].number>0) {
          this.mainList[i].number = Math.floor(this.mainList[i].number)
       }else{
@@ -992,7 +992,7 @@ export default {
         parentcategoryid,
         parms;
       specialattributesname = [];
-      brandname = []
+      brandname = [];
       this.generalattribute.forEach((i,index) => {
         i.item.forEach(j=>{
           if (j.guid === this.bmodels[index]) {
@@ -1042,7 +1042,7 @@ export default {
           Price: this.models[8],
           number: this.models[9],
           Code:this.Code,
-    
+
         };
       } else {
         url = "/admin/common/Buyer_commodity.ashx?action=edit";
@@ -1065,7 +1065,7 @@ export default {
           Price: this.models[8],
           number: this.models[9],
           Code:this.Code,
-  
+
         };
       }
       this.$axios
@@ -1084,14 +1084,14 @@ export default {
     },
     //关闭商品编辑
     closegoods(){
-      this.isadds = true
+      this.isadds = true;
       this.colorList = [
         {
           color: "",
           remark: "",
           colorpictures: ""
         }
-      ]
+      ];
       this.disabledGroup1 = [];
       this.disabledGroup2 = [];
       this.disabledGroup3 = [];
@@ -1132,7 +1132,7 @@ export default {
           .then(res => {
             if (res.status >= 0) {
               this.colorList[this.colorindex].colorpictures = res.data[0];
-              console.log(this.colorList)
+              console.log(this.colorList);
                this.creatmainList();
             } else {
               that.$Message.warning(res.content);
@@ -1146,7 +1146,7 @@ export default {
       if (!event.target.files[0].size) return;
       let files = event.target.files;
       // 批量上传
-       let formData = new FormData()
+       let formData = new FormData();
       for (let i = 0; i < files.length; i++) {
         // 单张上传
         formData.append("file"+i,files[i])
@@ -1229,13 +1229,13 @@ export default {
       }
     },
      ok2() {
-          this.$set(this.models,0,"")
+          this.$set(this.models,0,"");
       //this.models[0] = "";
       this.modal2 = false;
       this.lasttvalue1 = this.tvalue1    
     },
     cancel2() {
-      this.tvalue1 = this.lasttvalue1
+      this.tvalue1 = this.lasttvalue1;
       this.modal2 = false;
       this.tabsisok= false
     } 
@@ -1439,5 +1439,5 @@ p.titl1,div.titl1{background: #fff;margin-left: 10px;margin-bottom: 20px;}
 .colorimgbox img{width:22px ;height: 22px;margin-left: -10px;margin-right: 10px;transform: translateY(1px)}
 .tabtop{width: 180px;font-weight: 600;position: absolute;top: 171px;right: 42px;z-index: 999;background-color: #f8f8f9;}
 .tabtop span{margin-right: 88px;}
-.colorbox tr .feasttd{margin-left: 0px;border-left: 1px solid #ccc;width: 180px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;}
+.colorbox tr .feasttd{margin-left: 0;border-left: 1px solid #ccc;width: 180px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;}
 </style>

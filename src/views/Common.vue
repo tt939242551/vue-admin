@@ -133,18 +133,18 @@ export default {
     //通用属性初始化
     //获取通用属性分类
     gettlist(){
-       let url = "/admin/common/generalattribute.ashx?action=selectlist"
-       let params={page:'0',pageSize:'0',parentid:"0",}
+       let url = "/admin/common/generalattribute.ashx?action=selectlist";
+       let params={page:'0',pageSize:'0',parentid:"0",};
        this.$axios.post(url,this.$qs.stringify(params)).then(res=>{
          if (res.status>=0) {
-            this.tabs = res.item
-            this.titles = []
+            this.tabs = res.item;
+            this.titles = [];
             if (this.tabs[0].ispicture==='1') {
               this.isshow = true
             }
             this.tabs.forEach(i=>{
               this.titles.push(i.title)
-            })
+            });
             this.getselectlist()
          }else{
             if (res.status==-1008) {
@@ -163,15 +163,15 @@ export default {
         if (n) {
          this.page = n
        }else{ this.page = 1}
-       let url = "/admin/common/generalattribute.ashx?action=selectlist"
-       let params={page:this.page,pageSize:this.pageSize,parentid:this.tabs[this.tvalue].id,title:this.searchvalue}
+       let url = "/admin/common/generalattribute.ashx?action=selectlist";
+       let params={page:this.page,pageSize:this.pageSize,parentid:this.tabs[this.tvalue].id,title:this.searchvalue};
        this.$axios.post(url,this.$qs.stringify(params)).then(res=>{
          if (res.status>=0) {
-            this.data1 = res.item
+            this.data1 = res.item;
             this.data1.forEach(i=>{
              i.setdate = i.setdate.match(/20\d{2}\/\d{1,2}\/\d{1,2}/)[0]
-            })
-            this.total = res.totalCount
+            });
+            this.total = res.totalCount;
                setTimeout(()=>{
            this.isredin = true
           },200)
@@ -185,11 +185,11 @@ export default {
     },
     //删除通用属性
      removeTabs(){
-      let arr = []
-      arr.push(this.tabs[this.tvalue].id)
+      let arr = [];
+      arr.push(this.tabs[this.tvalue].id);
        this.$axios.post("/admin/common/generalattribute.ashx?action=delete",this.$qs.stringify({ids: JSON.stringify(arr)})).then(res=>{
          if (res.status>=0) {
-           this.xModal3 = false
+           this.xModal3 = false;
             this.gettlist()
          }else{
            this.$Message.warning(res.content); 
@@ -200,12 +200,12 @@ export default {
     },
   //新增通用属性弹窗
    handleTabsAdd() {
-      this.value = ""
+      this.value = "";
       this.xModal2 = true;
     },
     //删除多条选中数据
     removelist(){
-      let url = "/admin/common/generalattribute.ashx?action=delete"
+      let url = "/admin/common/generalattribute.ashx?action=delete";
        this.$axios.post(url,this.$qs.stringify({ids: JSON.stringify(this.isCheck)})).then(res=>{
          if (res.status>=0) {
             this.getselectlist()
@@ -217,8 +217,8 @@ export default {
     },
     //删除单条数据
     movelist(i){
-      let url = "/admin/common/generalattribute.ashx?action=delete"
-      let arr = [this.data1[i].id]
+      let url = "/admin/common/generalattribute.ashx?action=delete";
+      let arr = [this.data1[i].id];
        this.$axios.post(url,this.$qs.stringify({ids: JSON.stringify(arr)})).then(res=>{
          if (res.status>=0) {
             this.getselectlist()
@@ -232,36 +232,36 @@ export default {
     //修改单条数据初始化
     show(index) {
       this.tindex = index;
-      let i = this.tvalue
-      this.text1 = this.titles[i]
-      this.imgval1 = ""
-      this.imgval2 = ""
-      this.xModal = true
+      let i = this.tvalue;
+      this.text1 = this.titles[i];
+      this.imgval1 = "";
+      this.imgval2 = "";
+      this.xModal = true;
       if(index!==this.data1.length){
       this.$axios.post("/admin/common/generalattribute.ashx?action=selectdetails",this.$qs.stringify({id:this.data1[index].id})).then(res=>{
          if (res.status>=0) {
-            this.imgval1 = res.item[0].picture.replace(/,$/,"")
+            this.imgval1 = res.item[0].picture.replace(/,$/,"");
             this.imgval2 = res.item[0].logo.replace(/,$/,"")
          }else{
            this.$Message.warning(res.content); 
          }
        }).catch(()=>{     
-         } )
-      this.value1 = this.data1[index].title 
+         } );
+      this.value1 = this.data1[index].title;
       this.value2 = this.data1[index].setdate 
       }else{
-        this.value1=''
+        this.value1='';
         this.value2=''
       }
     },
     //分页
     getlist(index) {
-       this.page = index
+       this.page = index;
       this.getselectlist(index)
     },
     //多选框
     selectionChange(a){
-      this.isCheck = []
+      this.isCheck = [];
      a.forEach((item)=>{
        if(this.isCheck.indexOf(item.id)<0){
          this.isCheck.push(item.id)
@@ -270,25 +270,25 @@ export default {
     },
     //新增单条数据
     addList(){
-    let i = this.data1.length
+    let i = this.data1.length;
     this.show(i)
     },
      //新增,修改单条数据
     isok1(){
-        let url = ""
-        let pamel ={}
+        let url = "";
+        let pamel ={};
         if ( this.tindex === this.data1.length) {
-            url = "/admin/common/generalattribute.ashx?action=add"
+            url = "/admin/common/generalattribute.ashx?action=add";
             pamel = {title:this.value1,parentid:this.tabs[this.tvalue].id,setdate:this.value2,picture:this.imgval1,logo:this.imgval2}
         }else {
-            url = "/admin/common/generalattribute.ashx?action=edit"
+            url = "/admin/common/generalattribute.ashx?action=edit";
             pamel = {id:this.data1[this.tindex].id,title:this.value1,setdate:this.value2,picture:this.imgval1,logo:this.imgval2}
         }
         if(this.value1 && this.value2){
          this.$axios.post(url,
          this.$qs.stringify(pamel)).then(res=>{
          if (res.status>=0) {
-         this.getselectlist()
+         this.getselectlist();
          this.xModal=false
          
          }else{
@@ -309,7 +309,7 @@ export default {
          }
         }).catch(()=>{
               
-         })
+         });
         this.xModal2 = false;
       } else {
         this.$Message.warning("输入数据不能为空");
@@ -333,7 +333,7 @@ export default {
         let that = this;
       // 监听reader对象的onload事件，当图片加载完成时，把base64编码賦值给预览图片
         reader.onload = function() {
-          let imgarr =  [this.result]
+          let imgarr =  [this.result];
          that.$axios.post("/admin/common/upload_ajax.ashx?action=UpLoadFile",that.$qs.stringify({imglist: JSON.stringify(imgarr)})).then(res=>{
          if (res.status>=0) {
            that[t] = res.data[0]
@@ -373,14 +373,11 @@ export default {
   },
   watch : {
       tvalue : function(){
-      this.isCheck = []
-      this.page = 1
-       this.searchvalue = ''
-      this.isshow = false
-      if (this.tabs[this.tvalue].ispicture==='1') {
-              this.isshow = true
-            }
-      this.getselectlist()
+      this.isCheck = [];
+      this.page = 1;
+       this.searchvalue = '';
+      this.isshow = this.tabs[this.tvalue].ispicture === '1';
+      this.getselectlist();
       this.isredin = false
     }
   }

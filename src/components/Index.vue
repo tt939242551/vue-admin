@@ -133,57 +133,57 @@ export default {
         // 已经为ajax请求设置了loading 请求前自动调用 请求完成自动结束
         // 添加请求拦截器
         this.$axios.interceptors.request.use(config => {
-            this.showLoading = true
+            this.showLoading = true;
             // 在发送请求之前做些什么
             return config
         }, error => {
-            this.showLoading = false
+            this.showLoading = false;
             // 对请求错误做些什么
             return Promise.reject(error)
-        })
+        });
         // 添加响应拦截器
          this.$axios.interceptors.response.use(response => {
       
-            this.showLoading = false
-            const res = response.data
+            this.showLoading = false;
+            const res = response.data;
             return res
         }, error => {
-            this.showLoading = false
+            this.showLoading = false;
             // 对响应错误做点什么
             return Promise.reject(error)
         }) 
     },
     mounted() {
         // 第一个标签
-        const name = this.$route.name
-        this.currentPage = name
+        const name = this.$route.name;
+        this.currentPage = name;
         this.tagsArry.push({
             text: this.nameToTitle[name],
             name: name
-        })
+        });
         
         // 根据路由打开对应的菜单栏
-        this.openMenus = this.getMenus(name)
+        this.openMenus = this.getMenus(name);
         this.$nextTick(() => {
             this.$refs.asideMenu.updateOpened()
-        })
+        });
 
         // 设置用户信息
-        this.userName = localStorage.getItem('userName')
+        this.userName = localStorage.getItem('userName');
         //this.userImg = localStorage.getItem('userImg')
 
-        this.main = document.querySelector('.sec-right')
-        this.asideArrowIcons = document.querySelectorAll('aside .ivu-icon-ios-arrow-down')
+        this.main = document.querySelector('.sec-right');
+        this.asideArrowIcons = document.querySelectorAll('aside .ivu-icon-ios-arrow-down');
 
         // 监听窗口大小 自动收缩侧边栏
         this.monitorWindowSize()
     },
     watch: {
         $route(to) {
-            const name = to.name
-            this.currentPage = name
+            const name = to.name;
+            this.currentPage = name;
             if (name == 'error') {
-                this.crumbs = '404'
+                this.crumbs = '404';
                 return
             }
 
@@ -212,39 +212,39 @@ export default {
         // 由于iView的导航菜单比较坑 只能设定一个name参数
         // 所以需要在这定义组件名称和标签栏标题的映射表 有多少个页面就有多少个映射条数
         nameToTitle() {
-            const obj = {}
+            const obj = {};
             this.menuItems.forEach(e => {
                 this.processNameToTitle(obj, e)
-            })
+            });
 
             return obj
         },
     },
     methods: {
         getMenus(name) {
-            let menus
-            const tagTitle = this.nameToTitle[name]
+            let menus;
+            const tagTitle = this.nameToTitle[name];
             for (let i = 0, l = this.menuItems.length; i < l; i++) {
-                const item = this.menuItems[i]
-                menus = []
-                menus[0] = i
+                const item = this.menuItems[i];
+                menus = [];
+                menus[0] = i;
                 if (item.text == tagTitle) {
                     return menus
                 }
 
                 if (item.children) {
                     for (let j = 0, ll = item.children.length; j < ll; j++) {
-                        const child = item.children[j]
-                        menus[1] = i + '-' + j
-                        menus.length = 2
+                        const child = item.children[j];
+                        menus[1] = i + '-' + j;
+                        menus.length = 2;
                         if (child.text == tagTitle) {
                             return menus
                         }
 
                         if (child.children) {
                             for (let k = 0, lll = child.children.length; k < lll; k++) {
-                                const grandson = child.children[k]
-                                menus[2] = i + '-' + j + '-' + k
+                                const grandson = child.children[k];
+                                menus[2] = i + '-' + j + '-' + k;
                                 if (grandson.text == tagTitle) {
                                     return menus
                                 }
@@ -259,7 +259,6 @@ export default {
           .then(res => {
             if (res.status > 0) {
             this.$router.replace({name: 'login'})
-
             } else {
               this.$Message.warning(res.content); 
             }
@@ -267,7 +266,7 @@ export default {
           .catch(() => {}); 
         },
         monitorWindowSize() {
-            let w = document.documentElement.clientWidth || document.body.clientWidth
+            let w = document.documentElement.clientWidth || document.body.clientWidth;
             if (w < 1300) {
                 this.shrinkAside()
             }
@@ -289,13 +288,13 @@ export default {
         },
         // 跳转页面 路由名称和参数
         gotoPage(name, params) {
-            this.currentPage = name
-            this.crumbs = this.paths[name]
-            this.$router.replace({name, params})
+            this.currentPage = name;
+            this.crumbs = this.paths[name];
+            this.$router.replace({name, params});
 
             if (!this.keepAliveData.includes(name)) {
                 // 如果标签超过8个 则将第一个标签删除
-                if (this.tagsArry.length == 10) {
+                if (this.tagsArry.length === 10) {
                     this.tagsArry.shift()
                 }
                 this.tagsArry.push({name, text: this.nameToTitle[name]})
@@ -306,22 +305,22 @@ export default {
             switch(name) {
                 case '1':
                     // 修改密码
-                    this.gotoPage('password')
-                    break
+                    this.gotoPage('password');
+                    break;
                 case '2':
                     // 基本资料
-                    this.gotoPage('userinfo')
-                    break
+                    this.gotoPage('userinfo');
+                    break;
                 case '3':
-                    resetTokenAndClearUser()
-                    this.userout()
+                    resetTokenAndClearUser();
+                    this.userout();
                    
                     break
             }
         },
         // 控制用户三角箭头显示状态
         showArrow(flag) {
-            this.arrowUp = flag
+            this.arrowUp = flag;
             this.arrowDown = !flag
         },
         // 判断
@@ -332,53 +331,53 @@ export default {
         shrinkAside() {
             this.asideArrowIcons.forEach(e => {
                 e.style.display = 'none'
-            })
+            });
 
-            this.isShowAsideTitle = false
-            this.openMenus = []
+            this.isShowAsideTitle = false;
+            this.openMenus = [];
             this.$nextTick(() => {
                 this.$refs.asideMenu.updateOpened()
-            })
+            });
 
             setTimeout(() => {
-                this.asideClassName = ''
+                this.asideClassName = '';
                 this.main.style.width = 'calc(100% - 80px)'
             }, 0)
         },
         // 展开
         expandAside() {
             setTimeout(() => {
-                this.isShowAsideTitle = true
+                this.isShowAsideTitle = true;
                 this.asideArrowIcons.forEach(e => {
                     e.style.display = 'block'
-                })
+                });
                 
-                this.openMenus = this.menuCache
+                this.openMenus = this.menuCache;
                 this.$nextTick(() => {
                     this.$refs.asideMenu.updateOpened()
                 })
-            }, 200)
-            this.asideClassName = 'aside-big'
+            }, 200);
+            this.asideClassName = 'aside-big';
             this.main.style.width = 'calc(100% - 220px)'
         },
         // 刷新当前标签页
         reloadPage() {
-            let name = this.$route.name
-            let index = this.keepAliveData.indexOf(name)
+            let name = this.$route.name;
+            let index = this.keepAliveData.indexOf(name);
             this.$nextTick(() => {
                 if (this.tagsArry.length) {
-                    this.isShowRouter = false
-                    this.tagsArry.splice(index, 1)
+                    this.isShowRouter = false;
+                    this.tagsArry.splice(index, 1);
                     this.$nextTick(() => {
-                        this.tagsArry.splice(index, 0, {name, text: this.nameToTitle[name]})
-                        this.gotoPage(name)
+                        this.tagsArry.splice(index, 0, {name, text: this.nameToTitle[name]});
+                        this.gotoPage(name);
                         this.isShowRouter = true
                     })
                 } else {
-                    this.isShowRouter = false
+                    this.isShowRouter = false;
                     this.$nextTick(() => {
-                        this.tagsArry.push({name, text: this.nameToTitle[name]})
-                        this.gotoPage(name)
+                        this.tagsArry.push({name, text: this.nameToTitle[name]});
+                        this.gotoPage(name);
                         this.isShowRouter = true
                     })           
                 }
@@ -388,7 +387,7 @@ export default {
  
         // 消息通知
         info() {
-            const self = this
+            const self = this;
             this.$Notice.info({
                 title: `您有${this.msgNum}条消息`,
                 render(h) {
@@ -400,7 +399,7 @@ export default {
                         on: {
                             click() {
                                 // 点击查看跳转到消息页
-                                self.gotoPage('msg')
+                                self.gotoPage('msg');
                                 self.hasNewMsg = false,
                                 self.msgNum = 0
                             }
@@ -417,7 +416,7 @@ export default {
         },
         processNameToTitle(obj, data, text) {
             if (data.name) {
-                obj[data.name] = data.text
+                obj[data.name] = data.text;
                 this.paths[data.name] = text? `${text} / ${data.text}` : data.text
             }
             if (data.children) {

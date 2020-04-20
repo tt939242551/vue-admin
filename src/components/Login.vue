@@ -59,36 +59,37 @@ export default {
   },
   methods: {
     verifyAccount(e) {
-      if (this.account == "") {
+      if (this.account === "") {
         this.accountError = "账号不能为空";
       } else {
         this.accountError = "";
       }
     },
     verifyPwd(e) {
-      if (this.pwd == "") {
+      if (this.pwd === "") {
         this.pwdError = "密码不能为空";
       }
     },
     submit() {
       this.$axios.post('/admin/common/login.ashx',this.$qs.stringify({userName:this.account,userPwd:this.pwd})).then(res=>{
-        if (res.status > 0) {
-        this.isShowLoading = true;
+        if (res.data.status > 0) {
+       
         // 登陆成功 设置用户信息头像
-       window.console.log(res)
-        localStorage.setItem("userName",this.account);
-         localStorage.setItem("token","token"); 
-         if (res.role_id==2) {
+         window.console.log(res)
+         if (res.data.role_id==2) {
+            localStorage.setItem("userName2",this.account);
+            localStorage.setItem("userName",'');
             window.location.href = "http://sfstyling.bogole.com/business/index.html";
-         }else{
+         }else if (res.data.role_id==1||res.data.role_id==3)  
+         {
+            this.isShowLoading = true;
+            localStorage.setItem("userName",this.account);
+             localStorage.setItem("userName2",'');
             this.$router.push({ path: this.redirect || "/statistics" });
          }
-        
-        // location.reload() 
        if (this.single) {
          localStorage.setItem("userPwd", this.pwd);
        }
-      
       } else {
        this.pwdError = res.content;
       }

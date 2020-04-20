@@ -152,12 +152,13 @@ export default {
     },
     mounted(){this.getgoodsinit()},
     methods:{
+       //初始化
         getgoodsinit(){
           this.$axios
           .post("/admin/common/recommendationcommodity.ashx?action=selectlist")
           .then(res => {
             if (res.status >= 0) {
-             this.tabs = res.recommendationcommodity
+             this.tabs = res.recommendationcommodity;
              this.tabs.forEach(i=>{
                 i.item.forEach((itmes)=>{ 
                 if(itmes.commoditypictures1){ 
@@ -177,8 +178,9 @@ export default {
           })
           .catch(() => {});
         },
+        //新增推荐标题
         isok1(){
-            let arr = []
+            let arr = [];
             if (this.styles===0) {
                  arr = [{},{},{},{}]
             }else{arr = [{},{},{},{},{}]}
@@ -187,8 +189,8 @@ export default {
             .post("/admin/common/recommendationcommodity.ashx?action=add",this.$qs.stringify({ title: this.Modal[0] ,item: JSON.stringify(arr)}))
             .then(res => {
                 if (res.status > 0) {
-                 this.xModal1 = false
-                  this.getgoodsinit()   
+                 this.xModal1 = false;
+                  this.getgoodsinit();
                 this.$Message.success("新增商品推荐成功");
                 } else {
                 this.$Message.warning(res.content);
@@ -199,14 +201,15 @@ export default {
                this.$Message.warning("推荐标题不能为空");
            }
         },
+      //新增推荐商品
       isok2(){
       if (this.Modal[3]) {
-          let  url = "/admin/common/recommendationcommodity.ashx?action=edit"
-          let parem ={ id: this.tabs[this.tvalue].item[this.goodsindex].id,typeid:2 ,commodityguid:this.Modal[3]}
+          let  url = "/admin/common/recommendationcommodity.ashx?action=edit";
+          let parem ={ id: this.tabs[this.tvalue].item[this.goodsindex].id,typeid:2 ,commodityguid:this.Modal[3]};
          this.$axios.post(url,this.$qs.stringify(parem))
           .then(res => {
             if (res.status >0) {
-              this.getgoodsinit()
+              this.getgoodsinit();
               this.xModal2 = false
             } else {
               this.$Message.warning(res.content);
@@ -215,17 +218,18 @@ export default {
           .catch(() => {});
          }else{this.$Message.warning("商品不能为空");} 
        },
+      //编辑推荐商品导图
       isok3(){
       if (this.imgmodels) {
-          let url =""
-          let parem ={}
-           url = "/admin/common/recommendationcommodity.ashx?action=edit"
-           parem =  { picture: this.imgmodels, id: this.tabs[this.tvalue].item[this.goodsindex].id,typeid:1,urllink:this.Modal[0] }
+          let url ="";
+          let parem ={};
+           url = "/admin/common/recommendationcommodity.ashx?action=edit";
+           parem =  { picture: this.imgmodels, id: this.tabs[this.tvalue].item[this.goodsindex].id,typeid:1,urllink:this.Modal[0] };
           
          this.$axios.post(url,this.$qs.stringify(parem))
           .then(res => {
             if (res.status > 0) {
-              this.getgoodsinit()
+              this.getgoodsinit();
               this.xModal3 = false
             } else {
               this.$Message.warning(res.content);
@@ -234,15 +238,16 @@ export default {
           .catch(() => {});
       }else{this.$Message.warning("图片必须上传");} 
     },
+    //删除推荐标题
         removebrandall(){
-            let arr = []
-            arr.push(this.tabs[this.tvalue].id)
+            let arr = [];
+            arr.push(this.tabs[this.tvalue].id);
           this.$axios
           .post("/admin/common/recommendationcommodity.ashx?action=delete",this.$qs.stringify({ids: JSON.stringify(arr)}))
           .then(res => {
             if (res.status >= 0) {
-            this.tvalue = 0
-            this.xModal = false
+            this.tvalue = 0;
+            this.xModal = false;
              this.getgoodsinit()
             } else {
               this.$Message.warning(res.content);
@@ -251,6 +256,7 @@ export default {
           })
           .catch(() => {});
         },
+    //开启关闭首页展示
      switchsth(i){   
             this.$axios.post("/admin/common/recommendationcommodity.ashx?action=editisopen",this.$qs.stringify({id:this.tabs[i].id}))
               .then(res => {
@@ -260,18 +266,19 @@ export default {
                 }
               })
               .catch(() => {});  
-    },   
+    }, 
+    //编辑商品初始化 
     showModal(i){
-      this.goodsindex = i
-      this.Modal[0] = ""
-      this.Modal[1] = ''
-      this.Modal[2] = ''
-      this.Modal[3] = ''
-      this.editgoodsinit()
-     
+      this.goodsindex = i;
+      this.Modal[0] = "";
+      this.Modal[1] = '';
+      this.Modal[2] = '';
+      this.Modal[3] = '';
+      this.editgoodsinit() 
     },
+    //编辑商品初始化
       editgoodsinit(){
-        let typeid = 2
+        let typeid = 2;
        if (this.goodsindex==0&&this.tabs[this.tvalue].item.length==4) {
              typeid = 1      
                 }
@@ -280,34 +287,34 @@ export default {
           .then(res => {
             if (res.status > 0) {
               if (typeid == 1) {
-                  this.imgmodels = res.recommendationcommodity[0].picture
-                    this.Modal[0] = res.recommendationcommodity[0].urllink
+                  this.imgmodels = res.recommendationcommodity[0].picture;
+                    this.Modal[0] = res.recommendationcommodity[0].urllink;
                     this.xModal3 = true
               }else{
-                  this.generalattribute = res.generalattribute[0].item
+                  this.generalattribute = res.generalattribute[0].item;
               this.generalattribute.forEach(i=>{
                 if (i.isselect) {
                   this.Modal[0] = i.guid
                 }
-              })
-             this.parentcategory = res.parentcategory
+              });
+             this.parentcategory = res.parentcategory;
               this.parentcategory.forEach(item=>{
                 if (item.isselect) {
                   this.Modal[1] = item.guid
                 }
-              })
-              this.category = res.category
+              });
+              this.category = res.category;
               this.category.forEach(item=>{
                 if (item.isselect) {
                   this.Modal[2] = item.guid
                 }
-              })
-              this.commodity = res.commodity
+              });
+              this.commodity = res.commodity;
               this.commodity.forEach(item=>{
                 if (item.isselect) {
                   this.Modal[3] = item.guid
                 }
-              })
+              });
                 this.xModal2 = true
               
               }
@@ -319,16 +326,17 @@ export default {
           })
           .catch(() => {});
     },
+    //选择类别查询单品
      getCategory(guid) {
       this.Modal[2] = "";
-      this.getcommodityList()
+      this.getcommodityList();
        if (guid) {
-          let id 
+          let id;
          this.parentcategory.forEach(item=>{
            if (item.guid === guid) {
              id = item.id
            }
-         })
+         });
         this.$axios
           .post(
             "/admin/common/category.ashx?action=selectby_parentid",
@@ -343,8 +351,8 @@ export default {
           })
           .catch(() => {});
       }
-
     },
+    //选择品牌,类别,单品查询商品
     getcommodityList(){
       if (this.goodsindex!==0 || this.tabs[this.tvalue].item.length!==4) {
           this.Modal[3] = "";
@@ -366,104 +374,51 @@ export default {
       }
      
     },
+    //新增商品推荐弹窗
     addgoodst(){
-        this.Modal[0] = ""
+        this.Modal[0] = "";
         this.xModal1 = true
     },
-         // 图片上传
+   // 图片上传
     addimg() {
       this.$refs.uploadfiles.click();
       this.$refs.uploadfiles.value = ''
     },
-     //文件流上传图片
-      fileChange(event) {
-  
-      if (!event.target.files[0].size) return;
-      let files = event.target.files;
+        //文件流上传图片
+        fileChange: function (event) {
 
-      // 批量上传
-       let formData = new FormData()
-      for (let i = 0; i < files.length; i++) {
-        // 单张上传
-        formData.append("file"+i,files[i])
-      } 
-       this.$Loading.start();
-        this.$axios
-          ({
-           url: "/admin/common/upload_ajax.ashx?action=UpLoadFiles",
-           data: formData, method: 'post',
-           headers: { 
-          'Content-Type': 'multipart/form-data'
-         }})
-          
-          .then(res => {
-            if (res.status > 0) {
-               this.$Loading.finish();
-              this.imgmodels = res.data[0];
-            } else {
-               this.$Loading.error();
-              that.$Message.warning(res.content);
+            if (!event.target.files[0].size) return;
+            let files = event.target.files;
+
+            // 批量上传
+            let formData = new FormData();
+            for (let i = 0; i < files.length; i++) {
+                // 单张上传
+                formData.append("file" + i, files[i])
             }
-          })
-          .catch(() => {});
-  
-    },
-    //base64上传图片
-    fileChanges(event) {
-      if (!event.target.files[0].size) return;
-      let file = event.target.files[0];
-      this.imgmodel = [];
-      this.fileAdd(file);
-      setTimeout(() => {
-        this.$Loading.start();
-        this.$axios
-          .post(
-            "/admin/common/upload_ajax.ashx?action=UpLoadFile",
-            this.$qs.stringify({ imglist: JSON.stringify(this.imgmodel) })
-          )
-          .then(res => {
-            if (res.status >= 0) {
-               this.$Loading.finish();
-              this.imgmodels = res.data[0];
-              
-            } else {
-               this.$Loading.error();
-              this.$Message.warning("图片上传失败");
-            }
-          })
-          .catch(() => {
-             this.$Loading.error();
-            this.$Message.warning("图片上传失败");
-            });
-      }, 100);
-    },
-        // 单张上传
-    fileAdd(file) {
-      // console.log(file);
-      let type = file.type; //文件的类型，判断是否是图片
-      let size = file.size; //文件的大小，判断图片的大小
-      if (this.imgData.accept.indexOf(type) === -1) {
-        this.$Message.warning("请选择我们支持的图片格式！");
-        return false;
-      }
-      if (size > 3145728) {
-        this.$Message.warning("请选择3M以内的图片！");
-        return false;
-      }
-      let that = this;
-      // 总大小
-      this.size = this.size + file.size;
-      let reader = new FileReader();
-      // 调用reader.readAsDataURL()方法，把图片转成base64
-      reader.readAsDataURL(file);
-      // 监听reader对象的onload事件，当图片加载完成时，把base64编码賦值给预览图片
-      reader.onload = function() {
-        file.src = this.result;
-        // console.log(this); 这里的this是FileReader对象
-        // 再把file对象添加到imgList数组
-        that.imgmodel.push(this.result) ;
-      };
-    },
+            this.$Loading.start();
+            this.$axios
+            ({
+                url: "/admin/common/upload_ajax.ashx?action=UpLoadFiles",
+                data: formData, method: 'post',
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            })
+
+                .then(res => {
+                    if (res.status > 0) {
+                        this.$Loading.finish();
+                        this.imgmodels = res.data[0];
+                    } else {
+                        this.$Loading.error();
+                        that.$Message.warning(res.content);
+                    }
+                })
+                .catch(() => {
+                });
+
+        },
     },
 }
 </script>

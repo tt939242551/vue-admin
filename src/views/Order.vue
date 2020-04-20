@@ -267,8 +267,9 @@ export default {
         }
     },
     methods:{
+      //初始化
         getgoodslist(){
-            let id 
+            let id;
             if (this.$route.query.id) {
                 id = this.$route.query.id
             }
@@ -276,19 +277,19 @@ export default {
               if (this.models[1]) {
                   arr = this.models[1]
               }
-           let url = "/common/order.ashx"
-          let params={pageindex:this.page,pageSize:this.pageSize,status:this.tvalue?this.tvalue+1:0,type:10,usmid:this.usmid,stardate:arr[0],enddate:arr[1],where:this.models[3]}
-          this.isredin = false
+           let url = "/common/order.ashx";
+          let params={pageindex:this.page,pageSize:this.pageSize,status:this.tvalue?this.tvalue+1:0,type:10,usmid:this.usmid,stardate:arr[0],enddate:arr[1],where:this.models[3]};
+          this.isredin = false;
            this.$axios.post(url,this.$qs.stringify(params)).then(res=>{
            if (res.status>0) {
-            this.orderList = res.list
+            this.orderList = res.list;
              this.orderList.forEach((items)=>{
                         items.list.forEach((item)=>{
                             if(item.photo){ 
                             item.photo = item.photo.match(/https:\/\/oss.bogole.com\/project\/code\/public\/e19102801\/upfile\/20\d{6,30}\.[a-z]{3,4}/)[0]  
                                 }
                         })     
-                    })     
+                    });
            if (this.page===1) {
               this.total = res.totalCount
            } 
@@ -307,27 +308,30 @@ export default {
               
          } )
         },
+    //填写运单号弹窗
     show(i){
-      this.value = ''
-       this.xModal1=true
+      this.value = '';
+       this.xModal1=true;
        this.tindex = i
     },
+    //选择时间段搜索订单
     gettime(t){
-     this.models[1] = t
-     this.page = 1
+     this.models[1] = t;
+     this.page = 1;
      this.getgoodslist()
     },
-      gettimes(){
-     this.page = 1
+    //搜索框搜索订单
+    gettimes(){
+     this.page = 1;
      this.getgoodslist()
     },
+    //确认发货
     isok1(){
       if (this.value) {
          this.$axios.post("/common/order.ashx",this.$qs.stringify({mark:this.orderList[this.tindex].oguid,expressname:this.value,type:11})).then(res=>{
            if (res.status>0) {
-            this.xModal1=false
+            this.xModal1=false;
             this.getgoodslist()
-
          }else{
            this.$Message.warning(res.content); 
            this.xModal1=false
@@ -337,14 +341,15 @@ export default {
          } ) 
       }else{this.$Message.warning("运单号不能为空")}
     },
+    //删除选中订单
     removelist(){
         if (this.isCheck.length) {
-            let arr = []
+            let arr = [];
             this.isCheck.forEach((item,i)=>{
                 if (item) {
                   arr.push(this.orderList[i].oguid)  
                 }
-            })
+            });
         this.$axios.post("/common/order.ashx",this.$qs.stringify({mark:arr.join(","),type:15})).then(res=>{
            if (res.status>0) {
             this.getgoodslist()
@@ -355,29 +360,31 @@ export default {
           } ) 
         }
     },
+    //查看订单详情
     getparticulars(i){
-      this.islist = false
-      this.tindex = i
-       
+      this.islist = false;
+      this.tindex = i  
     },
+    //修改物流信息初始化
     editorder(){
-       this.logistics[0] = []
-        this.$set(this.logistics[0],0,this.orderList[this.tindex].province)
-       this.$set(this.logistics[0],1,this.orderList[this.tindex].city)
-       this.$set(this.logistics[0],2,this.orderList[this.tindex].area)
+       this.logistics[0] = [];
+        this.$set(this.logistics[0],0,this.orderList[this.tindex].province);
+       this.$set(this.logistics[0],1,this.orderList[this.tindex].city);
+       this.$set(this.logistics[0],2,this.orderList[this.tindex].area);
   
-        this.logistics[1]=this.orderList[this.tindex].name
-         this.logistics[2]=this.orderList[this.tindex].address
-        this.logistics[3]=this.orderList[this.tindex].zcode
-         this.logistics[4]=this.orderList[this.tindex].expressname
+        this.logistics[1]=this.orderList[this.tindex].name;
+         this.logistics[2]=this.orderList[this.tindex].address;
+        this.logistics[3]=this.orderList[this.tindex].zcode;
+         this.logistics[4]=this.orderList[this.tindex].expressname;
       this.xModal2=true
     },
+    //修改物流信息
     isok2(){
       if (this.logistics[0]&&this.logistics[1]&&this.logistics[2]&&this.logistics[3]) {
          this.$axios.post("/common/order.ashx",this.$qs.stringify({mark:this.orderList[this.tindex].oguid,country:"中国大陆",province:this.logistics[0][0],city:this.logistics[0][1],area:this.logistics[0][2],
          name:this.logistics[1],address:this.logistics[2],zcode:this.logistics[3],expressname:this.logistics[4],type:12})).then(res=>{
            if (res.status>0) {
-            this.xModal2 = false
+            this.xModal2 = false;
              this.getgoodslist()
          }else{
            this.$Message.warning(res.content); 
@@ -388,8 +395,9 @@ export default {
          } ) 
       }else{this.$Message.warning("数据不能为空")}
     },
+    //分页
      getlist(index) {
-       this.page = index
+       this.page = index;
       this.getgoodslist()
     },
     },
@@ -398,19 +406,18 @@ export default {
       if (vm.$route.query.id) {
         vm.usmid = vm.$route.query.id
       }
-       vm.page = 1
-       vm.tvalue = 0
-       vm.islist = true
+       vm.page = 1;
+       vm.tvalue = 0;
+       vm.islist = true;
        vm.getgoodslist()
      })
     },
     mounted(){ 
-      // this.getgoodslist()
-     
+      // 地址文件处理
        this.addressdata.forEach(i=>{
-         i.value = i.label
+         i.value = i.label;
          i.children.forEach(j=>{
-            j.value = j.label 
+            j.value = j.label;
              j.children.forEach(k=>{
             k.value = k.label   
          })
@@ -419,9 +426,9 @@ export default {
     },
     watch : {
       tvalue : function(){
-      this.isCheck = []
-      this.page = 1
-      this.isredin = false
+      this.isCheck = [];
+      this.page = 1;
+      this.isredin = false;
       this.getgoodslist()
     }
   }

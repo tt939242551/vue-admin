@@ -186,17 +186,18 @@ export default {
   },
    beforeRouteEnter (to, from, next) {
       next(vm => {
-       vm.page =1
-      vm.isadds = true
+       vm.page =1;
+      vm.isadds = true;
       vm.getInit();
      
      })
     },
   methods: {
+    //初始化类别
     getInit(){
       this.$axios.post("/admin/common/category.ashx?action=selectlist",this.$qs.stringify({page:0,pageSize:0,parentid:0})).then(res=>{
          if (res.status>=0) {
-           this.tabs = res.item
+           this.tabs = res.item;
            this.getSingleList()
          }else{
             if (res.status==-1008) {
@@ -209,56 +210,56 @@ export default {
               
          })
     },
+     //初始化单品
     getSingleList(n){
        if (n) {
          this.page = n
        }else{ this.page = 1}
       this.$axios.post("/admin/common/category.ashx?action=selectlist",this.$qs.stringify({page:this.page,pageSize:this.pageSize,parentid:this.tabs[this.tvalue].id,where:this.searchvalue})).then(res=>{
          if (res.status>=0) {
-             this.data1 = res.item
+             this.data1 = res.item;
              this.data1.forEach(i=>{
            i.setdate =  i.setdate.match(/20\d{2}\/\d{1,2}\/\d{1,2}/)[0]
-            })
+            });
              this.total = res.totalCount
          }else{
            this.$Message.warning(res.content); 
-         }
-        
-       }).catch(()=>{
-              
+         } 
+       }).catch(()=>{        
          } )
     },
+    //删除类别
     removeTabs(){
-      let arr = []
-      arr.push(this.tabs[this.tvalue].id)
+      let arr = [];
+      arr.push(this.tabs[this.tvalue].id);
        this.$axios.post("/admin/common/category.ashx?action=delete",this.$qs.stringify({ids: JSON.stringify(arr)})).then(res=>{
          if (res.status>=0) {
-           this.xModal3 = false
+           this.xModal3 = false;
       
             this.getInit()
          }else if (res.status===-1)  {
-           this.xModal3 = false
+           this.xModal3 = false;
            this.xModal6 = true
          }else{this.$Message.warning(res.content); }
        }).catch(()=>{
               
          } )
     },
+    //编辑单品初始化
     show(index) {
       this.isadds = false;
-      this.tindex = index
-      this.mtitle = this.data1[index].title
-      let id = this.data1[index].id
-      this.timeval = this.data1[index].setdate
+      this.tindex = index;
+      this.mtitle = this.data1[index].title;
+      let id = this.data1[index].id;
+      this.timeval = this.data1[index].setdate;
        this.$axios.post("/admin/common/category.ashx?action=selectdetails",this.$qs.stringify({id:id})).then(res=>{
          if (res.status>=0) {
-             this.generalattribute = res.item[0].generalattribute
-             let arr = []
+             this.generalattribute = res.item[0].generalattribute;
+             let arr = [];
              this.generalattribute.forEach(i => {
                   arr.push(true)
-             })
-             this.isallCheck = arr 
-            
+             });
+             this.isallCheck = arr;
              this.specialList = res.specialattributes   
          }else{
            this.$Message.warning(res.content); 
@@ -269,10 +270,12 @@ export default {
          } )
 
     },
+    // 分页
     getlist(index) {
-      this.page = index
+      this.page = index;
       this.getSingleList(index)
     },
+    //单品多选
     selectionChange(a) {
       this.isCheck = [];
       a.forEach(item => {
@@ -281,25 +284,28 @@ export default {
         }
       });
     },
+    //设置时间
     gettimeval(t){
       this.timeval = t
     },
+    //新增类别
     handleTabsAdd() {
-      this.value = ""
+      this.value = "";
       this.xModal2 = true;
     },
+    //新增单品初始化
     addList() {
-      this.tindex = this.data1.length
-      this.isadds = false
-      this.specialList = []
-       this.mtitle = ""
+      this.tindex = this.data1.length;
+      this.isadds = false;
+      this.specialList = [];
+       this.mtitle = "";
        this.$axios.post("/admin/common/category.ashx?action=InitializationAdd").then(res=>{
          if (res.status>=0) {
-             this.generalattribute = res.generalattribute
-              let arr = []
+             this.generalattribute = res.generalattribute;
+              let arr = [];
              this.generalattribute.forEach(i => {
                   arr.push(true)
-             })
+             });
              this.isallCheck = arr 
          }else{
            this.$Message.warning(res.content); 
@@ -308,13 +314,14 @@ export default {
               
          } )
     },
+    //删除选中单品
     removeList() {
        this.$axios.post("/admin/common/category.ashx?action=delete",this.$qs.stringify({ids: JSON.stringify(this.isCheck)})).then(res=>{
          if (res.status>=0) {
-            this.xModal5 = false
+            this.xModal5 = false;
             this.getSingleList()
          }else if (res.status===-1)  {
-           this.xModal5 = false
+           this.xModal5 = false;
            this.xModal6 = true
          }else{this.$Message.warning(res.content); }
        }).catch(()=>{
@@ -322,23 +329,25 @@ export default {
          } )
     },
     movelistindex(i){
-          this.tindex = i
+          this.tindex = i;
           this.xModal4 = true
     },
+    //删除单品
     movelist(){
-      let url = "/admin/common/category.ashx?action=delete"
-      let arr = [this.data1[this.tindex].id]
+      let url = "/admin/common/category.ashx?action=delete";
+      let arr = [this.data1[this.tindex].id];
        this.$axios.post(url,this.$qs.stringify({ids: JSON.stringify(arr)})).then(res=>{
          if (res.status>=0) {
-             this.xModal4 = false
+             this.xModal4 = false;
              this.getSingleList()
          }else if (res.status===-1)  {
-           this.xModal4 = false
+           this.xModal4 = false;
            this.xModal6 = true
          }else{this.$Message.warning(res.content); }
        }).catch(()=>{
          } )
     },
+    //新增类别
     isok() {
       if (this.value) {
         this.$axios.post("/admin/common/category.ashx?action=add",this.$qs.stringify({title:this.value, parentId:0,brandname:"",brandid:"",Seasonname:"",Seasonid:"",
@@ -350,18 +359,19 @@ export default {
          }
         }).catch(()=>{
               
-         })
+         });
         this.xModal2 = false;
       } else {
         this.$Message.warning("输入数据不能为空");
       }
     },
+    //选择通用属性
     changeBrand(i,j) {
       if (j===-1) {
         this.generalattribute[i].item.forEach((item,index)=>{
           this.$set(this.generalattribute[i].item[index],"isselect",this.isallCheck[i]) 
-        })
-        this.isallCheck[i] = !this.isallCheck[i]
+        });
+        this.isallCheck[i] = !this.isallCheck[i];
         return
       }
       if (this.generalattribute[i].item[j].isselect) {
@@ -369,47 +379,49 @@ export default {
       }else{this.$set(this.generalattribute[i].item[j],"isselect",true) }
       
     },
-
+    //编辑特殊属性弹窗
     eaitSpecial(i){
-      this.xModal1 = true
-      
+      this.xModal1 = true;
       if (i !== 'add') {
-        this.specialindex = i
-        this.ms = this.specialList[i].ms
+        this.specialindex = i;
+        this.ms = this.specialList[i].ms;
         this.ls = this.specialList[i].ls
       }else{
-       this.ms = ""
+       this.ms = "";
        this.ls = []
       }
     },
+    //删除特殊属性
     removeSpecial(i){
-      this.specialList.splice(i,1)
+      this.specialList.splice(i,1);
       this.specialindex = null
     },
+    //编辑特殊属性
     getSpecial(){
-      this.xModal1 = false
+      this.xModal1 = false;
         let obj = {
         ms: this.ms,
         ls: this.ls
-      }
+      };
       if (this.specialindex === null) {
         this.specialList.push(obj)
       }else{
-        this.specialList[this.specialindex].ms =this.ms
+        this.specialList[this.specialindex].ms =this.ms;
         this.specialList[this.specialindex].ls =this.ls
         } 
     },
+    //新增,编辑单品
     postSpecial(){
-     if (this.mtitle=="") {
+     if (this.mtitle==="") {
        this.$Message.warning("单品名必须填写");
        return
      }
-     var status = true
-     this.generalattribute[0].item.forEach(item=>{
+        let status = true;
+        this.generalattribute[0].item.forEach(item=>{
        if (item.isselect) {
           status = false
        }
-     })
+     });
       if (status) {
        this.$Message.warning("品牌必须选择");
        return
@@ -420,19 +432,19 @@ export default {
      this.generalattribute.forEach(i=>{
         i.item.forEach(j=>{
           if (j.isselect) {
-          brandname.push(j.title)
+          brandname.push(j.title);
           brandid.push(j.guid)
           }
         })
 
-     })
+     });
     if (this.tindex === this.data1.length) {
-       url = "/admin/common/category.ashx?action=add"
+       url = "/admin/common/category.ashx?action=add";
        pamls = {title:this.mtitle, parentId:this.tabs[this.tvalue].id,generalattributename:brandname.join(","),generalattributeid:brandid.join(","),
         specialattributes: JSON.stringify(this.specialList),setdate:this.timeval}
      }else{
-        url = "/admin/common/category.ashx?action=edit"
-        let  id = this.data1[this.tindex].id
+        url = "/admin/common/category.ashx?action=edit";
+        let  id = this.data1[this.tindex].id;
         pamls = {title:this.mtitle,generalattributename:brandname.join(","),generalattributeid:brandid.join(","),
         specialattributes: JSON.stringify(this.specialList),setdate:this.timeval,parentId:0,id:id}
      }
@@ -444,14 +456,14 @@ export default {
          }
         }).catch(()=>{
               
-         })
+         });
          this.isadds=true
     },
   },
   watch : {
       tvalue : function(){
-        this.searchvalue = ''
-      this.page = 1
+        this.searchvalue = '';
+      this.page = 1;
       setTimeout(()=>{
          this.getSingleList()
       },500)
