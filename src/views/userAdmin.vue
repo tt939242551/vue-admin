@@ -79,7 +79,7 @@
 
 <script>
 export default {
-    name: 'home',
+    name: 'userAdmin',
     data(){
         return{
            index: 0, 
@@ -159,6 +159,16 @@ export default {
        this.$axios.post(url,this.$qs.stringify(params)).then(res=>{
          if (res.status>=0) {
             this.data1 = res.item;
+            this.data1.forEach((item,i)=>{
+              if (item.user_name==="admin") {
+                this.data1.splice(i,1)
+              }
+            })
+             this.data1.forEach((item,i)=>{
+              if (item.user_name==="admins") {
+                this.data1.splice(i,1)
+              }
+            })
             this.total = res.totalCount
  
          }else{
@@ -177,7 +187,6 @@ export default {
     //获取用户类型下拉数据
     getitemrole(){
        this.$axios.post('/admin/common/user.ashx?action=selectmanager_role').then(res=>{   
-                         window.console.log(res);
                     if (res.status == 1) {
                    
                       this.itemrole = res.itemrole

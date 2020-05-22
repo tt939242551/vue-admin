@@ -71,11 +71,14 @@ export default {
       }
     },
     submit() {
-      this.$axios.post('/admin/common/login.ashx',this.$qs.stringify({userName:this.account,userPwd:this.pwd})).then(res=>{
+      this.$axios.post('/admin/common/login.ashx',this.$qs.stringify({userName:this.account,userPwd:this.pwd})).then(response=>{
+          let res = {}
+          if (response.data) {
+            res = response
+          }else{res.data = response}
+           window.console.log(res)
         if (res.data.status > 0) {
-       
         // 登陆成功 设置用户信息头像
-         window.console.log(res)
          if (res.data.role_id==2) {
             localStorage.setItem("userName2",this.account);
             localStorage.setItem("userName",'');
@@ -91,7 +94,7 @@ export default {
          localStorage.setItem("userPwd", this.pwd);
        }
       } else {
-       this.pwdError = res.content;
+       this.pwdError = res.data.content;
       }
       }).catch()
     }

@@ -12,26 +12,20 @@ export default {
   data() {
     return {
       editor: null,
-      editorContent: ''
+      editorContent: '',
+      isinit:true
     };
   },
   // catchData是一个类似回调函数，来自父组件，当然也可以自己写一个函数，主要是用来获取富文本编辑器中的html内容用来传递给服务端
   props: ['catchData',"content"], // 接收父组件的方法
   mounted() {
- 
     this.editor = new E(this.$refs.editorElem);
     let  _tant = this
     //this.editor.customConfig.uploadImgServer = 'http://sfstyling.bogole.com/admin/common/upload_ajax.ashx?action=UpLoadFile'
-    setTimeout(()=>{
-      this.$refs.editorElem.children[1].style["min-height"]="300px"
-      this.$refs.editorElem.children[1].style.height="auto"
-       this.editor.txt.html(this.content) 
-    },1000)
     this.editor.customConfig.customUploadImg = function (files, insert) {
    
        let imgUrl = ""
         let imglist = []
-  
        let formData = new FormData()
         formData.append("file1",files[0])
         _tant.$axios
@@ -60,6 +54,7 @@ export default {
     }
     // 编辑器的事件，每次改变会获取其html内容
     this.editor.customConfig.onchange = html => {
+       this.isinit = false
       this.editorContent = html;
       this.catchData(this.editorContent); // 把这个html通过catchData的方法传入父组件
     };
@@ -86,6 +81,16 @@ export default {
       'redo' // 重复
     ];
     this.editor.create(); // 创建富文本实例
+  },
+  watch:{
+   content:function(){
+     if (this.isinit) {
+       this.$refs.editorElem.children[1].style["min-height"]="300px"
+      this.$refs.editorElem.children[1].style.height="auto"
+       this.editor.txt.html(this.content) 
+     }else{this.isinit = true }
+     
+   } 
   }
 }
 </script>

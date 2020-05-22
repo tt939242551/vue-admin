@@ -89,6 +89,16 @@ export const asyncRoutes = {
         name: 'userAdmin',
         component: () => import('../views/userAdmin.vue'),
     },
+    'LifeStyle': {
+        path: 'LifeStyle',
+        name: 'LifeStyle',
+        component: () => import('../views/LifeStyle.vue'),
+    },
+    'coupon': {
+        path: 'coupon',
+        name: 'coupon',
+        component: () => import('../views/Coupon.vue'),
+    },
 }
 
 const createRouter = () => new Router({

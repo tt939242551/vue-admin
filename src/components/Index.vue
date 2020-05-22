@@ -260,7 +260,8 @@ export default {
             if (res.status > 0) {
             this.$router.replace({name: 'login'})
             } else {
-              this.$Message.warning(res.content); 
+              this.$Message.warning(res.content);
+              this.$router.replace({name: 'login'}) 
             }
           })
           .catch(() => {}); 

@@ -197,7 +197,7 @@
             </div>
              <div class="footer">
                  <p class="point">返还{{orderList[tindex].point}}积分</p>
-                 <p v-show="orderList[tindex].coupon">优惠券：{{orderList[tindex].coupon}}元</p>
+                 <p v-show="orderList[tindex].coupon">优惠券：{{orderList[tindex].coupon}}</p>
                  <p>商品优惠：-￥{{orderList[tindex].discountamount}}</p>
                  <p class="machnum">实付款：<span>￥</span><span>{{orderList[tindex].realamount}}</span> </p>
              </div>

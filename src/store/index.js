@@ -67,7 +67,12 @@ const store = new Vuex.Store({
                 type: 'md-calculator', // icon类型
                 text: '折扣商品', // 文本内容
             },
-          
+            {
+                name: 'LifeStyle', // 要跳转的路由名称 不是路径
+                size: 18, // icon大小
+                type: 'md-color-palette', // icon类型
+                text: '生活美学', // 文本内容
+            },
             {
                 text: '类别管理',
                 type: 'md-filing',
@@ -84,7 +89,12 @@ const store = new Vuex.Store({
                     },
                 ]
             },
-          
+            {
+                name: 'coupon', // 要跳转的路由名称 不是路径
+                size: 18, // icon大小
+                type: 'md-closed-captioning', // icon类型
+                text: '优惠券', // 文本内容
+            },
             {
                 name: 'userAdmin', // 要跳转的路由名称 不是路径
                 size: 18, // icon大小

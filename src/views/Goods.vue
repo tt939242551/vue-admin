@@ -1030,6 +1030,7 @@ export default {
       let copymainList = [];
       let t = "disabledGroup" + (this.tvalue2 + 1);
       let arr = this[t];
+      arr.sort()
       if (this.tvalue2 === 0) {
         arr.sort((a, b) => {
           return a.slice(0, 3) - b.slice(0, 3);
@@ -1181,6 +1182,7 @@ export default {
         .then(res => {
           if (res.status >= 0) {
             this.isadds = true;
+            this.content = ''
             this.getInit();
             this.getBasicslist()
           } else {
@@ -1193,6 +1195,7 @@ export default {
      //关闭商品编辑
     closegoods(){
       this.isadds = true;
+      this.content = '' 
       this.colorList = [
         {
           color: "",
