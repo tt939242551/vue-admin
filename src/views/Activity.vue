@@ -76,7 +76,7 @@
             <div class="modalmain">
               <div class="mtitle">{{brandindex === brandList.length?"新增": "修改"}}品牌</div>
               <p><span>品 牌</span>
-                <Select  placeholder="请选择品牌" v-model="Modal[0]" style="width:250px;margin-left: 10px;">
+                <Select  placeholder="请选择品牌" filterable v-model="Modal[0]" style="width:250px;margin-left: 10px;">
                         <Option v-for="(item,j) in brandallList" :value="item.guid" :key="j">{{item.title}}</Option>
                 </Select>
               </p>
@@ -91,7 +91,7 @@
             <div class="modalmain">
               <div class="mtitle">{{goodsindex === goodsList.length?"新增": "修改"}}活动商品</div>
               <p><span>品 牌</span>
-                <Select  @on-change="getcommodityList" placeholder="请选择品牌" v-model="Modal[0]" style="width:250px;margin-left: 10px;">
+                <Select  @on-change="getcommodityList" filterable placeholder="请选择品牌" v-model="Modal[0]" style="width:250px;margin-left: 10px;">
                         <Option value="" >不限</Option>
                         <Option v-for="(item,j) in generalattribute" :value="item.guid" :key="j">{{item.title}}</Option>
                 </Select>
@@ -926,8 +926,7 @@ export default {
             }
           })
           .catch(() => {});
-      }
-      
+      }  
     },
    //广告位1
     //广告位1初始化

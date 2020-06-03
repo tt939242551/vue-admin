@@ -91,7 +91,7 @@ export default {
         },
         {
           title: "积分",
-          key: "shoppingcount",
+          key: "point ",
           width: 80,
           align: "center"
         },

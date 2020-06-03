@@ -9,7 +9,7 @@
               v-model="smodels[0]"
               size="small"
               style="width:120px;margin-right: 30px;"
-              placeholder="请选择品牌"
+              placeholder="请选择品牌" filterable
             >
               <Option value="" >不限</Option>
               <Option v-for="(item,index) in generalattribute" :value="item.title" :key="index">{{ item.title }}</Option>

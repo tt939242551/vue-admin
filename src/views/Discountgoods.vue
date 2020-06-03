@@ -76,7 +76,7 @@
                 </Select>
               </p>
               <p><span>品 牌</span>
-                <Select  @on-change="getcommodityList" placeholder="请选择品牌" v-model="Modal[0]" style="width:250px;margin-left: 10px;">
+                <Select  @on-change="getcommodityList" filterable placeholder="请选择品牌" v-model="Modal[0]" style="width:250px;margin-left: 10px;">
                         <Option value="" >不限</Option>
                         <Option v-for="(item,j) in generalattribute" :value="item.guid" :key="j">{{item.title}}</Option>
                 </Select>
@@ -94,7 +94,7 @@
                 </Select>
               </p>
               <p><span>商品名称</span>
-                <Select  placeholder="请选择商品名称" v-model="Modal[3]" style="width:250px;margin-left: 10px;">
+                <Select  placeholder="请选择商品名称" filterable v-model="Modal[3]" style="width:250px;margin-left: 10px;">
                         <Option value="" >不限</Option>
                         <Option v-for="(item,j) in commodity" :value="item.guid" :key="j">{{item.title}}</Option>
                 </Select>

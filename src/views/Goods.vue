@@ -5,7 +5,7 @@
          <p class="title">
             <span>品牌</span>
               <Select
-               @on-change="getDatalist"
+               @on-change="getDatalist" filterable
               v-model="smodels[0]"
               size="small"
               style="width:120px;margin-right: 30px;"
@@ -124,7 +124,7 @@
              <div class="sctions" v-for="(items,i) in generalattribute" :key="i">
                <span>{{items.title}}</span>
                <Select
-                v-model="bmodels[i]"
+                v-model="bmodels[i]" 
                 size="small"
                 style="width:200px;margin-right: 30px"
                 placeholder="请选择"
