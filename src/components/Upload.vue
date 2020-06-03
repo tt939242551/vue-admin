@@ -17,7 +17,7 @@
 <script>
 import { nfcall } from 'q';
 export default {
-  name: "upload",
+  name: "upload",//图片上传
    data() {
       return {
         formData:new FormData(),

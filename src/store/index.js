@@ -7,7 +7,7 @@ const store = new Vuex.Store({
     state: {
         // 左侧菜单栏数据
         menuItems: [
-          {
+            {
                 name: 'statistics', // 要跳转的路由名称 不是路径
                 size: 18, // icon大小
                 type: 'ios-stats', // icon类型

@@ -8,7 +8,7 @@
 <script>
 import E from "wangeditor";
 export default {
-  name: "Editor",
+  name: "Editor",//富文本编辑器
   data() {
     return {
       editor: null,
@@ -22,6 +22,7 @@ export default {
     this.editor = new E(this.$refs.editorElem);
     let  _tant = this
     //this.editor.customConfig.uploadImgServer = 'http://sfstyling.bogole.com/admin/common/upload_ajax.ashx?action=UpLoadFile'
+    //上传图片
     this.editor.customConfig.customUploadImg = function (files, insert) {
    
        let imgUrl = ""
@@ -83,6 +84,7 @@ export default {
     this.editor.create(); // 创建富文本实例
   },
   watch:{
+    //自适应编辑器高度
    content:function(){
      if (this.isinit) {
        this.$refs.editorElem.children[1].style["min-height"]="300px"

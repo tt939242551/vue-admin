@@ -80,8 +80,10 @@ export default {
         if (res.data.status > 0) {
         // 登陆成功 设置用户信息头像
          if (res.data.role_id==2) {
+
             localStorage.setItem("userName2",this.account);
             localStorage.setItem("userName",'');
+            //跳到买手
             window.location.href = "http://sfstyling.bogole.com/business/index.html";
          }else if (res.data.role_id==1||res.data.role_id==3)  
          {
