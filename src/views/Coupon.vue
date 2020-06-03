@@ -65,9 +65,9 @@
                  <i-input  style="width:160px;margin-right: 40px;"
                         type="text" v-model="formDate[0]"    clearable placeholder="请输入优惠券名称"> </i-input>
             
-            <span>优惠券价格：</span>
+            <span>优惠券价格或折扣：</span>
                   <i-input  style="width:160px;margin-right: 40px;" 
-                      :number="true"   type="text" v-model="formDate[1]"  clearable placeholder="请输入价格"> </i-input>
+                      :number="true"   type="text" v-model="formDate[1]"  clearable placeholder="请输入价格或折扣"> </i-input>
              <span>优惠券数量：</span>
                   <i-input  style="width:160px;margin-right: 40px;" 
                       :number="true"   type="text" v-model="formDate[2]"  clearable placeholder="请输入数量"> </i-input>          
@@ -90,7 +90,7 @@
                  <Select v-show="formDate[5]&&formDate[5]>0" :disabled="index!=='add'" v-model="formDate[6]" @on-change="getBrand" filterable style="width:160px;margin-right: 15px;" placeholder="请选择品牌">
                     <Option v-for="item in brand" :value="item.guid" :key="item.guid">{{ item.title }}</Option>
                 </Select>
-                 <Select v-show="formDate[6]&&formDate[5]==1" multiple :disabled="index!=='add'" v-model="categorylist" style="width:304px" placeholder="请选择类别">
+                 <Select v-show="formDate[6]&&formDate[5]>0&&formDate[5]!==2" multiple :disabled="index!=='add'" v-model="categorylist" style="width:304px" placeholder="请选择类别">
                     <Option v-for="item in category" :value="item.guid" :key="item.guid">{{ item.title }}</Option>
                 </Select>
                 <Select v-show="formDate[6]&&formDate[5]==2" :disabled="index!=='add'" v-model="categoryguid" @on-change="getGoods" style="width:160px;margin-right: 15px;" placeholder="请选择类别">
@@ -130,7 +130,7 @@ export default {
           categoryguid:"",
           goodslist:[],
           goodsguidlist:[],
-          itemrole:['全场通用','品牌通用','商品通用'],
+          itemrole:['全场通用','品牌通用','商品通用','折扣券'],
           imgmodels : "",
           pageSize:10,
           total:1,
@@ -329,13 +329,24 @@ export default {
     switchcoupon(){},
     //新增,编辑优惠券
     postSpecial(){
-           if (this.formDate[5]==1&& this.categorylist.length ==0 ) {
+           if (this.formDate[5]>0&&this.formDate[5]!=2&& this.categorylist.length ==0 ) {
              this.$Message.error("分类必须选择")
              return
            }
            if (this.formDate[5]==2&& this.goodsguidlist.length ==0 ) {
              this.$Message.error("商品必须选择")
              return
+           }
+           if (this.formDate[5]==3  ) {
+             if(this.formDate[1]<=0||this.formDate[1]>=1){
+                this.$Message.error("折扣要设置在0到1之间")
+                return
+             } 
+           }
+           if (this.formDate[5]==3&&this.formDate[7]  ) {
+                this.$Message.error("折扣优惠券不能设置满减")
+                this.$set(this.formDate,7,0); 
+                return  
            }
            if (this.formDate[0]&&this.formDate[1]&&this.formDate[2]&&this.formDate[3]&&this.formDate[4]&&this.imgmodels) {
               let addparme = null;
