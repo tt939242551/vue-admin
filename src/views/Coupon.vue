@@ -160,11 +160,16 @@ export default {
           key: "receivecount",
           align: "center"
         },
-      
+        {
+          title: "是否线下劵",
+          key: "isopenutls",
+         
+          align: "center"
+        },
         {
           title: "生成时间",
           key: "adddate",
-          width: 180,
+       
           align: "center"
         },
         {
