@@ -339,13 +339,19 @@ export default {
            }
            if (this.formDate[5]==3  ) {
              if(this.formDate[1]<=0||this.formDate[1]>=1){
-                this.$Message.error("折扣要设置在0到1之间")
+                this.$Message.error({
+                content: "折扣要设置在0到1之间",
+                duration: 2
+                })
                 return
              } 
            }
            if (this.formDate[5]==3&&this.formDate[7]  ) {
-                this.$Message.error("折扣优惠券不能设置满减")
-                this.$set(this.formDate,7,0); 
+               
+                this.$Message.error( {
+                content: "折扣优惠券不能设置满减",
+                duration: 2
+                })
                 return  
            }
            if (this.formDate[0]&&this.formDate[1]&&this.formDate[2]&&this.formDate[3]&&this.formDate[4]&&this.imgmodels) {
